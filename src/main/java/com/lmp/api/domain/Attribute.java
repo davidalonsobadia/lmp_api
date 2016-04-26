@@ -15,7 +15,6 @@ public class Attribute {
 	
 	@Id
 	@GeneratedValue(strategy = GenerationType.AUTO)
-	@Column(name = "id_attribute")
 	private long id;
 
 	private String name;
