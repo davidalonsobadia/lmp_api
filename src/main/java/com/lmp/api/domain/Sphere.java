@@ -16,7 +16,7 @@ public class Sphere {
 
 	@Id
 	@GeneratedValue(strategy = GenerationType.AUTO)
-	@Column(name = "id_sphere_person")
+	@Column(name = "id_sphere")
 	private long id;
 	
 	private String identifier;
@@ -33,11 +33,15 @@ public class Sphere {
 	@Column(name = "is_deleted")
 	private boolean isDeleted;
 	
+	@Column(name = "is_data_extracted")
+	private boolean isDataExtracted;
+	
 	@ManyToMany
 	private List<Consumer> consumers;
 	
 	@ManyToMany
-	private List<Attribute> attributes; 
+	private List<Attribute> attributes;
+	
 
 	public long getId() {
 		return id;
@@ -109,5 +113,13 @@ public class Sphere {
 
 	public void setAttributes(List<Attribute> attributes) {
 		this.attributes = attributes;
+	}
+
+	public boolean isDataextracted() {
+		return isDataExtracted;
+	}
+
+	public void setDataextracted(boolean isDataextracted) {
+		this.isDataExtracted = isDataextracted;
 	}
 }

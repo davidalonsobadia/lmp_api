@@ -13,10 +13,10 @@ INSERT INTO data_consumer (identifier, name, description, is_enabled, is_deleted
 	VALUES ('LANEVERAROJA.COM', 'NeveraRoja', 'Comida a domicilio', true, false);
 	
 -- PERSON
-INSERT INTO domain_person (identifier, name, surname, email, password)
-	VALUES ('xxx', 'Sergi', 'Alonso', 'sergi@hotmail.com', '123456');
-INSERT INTO domain_person (identifier, name, surname, email, password)
-	VALUES ('yyy', 'Juan', 'Caubet', 'juan@hotmail.com', '123456');
+INSERT INTO domain_person (identifier, name, surname, phone, email, password)
+	VALUES ('xxx', 'Sergi', 'Alonso', '937890532', 'sergi@hotmail.com', '123456');
+INSERT INTO domain_person (identifier, name, surname, phone, email, password)
+	VALUES ('yyy', 'Juan', 'Caubet', '932322585', 'juan@hotmail.com', '123456');
 	
 
 -- CATEGORY

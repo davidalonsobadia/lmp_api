@@ -8,32 +8,34 @@ import javax.persistence.GeneratedValue;
 import javax.persistence.GenerationType;
 import javax.persistence.Id;
 import javax.persistence.ManyToMany;
+import javax.persistence.ManyToOne;
 import javax.persistence.OneToMany;
 import javax.persistence.Table;
 
 @Entity
-@Table(name="domain_person")
-public class Person {
-
+@Table(name="domain_entity")
+public class Organization {
 	@Id
 	@GeneratedValue(strategy = GenerationType.AUTO)
-	@Column(name="id_domain_person")
+	@Column(name="id_domain_entity")
 	private long id;
 	
 	private String identifier;
 	
 	private String name;
 	
-	private String surname;
-	
-	private String phone;
-	
 	private String email;
 	
-	private String password;
+	private String description;
 	
-	private String personal_id;
+	@ManyToOne
+	private Person userCreator;
 	
+	@OneToMany
+	private List<Person> users;
+	
+	
+	// Relations
 	@ManyToMany
 	private List<Consumer> consumers;
 	
@@ -43,11 +45,6 @@ public class Person {
 	@OneToMany
 	private List<Sphere> spheres;
 	
-	@OneToMany
-	private List<Organization> entities;
-	
-	@OneToMany(mappedBy = "userCreator")
-	private List<Organization> entitiesCreated;
 	
 	public long getId() {
 		return id;
@@ -55,14 +52,6 @@ public class Person {
 
 	public void setId(long id) {
 		this.id = id;
-	}
-
-	public String getEmail() {
-		return email;
-	}
-
-	public void setEmail(String email) {
-		this.email = email;
 	}
 
 	public String getIdentifier() {
@@ -81,38 +70,38 @@ public class Person {
 		this.name = name;
 	}
 
-	public String getSurname() {
-		return surname;
+	public String getEmail() {
+		return email;
 	}
 
-	public void setSurname(String surname) {
-		this.surname = surname;
+	public void setEmail(String email) {
+		this.email = email;
 	}
 
-	public String getPhone() {
-		return phone;
+	public String getDescription() {
+		return description;
 	}
 
-	public void setPhone(String phone) {
-		this.phone = phone;
+	public void setDescription(String description) {
+		this.description = description;
 	}
 
-	public String getPassword() {
-		return password;
+	public Person getUserCreator() {
+		return userCreator;
 	}
 
-	public void setPassword(String password) {
-		this.password = password;
+	public void setUserCreator(Person userCreator) {
+		this.userCreator = userCreator;
 	}
 
-	public String getPersonal_id() {
-		return personal_id;
+	public List<Person> getUsers() {
+		return users;
 	}
 
-	public void setPersonal_id(String personal_id) {
-		this.personal_id = personal_id;
+	public void setUsers(List<Person> users) {
+		this.users = users;
 	}
-	
+
 	public List<Consumer> getConsumers() {
 		return consumers;
 	}
@@ -135,21 +124,5 @@ public class Person {
 
 	public void setSpheres(List<Sphere> spheres) {
 		this.spheres = spheres;
-	}
-
-	public List<Organization> getEntities() {
-		return entities;
-	}
-
-	public void setEntities(List<Organization> entities) {
-		this.entities = entities;
-	}
-
-	public List<Organization> getEntitiesCreated() {
-		return entitiesCreated;
-	}
-
-	public void setOrganizationsCreated(List<Organization> entitiesCreated) {
-		this.entitiesCreated = entitiesCreated;
-	}
+	}	
 }

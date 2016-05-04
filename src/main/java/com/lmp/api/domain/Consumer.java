@@ -37,6 +37,9 @@ public class Consumer {
 	@ManyToMany
 	private List<Sphere> spheres;
 	
+	@ManyToMany
+	private List<Organization> organizations;
+	
 	public long getId() {
 		return id;
 	}
@@ -99,6 +102,14 @@ public class Consumer {
 
 	public void setSpheres(List<Sphere> spheres) {
 		this.spheres = spheres;
+	}
+
+	public List<Organization> getOrganizations() {
+		return organizations;
+	}
+
+	public void setOrganizations(List<Organization> organizations) {
+		this.organizations = organizations;
 	}
 	
 }

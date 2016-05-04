@@ -41,6 +41,9 @@ public class Provider {
 	
 	@OneToMany
 	private Set<Attribute> attributes;
+	
+	@ManyToMany
+	private List<Organization> organizations;
 		
 	public long getId() {
 		return id;
@@ -120,6 +123,14 @@ public class Provider {
 
 	public void setPeople(List<Person> people) {
 		this.people = people;
+	}
+
+	public List<Organization> getOrganizations() {
+		return organizations;
+	}
+
+	public void setOrganizations(List<Organization> organizations) {
+		this.organizations = organizations;
 	}
 
 }
