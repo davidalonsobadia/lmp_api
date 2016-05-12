@@ -8,7 +8,6 @@ import javax.persistence.GeneratedValue;
 import javax.persistence.GenerationType;
 import javax.persistence.Id;
 import javax.persistence.ManyToMany;
-import javax.persistence.ManyToOne;
 import javax.persistence.OneToMany;
 import javax.persistence.Table;
 
@@ -27,14 +26,7 @@ public class Organization {
 	private String email;
 	
 	private String description;
-	
-	@ManyToOne
-	private Person userCreator;
-	
-	@OneToMany
-	private List<Person> users;
-	
-	
+			
 	// Relations
 	@ManyToMany
 	private List<Consumer> consumers;
@@ -44,6 +36,21 @@ public class Organization {
 	
 	@OneToMany
 	private List<Sphere> spheres;
+	
+	
+	//Relation with users:
+	@ManyToMany
+	private List<Person> verifiedUsers;
+	
+	@ManyToMany
+	private List<Person> usersToVerify;
+	
+	@ManyToMany
+	private List<Person> adminUsers;
+	
+	//
+	@OneToMany
+	private List<PersonOrganizationRelationship> associations;
 	
 	
 	public long getId() {
@@ -86,22 +93,6 @@ public class Organization {
 		this.description = description;
 	}
 
-	public Person getUserCreator() {
-		return userCreator;
-	}
-
-	public void setUserCreator(Person userCreator) {
-		this.userCreator = userCreator;
-	}
-
-	public List<Person> getUsers() {
-		return users;
-	}
-
-	public void setUsers(List<Person> users) {
-		this.users = users;
-	}
-
 	public List<Consumer> getConsumers() {
 		return consumers;
 	}
@@ -124,5 +115,29 @@ public class Organization {
 
 	public void setSpheres(List<Sphere> spheres) {
 		this.spheres = spheres;
+	}
+
+	public List<Person> getVerifiedUsers() {
+		return verifiedUsers;
+	}
+
+	public void setVerifiedUsers(List<Person> verifiedUsers) {
+		this.verifiedUsers = verifiedUsers;
+	}
+
+	public List<Person> getUsersToVerify() {
+		return usersToVerify;
+	}
+
+	public void setUsersToVerify(List<Person> usersToVerify) {
+		this.usersToVerify = usersToVerify;
+	}
+
+	public List<Person> getAdminUsers() {
+		return adminUsers;
+	}
+
+	public void setAdminUsers(List<Person> adminUsers) {
+		this.adminUsers = adminUsers;
 	}	
 }

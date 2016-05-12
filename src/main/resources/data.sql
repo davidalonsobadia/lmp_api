@@ -8,9 +8,9 @@ INSERT INTO data_consumer (identifier, name, description, is_enabled, is_deleted
 INSERT INTO data_consumer (identifier, name, description, is_enabled, is_deleted) 
 	VALUES ('RASTREATOR.COM', 'Rastreator', 'El mejor comparador de seguros de España', true, false);
 INSERT INTO data_consumer (identifier, name, description, is_enabled, is_deleted) 
-	VALUES ('BUSCADORMEDICOS.COM', 'BuscadorMedico', 'El mejor Buscador de medicos online', true, false);
+	VALUES ('BUSCADORMEDICOS.COM', 'Buscador Medico', 'El mejor Buscador de medicos online', true, false);
 INSERT INTO data_consumer (identifier, name, description, is_enabled, is_deleted) 
-	VALUES ('LANEVERAROJA.COM', 'NeveraRoja', 'Comida a domicilio', true, false);
+	VALUES ('LANEVERAROJA.COM', 'La Nevera Roja', 'Comida a domicilio', true, false);
 	
 -- PERSON
 INSERT INTO domain_person (identifier, name, surname, phone, email, password)
@@ -347,5 +347,160 @@ INSERT INTO data_provider_attributes(data_provider, attributes)
 	WHERE dp.identifier LIKE 'LINKEDIN';
 
 
+-- Insert consumers in a user
+INSERT INTO domain_person_consumers(domain_person, consumers) 
+	SELECT dp.id_domain_person, c.id_data_consumer 
+	FROM domain_person dp 
+	JOIN data_consumer c 
+		ON c.name LIKE 'Amazon' 
+	WHERE dp.email LIKE 'juan@hotmail.com';
+INSERT INTO domain_person_consumers(domain_person, consumers) 
+	SELECT dp.id_domain_person, c.id_data_consumer 
+	FROM domain_person dp 
+	JOIN data_consumer c 
+		ON c.name LIKE 'Trovit' 
+	WHERE dp.email LIKE 'juan@hotmail.com';
+INSERT INTO domain_person_consumers(domain_person, consumers) 
+	SELECT dp.id_domain_person, c.id_data_consumer 
+	FROM domain_person dp 
+	JOIN data_consumer c 
+		ON c.name LIKE 'La Nevera Roja' 
+	WHERE dp.email LIKE 'juan@hotmail.com';
+INSERT INTO domain_person_consumers(domain_person, consumers) 
+	SELECT dp.id_domain_person, c.id_data_consumer 
+	FROM domain_person dp 
+	JOIN data_consumer c 
+		ON c.name LIKE 'Rastreator' 
+	WHERE dp.email LIKE 'juan@hotmail.com';
 	
+
+-- Insert providers in a user
+INSERT INTO domain_person_providers(domain_person, providers) 
+	SELECT dp.id_domain_person, p.id
+	FROM domain_person dp 
+	JOIN data_provider p 
+		ON p.name LIKE 'La Caixa' 
+	WHERE dp.email LIKE 'juan@hotmail.com';
+INSERT INTO domain_person_providers(domain_person, providers) 
+	SELECT dp.id_domain_person, p.id
+	FROM domain_person dp 
+	JOIN data_provider p 
+		ON p.name LIKE 'Hospital de Terrassa' 
+	WHERE dp.email LIKE 'juan@hotmail.com';
+INSERT INTO domain_person_providers(domain_person, providers) 
+	SELECT dp.id_domain_person, p.id 
+	FROM domain_person dp 
+	JOIN data_provider p 
+		ON p.name LIKE 'LinkedIn' 
+	WHERE dp.email LIKE 'juan@hotmail.com';
+	
+
+-- Insert entity in a user
+INSERT INTO domain_entity(description, email, identifier, name)
+	VALUES ('Test entity', 'entity@hotmail.com', 'xxxx', 'Entity Test');
+INSERT INTO domain_entity(description, email, identifier, name)
+	VALUES ('Test entity 2', 'entity2@hotmail.com', 'yyyy', 'Entity Test 2');
+INSERT INTO domain_entity(description, email, identifier, name)
+	VALUES ('Test entity 3', 'entity3@hotmail.com', 'zzzz', 'Entity Test 3');
+INSERT INTO domain_entity(description, email, identifier, name)
+	VALUES ('Test entity 4', 'entity4@hotmail.com', 'ssss', 'Entity Test 4');
+INSERT INTO domain_entity(description, email, identifier, name)
+	VALUES ('Test entity 5', 'entity5@hotmail.com', 'aaaa', 'Entity Test 5');
+
+
+--INSERT INTO domain_entity_admin_users(domain_entity, admin_users)
+--	SELECT de.id_domain_entity, dp.id_domain_person
+--	FROM domain_entity de
+--	JOIN domain_person dp
+--		ON dp.email LIKE 'juan@hotmail.com'
+--	WHERE de.email LIKE 'entity@hotmail.com';
+--INSERT INTO domain_entity_admin_users(domain_entity, admin_users)
+--	SELECT de.id_domain_entity, dp.id_domain_person
+--	FROM domain_entity de
+--	JOIN domain_person dp
+--		ON dp.email LIKE 'juan@hotmail.com'
+--	WHERE de.email LIKE 'entity2@hotmail.com';
+--	
+--INSERT INTO domain_entity_verified_users(domain_entity, verified_users)
+--	SELECT de.id_domain_entity, dp.id_domain_person
+--	FROM domain_entity de
+--	JOIN domain_person dp
+--		ON dp.email LIKE 'juan@hotmail.com'
+--	WHERE de.email LIKE 'entity3@hotmail.com';
+--	
+--	
+--INSERT INTO domain_person_admin_entities(domain_person, admin_entities)
+--	SELECT dp.id_domain_person, de.id_domain_entity
+--	FROM domain_person dp
+--	JOIN domain_entity de
+--		ON de.email LIKE 'entity@hotmail.com'
+--	WHERE dp.email LIKE 'juan@hotmail.com';
+--INSERT INTO domain_person_admin_entities(domain_person, admin_entities)
+--	SELECT dp.id_domain_person, de.id_domain_entity
+--	FROM domain_person dp
+--	JOIN domain_entity de
+--		ON de.email LIKE 'entity2@hotmail.com'
+--	WHERE dp.email LIKE 'juan@hotmail.com';
+--	
+--INSERT INTO domain_person_verified_entities(domain_person, verified_entities)
+--	SELECT dp.id_domain_person, de.id_domain_entity
+--	FROM domain_person dp
+--	JOIN domain_entity de
+--		ON de.email LIKE 'entity3@hotmail.com'
+--	WHERE dp.email LIKE 'juan@hotmail.com';
+--INSERT INTO domain_person_entities_to_verify(domain_person, entities_to_verify)
+--	SELECT  dp.id_domain_person, de.id_domain_entity
+--	FROM domain_person dp
+--	JOIN domain_entity de
+--		ON de.email LIKE 'entity4@hotmail.com'
+--	WHERE dp.email LIKE 'juan@hotmail.com';
+--INSERT INTO domain_entity_users_to_verify(users_to_verify, domain_entity)
+--	SELECT  dp.id_domain_person, de.id_domain_entity
+--	FROM domain_person dp
+--	JOIN domain_entity de
+--		ON de.email LIKE 'entity4@hotmail.com'
+--	WHERE dp.email LIKE 'juan@hotmail.com';
+
+
+INSERT INTO user_entity_association(state, person, organization)
+	SELECT 'ASSOCIATED', dp.id_domain_person, de.id_domain_entity
+	FROM domain_person dp
+	JOIN domain_entity de
+		ON de.email LIKE 'entity@hotmail.com'
+	WHERE dp.email LIKE 'juan@hotmail.com';
+	
+INSERT INTO user_entity_association(state, person, organization)
+	SELECT 'ASSOCIATED', dp.id_domain_person, de.id_domain_entity
+	FROM domain_person dp
+	JOIN domain_entity de
+		ON de.email LIKE 'entity2@hotmail.com'
+	WHERE dp.email LIKE 'juan@hotmail.com';
+	
+INSERT INTO user_entity_association(state, person, organization)
+		SELECT 'REQUESTED_FROM_USER', dp.id_domain_person, de.id_domain_entity
+	FROM domain_person dp
+	JOIN domain_entity de
+		ON de.email LIKE 'entity3@hotmail.com'
+	WHERE dp.email LIKE 'juan@hotmail.com';
+	
+INSERT INTO user_entity_association(state, person, organization)
+	SELECT 'REQUESTED_FROM_ENTITY', dp.id_domain_person, de.id_domain_entity
+	FROM domain_person dp
+	JOIN domain_entity de
+		ON de.email LIKE 'entity4@hotmail.com'
+	WHERE dp.email LIKE 'juan@hotmail.com';
+	
+INSERT INTO user_entity_association(state, person, organization)
+	SELECT 'ADMINISTRATOR', dp.id_domain_person, de.id_domain_entity
+	FROM domain_person dp
+	JOIN domain_entity de
+		ON de.email LIKE 'entity5@hotmail.com'
+	WHERE dp.email LIKE 'juan@hotmail.com';
+	
+INSERT INTO user_entity_association(state, person, organization)
+	SELECT 'REQUESTED_FROM_ENTITY', dp.id_domain_person, de.id_domain_entity
+	FROM domain_person dp
+	JOIN domain_entity de
+		ON de.email LIKE 'entity5@hotmail.com'
+	WHERE dp.email LIKE 'sergi@hotmail.com';
 	

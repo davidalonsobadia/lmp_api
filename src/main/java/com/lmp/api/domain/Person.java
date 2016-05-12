@@ -43,11 +43,21 @@ public class Person {
 	@OneToMany
 	private List<Sphere> spheres;
 	
-	@OneToMany
-	private List<Organization> entities;
+	// Relation with Organization (Entities)
+	@ManyToMany
+	private List<Organization> verifiedEntities;
 	
-	@OneToMany(mappedBy = "userCreator")
-	private List<Organization> entitiesCreated;
+	@ManyToMany 
+	private List<Organization> entitiesToVerify;
+	
+	@ManyToMany
+	private List<Organization> adminEntities;
+	
+	//uniones
+	@OneToMany
+	private List<PersonOrganizationRelationship> associations;
+	
+
 	
 	public long getId() {
 		return id;
@@ -137,19 +147,35 @@ public class Person {
 		this.spheres = spheres;
 	}
 
-	public List<Organization> getEntities() {
-		return entities;
+	public List<Organization> getVerifiedEntities() {
+		return verifiedEntities;
 	}
 
-	public void setEntities(List<Organization> entities) {
-		this.entities = entities;
+	public void setVerifiedEntities(List<Organization> verifiedEntities) {
+		this.verifiedEntities = verifiedEntities;
 	}
 
-	public List<Organization> getEntitiesCreated() {
-		return entitiesCreated;
+	public List<Organization> getEntitiesToVerify() {
+		return entitiesToVerify;
 	}
 
-	public void setOrganizationsCreated(List<Organization> entitiesCreated) {
-		this.entitiesCreated = entitiesCreated;
+	public void setEntitiesToVerify(List<Organization> entitiesToVerify) {
+		this.entitiesToVerify = entitiesToVerify;
+	}
+
+	public List<Organization> getAdminEntities() {
+		return adminEntities;
+	}
+
+	public void setAdminEntities(List<Organization> adminEntities) {
+		this.adminEntities = adminEntities;
+	}
+
+	public List<PersonOrganizationRelationship> getUniones_person() {
+		return associations;
+	}
+
+	public void setUniones_person(List<PersonOrganizationRelationship> uniones_person) {
+		this.associations = uniones_person;
 	}
 }
