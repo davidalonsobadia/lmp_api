@@ -6,9 +6,9 @@ import org.springframework.data.jpa.repository.Query;
 import org.springframework.data.repository.PagingAndSortingRepository;
 import org.springframework.data.repository.query.Param;
 
-import com.lmp.api.domain.Attribute;
-import com.lmp.api.domain.AttributeCategory;
-import com.lmp.api.domain.Provider;
+import com.lmp.api.model.Attribute;
+import com.lmp.api.model.AttributeCategory;
+import com.lmp.api.model.Provider;
 
 public interface ProviderRepository extends PagingAndSortingRepository<Provider, Long> {
 	

@@ -1,506 +1,668 @@
+-- Categories
+SET @Health = 'Health';
+SET @eGovernance = 'e-Governance';
+SET @Finance = 'Finance';
+SET @WorkExperience = 'Work experience';
+SET @Personal = 'Personal';
+SET @Academic = 'Academic';
+
+-- Subcategories
+SET @HealthConditions = 'Health conditions';
+SET @RiskFactors = 'Risk factors';
+SET @AdministrationInfo = 'Administration info';
+SET @EmploymentDetails = 'Employment details';
+SET @BankDetails = 'Bank details';
+SET @Properties = 'Properties';
+SET @Education = 'Education';
+SET @Research = 'Research';
+SET @CurrentJobPosition = 'Current Job Position';
+SET @PersonalData = 'Personal Data';
+
+
+-- Provider names
+SET @LaCaixa = 'La Caixa';
+SET @HIPERSEGUROS = 'HIPERSEGUROS';
+SET @FacebookInc = 'Facebook Inc';
+SET @Twitter = 'Twitter';
+SET @HospitalDeTerrassa = 'Hospital de Terrassa';
+SET @HaciendaDeEspanna = 'Hacienda de Espanna';
+SET @LinkedIn = 'LinkedIn';
+
+-- Consumer names
+SET @Amazon = 'Amazon';
+SET @Trovit = 'Trovit';
+SET @Rastreator = 'Rastreator';
+SET @Twitter = 'Twitter';
+SET @BuscadorMedico = 'Buscador Medico';
+SET @LaNeveraRoja = 'La Nevera Roja';
+
+-- Attribute names
+SET @AllergicConditions = 'Allergic Conditions';
+SET @ChronicConditions = 'Chronic conditions';
+SET @MentalHealth = 'Mental health';
+SET @CholesterolLevel = 'Cholesterol level';
+SET @TobaccoSmoking = 'Tobacco smoking';
+SET @PhysicalConditions = 'Physical conditions';
+SET @SocialSecurityNumber = 'Social Security Number';
+SET @UnemploymentBenefitStatus = 'Unemployment benefit status';
+SET @EmploymentHistory = 'Employment history';
+SET @AccountNumbers = 'Account Numbers';
+SET @AccountBalances = 'Account balances';
+SET @PropertyDetails = 'Property Details';
+SET @PropertyTaxes = 'Property taxes';
+SET @EducationalInstitutions = 'Educational institutions';
+SET @EducationLevel = 'Education level';
+SET @Thesis = 'Thesis';
+SET @Articles = 'Articles';
+SET @Books = 'Books';
+SET @Conferences = 'Conferences';
+SET @CurrentPosition = 'Current Position';
+SET @Thesis = 'Thesis';
+SET @Articles = 'Articles';
+SET @Books = 'Books';
+SET @FirstName = 'First Name';
+
+
+
+-----------------------------------------------------------------------------------------------
 -- INSERT INTO data ...
 
 -- CONSUMERS
-INSERT INTO data_consumer (identifier, name, description, is_enabled, is_deleted) 
-	VALUES ('AMAZONWEB', 'Amazon', 'Amazon. Buy Online all kind of products.', true, false);
-INSERT INTO data_consumer (identifier, name, description, is_enabled, is_deleted) 
-	VALUES ('TROVIT.ES', 'Trovit', 'Trovit. El buscador', true, false);
-INSERT INTO data_consumer (identifier, name, description, is_enabled, is_deleted) 
-	VALUES ('RASTREATOR.COM', 'Rastreator', 'El mejor comparador de seguros de España', true, false);
-INSERT INTO data_consumer (identifier, name, description, is_enabled, is_deleted) 
-	VALUES ('BUSCADORMEDICOS.COM', 'Buscador Medico', 'El mejor Buscador de medicos online', true, false);
-INSERT INTO data_consumer (identifier, name, description, is_enabled, is_deleted) 
-	VALUES ('LANEVERAROJA.COM', 'La Nevera Roja', 'Comida a domicilio', true, false);
+INSERT INTO consumer (identifier, name, description, is_enabled, is_deleted) 
+	VALUES ('AMAZONWEB', @Amazon, 'Amazon. Buy Online all kind of products.', true, false);
+INSERT INTO consumer (identifier, name, description, is_enabled, is_deleted) 
+	VALUES ('TROVIT.ES', @Trovit, 'Trovit. El buscador', true, false);
+INSERT INTO consumer (identifier, name, description, is_enabled, is_deleted) 
+	VALUES ('RASTREATOR.COM', @Rastreator, 'El mejor comparador de seguros de España', true, false);
+INSERT INTO consumer (identifier, name, description, is_enabled, is_deleted) 
+	VALUES ('BUSCADORMEDICOS.COM', @BuscadorMedico, 'El mejor Buscador de medicos online', true, false);
+INSERT INTO consumer (identifier, name, description, is_enabled, is_deleted) 
+	VALUES ('LANEVERAROJA.COM', @LaNeveraRoja, 'Comida a domicilio', true, false);
 	
 -- PERSON
-INSERT INTO domain_person (identifier, name, surname, phone, email, password)
+INSERT INTO person (identifier, name, surname, phone, email, password)
+	VALUES ('admin', 'web', 'web', '00000000', 'web@hotmail.com', 'EurecatLMP2016!');
+INSERT INTO person (identifier, name, surname, phone, email, password)
 	VALUES ('xxx', 'Sergi', 'Alonso', '937890532', 'sergi@hotmail.com', '123456');
-INSERT INTO domain_person (identifier, name, surname, phone, email, password)
+INSERT INTO person (identifier, name, surname, phone, email, password)
 	VALUES ('yyy', 'Juan', 'Caubet', '932322585', 'juan@hotmail.com', '123456');
+INSERT INTO person (identifier, name, surname, phone, email, password)
+	VALUES ('zzz', 'David', 'Alonso', '932322585', 'david@hotmail.com', '123456');
 	
 
 -- CATEGORY
 INSERT INTO category (name)
-	VALUES ('Health');
+	VALUES (@Health);
 INSERT INTO category (name)
-	VALUES ('e-Governance');
+	VALUES (@eGovernance);
 INSERT INTO category (name)
-	VALUES ('Finance');
+	VALUES (@Finance);
 INSERT INTO category (name)
-	VALUES ('Academic');
+	VALUES (@Academic);
+INSERT INTO category (name)
+	VALUES (@WorkExperience);
+INSERT INTO category (name)
+	VALUES (@Personal);
+
 
 -- SUBCATEGORY
-INSERT INTO subcategory (name, category)
-	SELECT 'Health conditions', c.id
+INSERT INTO subcategory (name, category_id)
+	SELECT @HealthConditions, c.id
 	FROM category c
-	WHERE c.name LIKE 'Health';	
-INSERT INTO subcategory (name, category)
-	SELECT 'Risk factors', c.id
+	WHERE c.name LIKE @Health;	
+INSERT INTO subcategory (name, category_id)
+	SELECT @RiskFactors, c.id
 	FROM category c
-	WHERE c.name LIKE 'Health';
-INSERT INTO subcategory (name, category)
-	SELECT 'Administration info', c.id
+	WHERE c.name LIKE @Health;
+INSERT INTO subcategory (name, category_id)
+	SELECT @AdministrationInfo, c.id
 	FROM category c
-	WHERE c.name LIKE 'e-Governance';	
-INSERT INTO subcategory (name, category)
-	SELECT 'Employment details', c.id
+	WHERE c.name LIKE @eGovernance;	
+INSERT INTO subcategory (name, category_id)
+	SELECT @EmploymentDetails, c.id
 	FROM category c
-	WHERE c.name LIKE 'e-Governance';
-INSERT INTO subcategory (name, category)
-	SELECT 'Bank details', c.id
+	WHERE c.name LIKE @eGovernance;
+INSERT INTO subcategory (name, category_id)
+	SELECT @BankDetails, c.id
 	FROM category c
-	WHERE c.name LIKE 'Finance';
-INSERT INTO subcategory (name, category)
-	SELECT 'Properties', c.id
+	WHERE c.name LIKE @Finance;
+INSERT INTO subcategory (name, category_id)
+	SELECT @Properties, c.id
 	FROM category c
-	WHERE c.name LIKE 'Finance';
-INSERT INTO subcategory (name, category)
-	SELECT 'Education', c.id
+	WHERE c.name LIKE @Finance;
+INSERT INTO subcategory (name, category_id)
+	SELECT @Education, c.id
 	FROM category c
-	WHERE c.name LIKE 'Academic';
-INSERT INTO subcategory (name, category)
-	SELECT 'Research', c.id
+	WHERE c.name LIKE @Academic;
+INSERT INTO subcategory (name, category_id)
+	SELECT @Research, c.id
 	FROM category c
-	WHERE c.name LIKE 'Academic';
+	WHERE c.name LIKE @Academic;
+INSERT INTO subcategory (name, category_id)
+	SELECT @CurrentJobPosition, c.id
+	FROM category c
+	WHERE c.name LIKE @WorkExperience;
+INSERT INTO subcategory (name, category_id)
+	SELECT @PersonalData, c.id
+	FROM category c
+	WHERE c.name LIKE @Personal;
 	
 -- PROVIDER
-INSERT INTO data_provider (identifier, name, description, type, url, is_enabled, is_deleted )
-	VALUES ('LACAIXA', 'La Caixa', 'Catalan Bank', 'Financial', 'http://www.lacaixa.es', true, false);
-INSERT INTO data_provider (identifier, name, description, type, url, is_enabled, is_deleted )
-	VALUES ('HIPERSEGUROS', 'HIPERSEGUROS', 'Los mejores seguros', 'Health', 'https://www.hiperseguros.com', true, false);
-INSERT INTO data_provider (identifier, name, description, type, url, is_enabled, is_deleted )
-	VALUES ('FACEBOOK', 'Facebook Inc', 'La mayor red social del mundo', 'Social', 'http://www.facebook.com', true, false);
-INSERT INTO data_provider (identifier, name, description, type, url, is_enabled, is_deleted )
-	VALUES ('TWITTER', 'Twitter', 'Twitter', 'Social', 'http://www.twitter.com', true, false);
-INSERT INTO data_provider (identifier, name, description, type, url, is_enabled, is_deleted )
-	VALUES ('HOSPITALTERRASSA', 'Hospital de Terrassa', 'Hospital public', 'Health', 'http://www.hospitaldeterrassa.com', true, false);
-INSERT INTO data_provider (identifier, name, description, type, url, is_enabled, is_deleted )
-	VALUES ('HACIENDA', 'Hacienda de Espanna', 'Gobierno de Espanna', 'Public Administration', 'http://www.hacienda.com', true, false);
-INSERT INTO data_provider (identifier, name, description, type, url, is_enabled, is_deleted )
-	VALUES ('LINKEDIN', 'LinkedIn', 'Web para poner el curriculum', 'Education', 'http://www.linkedin.com', true, false);
-	
+INSERT INTO provider (identifier, name, description, type, url, is_enabled, is_deleted )
+	VALUES ('LACAIXA', @LaCaixa, 'Catalan Bank', 'Financial', 'http://www.lacaixa.es', true, false);
+INSERT INTO provider (identifier, name, description, type, url, is_enabled, is_deleted )
+	VALUES ('HIPERSEGUROS', @HIPERSEGUROS, 'Los mejores seguros', 'Health', 'https://www.hiperseguros.com', true, false);
+INSERT INTO provider (identifier, name, description, type, url, is_enabled, is_deleted )
+	VALUES ('FACEBOOK', @FacebookInc, 'La mayor red social del mundo', 'Social', 'http://www.facebook.com', true, false);
+INSERT INTO provider (identifier, name, description, type, url, is_enabled, is_deleted )
+	VALUES ('TWITTER', @Twitter, 'Twitter', 'Social', 'http://www.twitter.com', true, false);
+INSERT INTO provider (identifier, name, description, type, url, is_enabled, is_deleted )
+	VALUES ('HOSPITALTERRASSA', @HospitalDeTerrassa, 'Hospital public', 'Health', 'http://www.hospitaldeterrassa.com', true, false);
+INSERT INTO provider (identifier, name, description, type, url, is_enabled, is_deleted )
+	VALUES ('HACIENDA', @HaciendaDeEspanna, 'Gobierno de Espanna', 'Public Administration', 'http://www.hacienda.com', true, false);
+INSERT INTO provider (identifier, name, description, type, url, is_enabled, is_deleted )
+	VALUES ('LINKEDIN', @LinkedIn, 'Web para poner el curriculum', 'Education', 'http://www.linkedin.com', true, false);
 	
 -- ATTRIBUTE
-INSERT INTO attribute(name, subcategory, description, reputation, is_enabled, is_deleted, is_updateable, provider)
-	SELECT 'Allergic conditions', s.id, 'Allergic conditions', 8, true, false, true, dp.id
-	FROM data_provider dp
+INSERT INTO attribute(name, subcategory_id, description, reputation, is_enabled, is_deleted, is_updateable, provider_id)
+	SELECT @AllergicConditions, s.id, @AllergicConditions, 8, true, false, true, p.id
+	FROM provider p
 	JOIN subcategory s 
-		ON s.name LIKE 'Health conditions'
-	WHERE dp.identifier LIKE 'HOSPITALTERRASSA';
-INSERT INTO data_provider_attributes(data_provider, attributes)
-	SELECT dp.id, attr.id
-	FROM data_provider dp
-	JOIN attribute attr
-		ON attr.name LIKE 'Allergic conditions' 
-	WHERE dp.identifier LIKE 'HOSPITALTERRASSA';
+		ON s.name LIKE @HealthConditions
+	WHERE p.name LIKE @HospitalDeTerrassa;
+INSERT INTO provider_has_attributes(provider_id, attribute_id)
+	SELECT p.id, a.id
+	FROM provider p
+	JOIN attribute a
+		ON a.name LIKE @AllergicConditions 
+	WHERE p.name LIKE @HospitalDeTerrassa;
 	
+INSERT INTO attribute(name, subcategory_id, description, reputation, is_enabled, is_deleted, is_updateable, provider_id)
+	SELECT @ChronicConditions, s.id, @ChronicConditions, 8, true, false, true, p.id
+	FROM provider p
+	JOIN subcategory s 
+		ON s.name LIKE @HealthConditions
+	WHERE p.name LIKE @HospitalDeTerrassa;
+INSERT INTO provider_has_attributes(provider_id, attribute_id)
+	SELECT p.id, a.id
+	FROM provider p
+	JOIN attribute a
+		ON a.name LIKE @ChronicConditions 
+	WHERE p.name LIKE @HospitalDeTerrassa;
+	
+INSERT INTO attribute(name, subcategory_id, description, reputation, is_enabled, is_deleted, is_updateable, provider_id)
+	SELECT @MentalHealth, s.id, @MentalHealth, 8, true, false, true, p.id
+	FROM provider p
+	JOIN subcategory s 
+		ON s.name LIKE @RiskFactors
+	WHERE p.name LIKE @HospitalDeTerrassa;
+INSERT INTO provider_has_attributes(provider_id, attribute_id)
+	SELECT p.id, a.id
+	FROM provider p
+	JOIN attribute a
+		ON a.name LIKE @MentalHealth 
+	WHERE p.name LIKE @HospitalDeTerrassa;
 
-INSERT INTO attribute(name, subcategory, description, reputation, is_enabled, is_deleted, is_updateable, provider)
-	SELECT 'Chronic conditions', s.id, 'Chronic conditions', 8, true, false, true, dp.id
-	FROM data_provider dp
+INSERT INTO attribute(name, subcategory_id, description, reputation, is_enabled, is_deleted, is_updateable, provider_id)
+	SELECT @CholesterolLevel, s.id, @CholesterolLevel, 8, true, false, true, p.id
+	FROM provider p
 	JOIN subcategory s 
-		ON s.name LIKE 'Health conditions'
-	WHERE dp.identifier LIKE 'HOSPITALTERRASSA';
-INSERT INTO data_provider_attributes(data_provider, attributes)
-	SELECT dp.id, attr.id
-	FROM data_provider dp
-	JOIN attribute attr
-		ON attr.name LIKE 'Chronic conditions'
-	WHERE dp.identifier LIKE 'HOSPITALTERRASSA';
-	
-	
-INSERT INTO attribute(name, subcategory, description, reputation, is_enabled, is_deleted, is_updateable, provider)
-	SELECT 'Mental health', s.id, 'Mental health', 8, true, false, true, dp.id
-	FROM data_provider dp
-	JOIN subcategory s 
-		ON s.name LIKE 'Risk factors'
-	WHERE dp.identifier LIKE 'HOSPITALTERRASSA';
-INSERT INTO data_provider_attributes(data_provider, attributes)
-	SELECT dp.id, attr.id
-	FROM data_provider dp
-	JOIN attribute attr
-		ON attr.name LIKE 'Mental health' 
-	WHERE dp.identifier LIKE 'HOSPITALTERRASSA';
-	
-	
-INSERT INTO attribute(name, subcategory, description, reputation, is_enabled, is_deleted, is_updateable, provider)
-	SELECT 'Cholesterol level', s.id, 'Cholesterol level', 8, true, false, true, dp.id
-	FROM data_provider dp
-	JOIN subcategory s 
-		ON s.name LIKE 'Risk factors'
-	WHERE dp.identifier LIKE 'HOSPITALTERRASSA';
-INSERT INTO data_provider_attributes(data_provider, attributes)
-	SELECT dp.id, attr.id
-	FROM data_provider dp
-	JOIN attribute attr
-		ON attr.name LIKE 'Cholesterol level' 
-	WHERE dp.identifier LIKE 'HOSPITALTERRASSA';
-	
-	
-INSERT INTO attribute(name, subcategory, description, reputation, is_enabled, is_deleted, is_updateable, provider)
-	SELECT 'Tobacco smoking', s.id, 'Tobacco smoking', 8, true, false, true, dp.id
-	FROM data_provider dp
-	JOIN subcategory s 
-		ON s.name LIKE 'Risk factors'
-	WHERE dp.identifier LIKE 'HOSPITALTERRASSA';
-INSERT INTO data_provider_attributes(data_provider, attributes)
-	SELECT dp.id, attr.id
-	FROM data_provider dp
-	JOIN attribute attr
-		ON attr.name LIKE 'Tobacco smoking' 
-	WHERE dp.identifier LIKE 'HOSPITALTERRASSA';
-	
-	
-INSERT INTO attribute(name, subcategory, description, reputation, is_enabled, is_deleted, is_updateable, provider)
-	SELECT 'Physical conditions', s.id, 'Physical conditions', 8, true, false, true, dp.id
-	FROM data_provider dp
-	JOIN subcategory s 
-		ON s.name LIKE 'Risk factors'
-	WHERE dp.identifier LIKE 'HOSPITALTERRASSA';
-INSERT INTO data_provider_attributes(data_provider, attributes)
-	SELECT dp.id, attr.id
-	FROM data_provider dp
-	JOIN attribute attr
-		ON attr.name LIKE 'Physical conditions' 
-	WHERE dp.identifier LIKE 'HOSPITALTERRASSA';
-	
-	
-INSERT INTO attribute(name, subcategory, description, reputation, is_enabled, is_deleted, is_updateable, provider)
-	SELECT 'Social Security Number', s.id, 'Social Security Number', 8, true, false, true, dp.id
-	FROM data_provider dp
-	JOIN subcategory s 
-		ON s.name LIKE 'Administration info'
-	WHERE dp.identifier LIKE 'HACIENDA';
-INSERT INTO data_provider_attributes(data_provider, attributes)
-	SELECT dp.id, attr.id
-	FROM data_provider dp
-	JOIN attribute attr
-		ON attr.name LIKE 'Social Security Number' 
-	WHERE dp.identifier LIKE 'HACIENDA';
-	
-	
-INSERT INTO attribute(name, subcategory, description, reputation, is_enabled, is_deleted, is_updateable, provider)
-	SELECT 'Unemployment beneift status', s.id, 'Unemployment beneift status', 8, true, false, true, dp.id
-	FROM data_provider dp
-	JOIN subcategory s 
-		ON s.name LIKE 'Employment details'
-	WHERE dp.identifier LIKE 'HACIENDA';
-INSERT INTO data_provider_attributes(data_provider, attributes)
-	SELECT dp.id, attr.id
-	FROM data_provider dp
-	JOIN attribute attr
-		ON attr.name LIKE 'Unemployment beneift status' 
-	WHERE dp.identifier LIKE 'HACIENDA';
+		ON s.name LIKE @RiskFactors
+	WHERE p.name LIKE @HospitalDeTerrassa;
+INSERT INTO provider_has_attributes(provider_id, attribute_id)
+	SELECT p.id, a.id
+	FROM provider p
+	JOIN attribute a
+		ON a.name LIKE @CholesterolLevel 
+	WHERE p.name LIKE @HospitalDeTerrassa;
 
-	
-INSERT INTO attribute(name, subcategory, description, reputation, is_enabled, is_deleted, is_updateable, provider)
-	SELECT 'Employment history', s.id, 'Employment history', 8, true, false, true, dp.id
-	FROM data_provider dp
+INSERT INTO attribute(name, subcategory_id, description, reputation, is_enabled, is_deleted, is_updateable, provider_id)
+	SELECT @TobaccoSmoking, s.id, @TobaccoSmoking, 8, true, false, true, p.id
+	FROM provider p
 	JOIN subcategory s 
-		ON s.name LIKE 'Employment details'
-	WHERE dp.identifier LIKE 'HACIENDA';
-INSERT INTO data_provider_attributes(data_provider, attributes)
-	SELECT dp.id, attr.id
-	FROM data_provider dp
-	JOIN attribute attr
-		ON attr.name LIKE 'Employment history' 
-	WHERE dp.identifier LIKE 'HACIENDA';
+		ON s.name LIKE @RiskFactors
+	WHERE p.name LIKE @HospitalDeTerrassa;
+INSERT INTO provider_has_attributes(provider_id, attribute_id)
+	SELECT p.id, a.id
+	FROM provider p
+	JOIN attribute a
+		ON a.name LIKE @TobaccoSmoking
+	WHERE p.name LIKE @HospitalDeTerrassa;
 	
-	
-INSERT INTO attribute(name, subcategory, description, reputation, is_enabled, is_deleted, is_updateable, provider)
-	SELECT 'Account Numbers', s.id, 'Account Numbers', 8, true, false, true, dp.id
-	FROM data_provider dp
+INSERT INTO attribute(name, subcategory_id, description, reputation, is_enabled, is_deleted, is_updateable, provider_id)
+	SELECT @PhysicalConditions, s.id, @PhysicalConditions, 8, true, false, true, p.id
+	FROM provider p
 	JOIN subcategory s 
-		ON s.name LIKE 'Bank details'
-	WHERE dp.identifier LIKE 'LACAIXA';
-INSERT INTO data_provider_attributes(data_provider, attributes)
-	SELECT dp.id, attr.id
-	FROM data_provider dp
-	JOIN attribute attr
-		ON attr.name LIKE 'Account Numbers' 
-	WHERE dp.identifier LIKE 'LACAIXA';
+		ON s.name LIKE @RiskFactors
+	WHERE p.name LIKE @HospitalDeTerrassa;
+INSERT INTO provider_has_attributes(provider_id, attribute_id)
+	SELECT p.id, a.id
+	FROM provider p
+	JOIN attribute a
+		ON a.name LIKE @PhysicalConditions
+	WHERE p.name LIKE @HospitalDeTerrassa;	
 	
-	
-INSERT INTO attribute(name, subcategory, description, reputation, is_enabled, is_deleted, is_updateable, provider)
-	SELECT 'Account balances', s.id, 'Account balances', 8, true, false, true, dp.id
-	FROM data_provider dp
+INSERT INTO attribute(name, subcategory_id, description, reputation, is_enabled, is_deleted, is_updateable, provider_id)
+	SELECT @SocialSecurityNumber, s.id, @SocialSecurityNumber, 8, true, false, true, p.id
+	FROM provider p
 	JOIN subcategory s 
-		ON s.name LIKE 'Bank details'
-	WHERE dp.identifier LIKE 'LACAIXA';
-INSERT INTO data_provider_attributes(data_provider, attributes)
-	SELECT dp.id, attr.id
-	FROM data_provider dp
-	JOIN attribute attr
-		ON attr.name LIKE 'Account balances' 
-	WHERE dp.identifier LIKE 'LACAIXA';
+		ON s.name LIKE @AdministrationInfo
+	WHERE p.name LIKE @HaciendaDeEspanna;
+INSERT INTO provider_has_attributes(provider_id, attribute_id)
+	SELECT p.id, a.id
+	FROM provider p
+	JOIN attribute a
+		ON a.name LIKE @SocialSecurityNumber
+	WHERE p.name LIKE @HaciendaDeEspanna;	
 	
-	
-INSERT INTO attribute(name, subcategory, description, reputation, is_enabled, is_deleted, is_updateable, provider)
-	SELECT 'Property Details', s.id, 'Property Details', 8, true, false, true, dp.id
-	FROM data_provider dp
+INSERT INTO attribute(name, subcategory_id, description, reputation, is_enabled, is_deleted, is_updateable, provider_id)
+	SELECT @UnemploymentBenefitStatus, s.id, @UnemploymentBenefitStatus, 8, true, false, true, p.id
+	FROM provider p
 	JOIN subcategory s 
-		ON s.name LIKE 'Properties'
-	WHERE dp.identifier LIKE 'LACAIXA';
-INSERT INTO data_provider_attributes(data_provider, attributes)
-	SELECT dp.id, attr.id
-	FROM data_provider dp
-	JOIN attribute attr
-		ON attr.name LIKE 'Property Details' 
-	WHERE dp.identifier LIKE 'LACAIXA';
+		ON s.name LIKE @EmploymentDetails
+	WHERE p.name LIKE @HaciendaDeEspanna;
+INSERT INTO provider_has_attributes(provider_id, attribute_id)
+	SELECT p.id, a.id
+	FROM provider p
+	JOIN attribute a
+		ON a.name LIKE @UnemploymentBenefitStatus
+	WHERE p.name LIKE @HaciendaDeEspanna;	
 	
-	
-INSERT INTO attribute(name, subcategory, description, reputation, is_enabled, is_deleted, is_updateable, provider)
-	SELECT 'Property taxes', s.id, 'Property taxes', 8, true, false, true, dp.id
-	FROM data_provider dp
+INSERT INTO attribute(name, subcategory_id, description, reputation, is_enabled, is_deleted, is_updateable, provider_id)
+	SELECT @EmploymentHistory, s.id, @EmploymentHistory, 8, true, false, true, p.id
+	FROM provider p
 	JOIN subcategory s 
-		ON s.name LIKE 'Properties'
-	WHERE dp.identifier LIKE 'LACAIXA';
-INSERT INTO data_provider_attributes(data_provider, attributes)
-	SELECT dp.id, attr.id
-	FROM data_provider dp
-	JOIN attribute attr
-		ON attr.name LIKE 'Property taxes' 
-	WHERE dp.identifier LIKE 'LACAIXA';
+		ON s.name LIKE @EmploymentDetails
+	WHERE p.name LIKE @HaciendaDeEspanna;
+INSERT INTO provider_has_attributes(provider_id, attribute_id)
+	SELECT p.id, a.id
+	FROM provider p
+	JOIN attribute a
+		ON a.name LIKE @EmploymentHistory
+	WHERE p.name LIKE @HaciendaDeEspanna;	
 	
-	
-INSERT INTO attribute(name, subcategory, description, reputation, is_enabled, is_deleted, is_updateable, provider)
-	SELECT 'Educational institutions', s.id, 'Educational institutions', 8, true, false, true, dp.id
-	FROM data_provider dp
+INSERT INTO attribute(name, subcategory_id, description, reputation, is_enabled, is_deleted, is_updateable, provider_id)
+	SELECT @AccountNumbers, s.id, @AccountNumbers, 8, true, false, true, p.id
+	FROM provider p
 	JOIN subcategory s 
-		ON s.name LIKE 'Education'
-	WHERE dp.identifier LIKE 'LINKEDIN';
-INSERT INTO data_provider_attributes(data_provider, attributes)
-	SELECT dp.id, attr.id
-	FROM data_provider dp
-	JOIN attribute attr
-		ON attr.name LIKE 'Educational institutions' 
-	WHERE dp.identifier LIKE 'LINKEDIN';
+		ON s.name LIKE @BankDetails
+	WHERE p.name LIKE @LaCaixa;
+INSERT INTO provider_has_attributes(provider_id, attribute_id)
+	SELECT p.id, a.id
+	FROM provider p
+	JOIN attribute a
+		ON a.name LIKE @AccountNumbers
+	WHERE p.name LIKE @LaCaixa;
 	
-	
-INSERT INTO attribute(name, subcategory, description, reputation, is_enabled, is_deleted, is_updateable, provider)
-	SELECT 'Education level', s.id, 'Education level', 8, true, false, true, dp.id
-	FROM data_provider dp
+INSERT INTO attribute(name, subcategory_id, description, reputation, is_enabled, is_deleted, is_updateable, provider_id)
+	SELECT @AccountBalances, s.id, @AccountBalances, 8, true, false, true, p.id
+	FROM provider p
 	JOIN subcategory s 
-		ON s.name LIKE 'Education'
-	WHERE dp.identifier LIKE 'LINKEDIN';
-INSERT INTO data_provider_attributes(data_provider, attributes)
-	SELECT dp.id, attr.id
-	FROM data_provider dp
-	JOIN attribute attr
-		ON attr.name LIKE 'Education level' 
-	WHERE dp.identifier LIKE 'LINKEDIN';
+		ON s.name LIKE @BankDetails
+	WHERE p.name LIKE @LaCaixa;
+INSERT INTO provider_has_attributes(provider_id, attribute_id)
+	SELECT p.id, a.id
+	FROM provider p
+	JOIN attribute a
+		ON a.name LIKE @AccountBalances
+	WHERE p.name LIKE @LaCaixa;
 	
-	
-INSERT INTO attribute(name, subcategory, description, reputation, is_enabled, is_deleted, is_updateable, provider)
-	SELECT 'Thesis', s.id, 'Master Thesis', 8, true, false, true, dp.id
-	FROM data_provider dp
+INSERT INTO attribute(name, subcategory_id, description, reputation, is_enabled, is_deleted, is_updateable, provider_id)
+	SELECT @PropertyDetails, s.id, @PropertyDetails, 8, true, false, true, p.id
+	FROM provider p
 	JOIN subcategory s 
-		ON s.name LIKE 'Education'
-	WHERE dp.identifier LIKE 'LINKEDIN';
-INSERT INTO data_provider_attributes(data_provider, attributes)
-	SELECT dp.id, attr.id
-	FROM data_provider dp
-	JOIN attribute attr
-		ON attr.name LIKE 'Thesis' 
-	WHERE dp.identifier LIKE 'LINKEDIN';
+		ON s.name LIKE @Properties
+	WHERE p.name LIKE @LaCaixa;
+INSERT INTO provider_has_attributes(provider_id, attribute_id)
+	SELECT p.id, a.id
+	FROM provider p
+	JOIN attribute a
+		ON a.name LIKE @PropertyDetails
+	WHERE p.name LIKE @LaCaixa;	
 	
-	
-INSERT INTO attribute(name, subcategory, description, reputation, is_enabled, is_deleted, is_updateable, provider)
-	SELECT 'Articles', s.id, 'Writted articles', 8, true, false, true, dp.id
-	FROM data_provider dp
+INSERT INTO attribute(name, subcategory_id, description, reputation, is_enabled, is_deleted, is_updateable, provider_id)
+	SELECT @PropertyTaxes, s.id, @PropertyTaxes, 8, true, false, true, p.id
+	FROM provider p
 	JOIN subcategory s 
-		ON s.name LIKE 'Research'
-	WHERE dp.identifier LIKE 'LINKEDIN';
-INSERT INTO data_provider_attributes(data_provider, attributes)
-	SELECT dp.id, attr.id
-	FROM data_provider dp
-	JOIN attribute attr
-		ON attr.name LIKE 'Articles' 
-	WHERE dp.identifier LIKE 'LINKEDIN';
+		ON s.name LIKE @Properties
+	WHERE p.name LIKE @LaCaixa;
+INSERT INTO provider_has_attributes(provider_id, attribute_id)
+	SELECT p.id, a.id
+	FROM provider p
+	JOIN attribute a
+		ON a.name LIKE @PropertyTaxes
+	WHERE p.name LIKE @LaCaixa;	
 
-	
-INSERT INTO attribute(name, subcategory, description, reputation, is_enabled, is_deleted, is_updateable, provider)
-	SELECT 'Books', s.id, 'Books written', 8, true, false, true, dp.id
-	FROM data_provider dp
+INSERT INTO attribute(name, subcategory_id, description, reputation, is_enabled, is_deleted, is_updateable, provider_id)
+	SELECT @EducationalInstitutions, s.id, @EducationalInstitutions, 8, true, false, true, p.id
+	FROM provider p
 	JOIN subcategory s 
-		ON s.name LIKE 'Research'
-	WHERE dp.identifier LIKE 'LINKEDIN';	
-INSERT INTO data_provider_attributes(data_provider, attributes)
-	SELECT dp.id, attr.id
-	FROM data_provider dp
-	JOIN attribute attr
-		ON attr.name LIKE 'Books' 
-	WHERE dp.identifier LIKE 'LINKEDIN';
-	
-	
-INSERT INTO attribute(name, subcategory, description, reputation, is_enabled, is_deleted, is_updateable, provider)
-	SELECT 'Conferences', s.id, 'Assisted Conferences', 8, true, false, true, dp.id
-	FROM data_provider dp
+		ON s.name LIKE @Education
+	WHERE p.name LIKE @LinkedIn;
+INSERT INTO provider_has_attributes(provider_id, attribute_id)
+	SELECT p.id, a.id
+	FROM provider p
+	JOIN attribute a
+		ON a.name LIKE @EducationalInstitutions
+	WHERE p.name LIKE @LinkedIn;	
+
+INSERT INTO attribute(name, subcategory_id, description, reputation, is_enabled, is_deleted, is_updateable, provider_id)
+	SELECT @EducationLevel, s.id, @EducationLevel, 8, true, false, true, p.id
+	FROM provider p
 	JOIN subcategory s 
-		ON s.name LIKE 'Research'
-	WHERE dp.identifier LIKE 'LINKEDIN';
-INSERT INTO data_provider_attributes(data_provider, attributes)
-	SELECT dp.id, attr.id
-	FROM data_provider dp
-	JOIN attribute attr
-		ON attr.name LIKE 'Conferences' 
-	WHERE dp.identifier LIKE 'LINKEDIN';
+		ON s.name LIKE @Education
+	WHERE p.name LIKE @LinkedIn;
+INSERT INTO provider_has_attributes(provider_id, attribute_id)
+	SELECT p.id, a.id
+	FROM provider p
+	JOIN attribute a
+		ON a.name LIKE @EducationLevel
+	WHERE p.name LIKE @LinkedIn;
+
+INSERT INTO attribute(name, subcategory_id, description, reputation, is_enabled, is_deleted, is_updateable, provider_id)
+	SELECT @Thesis, s.id, @Thesis, 8, true, false, true, p.id
+	FROM provider p
+	JOIN subcategory s 
+		ON s.name LIKE @Education
+	WHERE p.name LIKE @LinkedIn;
+INSERT INTO provider_has_attributes(provider_id, attribute_id)
+	SELECT p.id, a.id
+	FROM provider p
+	JOIN attribute a
+		ON a.name LIKE @Thesis
+	WHERE p.name LIKE @LinkedIn;	
+	
+INSERT INTO attribute(name, subcategory_id, description, reputation, is_enabled, is_deleted, is_updateable, provider_id)
+	SELECT @Articles, s.id, @Articles, 8, true, false, true, p.id
+	FROM provider p
+	JOIN subcategory s 
+		ON s.name LIKE @Research
+	WHERE p.name LIKE @LinkedIn;
+INSERT INTO provider_has_attributes(provider_id, attribute_id)
+	SELECT p.id, a.id
+	FROM provider p
+	JOIN attribute a
+		ON a.name LIKE @Articles
+	WHERE p.name LIKE @LinkedIn;
+		
+INSERT INTO attribute(name, subcategory_id, description, reputation, is_enabled, is_deleted, is_updateable, provider_id)
+	SELECT @Books, s.id, @Books, 8, true, false, true, p.id
+	FROM provider p
+	JOIN subcategory s 
+		ON s.name LIKE @Research
+	WHERE p.name LIKE @LinkedIn;
+INSERT INTO provider_has_attributes(provider_id, attribute_id)
+	SELECT p.id, a.id
+	FROM provider p
+	JOIN attribute a
+		ON a.name LIKE @Books
+	WHERE p.name LIKE @LinkedIn;	
+
+INSERT INTO attribute(name, subcategory_id, description, reputation, is_enabled, is_deleted, is_updateable, provider_id)
+	SELECT @Conferences, s.id, @Conferences, 8, true, false, true, p.id
+	FROM provider p
+	JOIN subcategory s 
+		ON s.name LIKE @Research
+	WHERE p.name LIKE @LinkedIn;
+INSERT INTO provider_has_attributes(provider_id, attribute_id)
+	SELECT p.id, a.id
+	FROM provider p
+	JOIN attribute a
+		ON a.name LIKE @Conferences
+	WHERE p.name LIKE @LinkedIn;		
+
+INSERT INTO attribute(name, subcategory_id, description, reputation, is_enabled, is_deleted, is_updateable, provider_id)
+	SELECT @CurrentPosition, s.id, @CurrentPosition, 8, true, false, true, p.id
+	FROM provider p
+	JOIN subcategory s 
+		ON s.name LIKE @CurrentJobPosition
+	WHERE p.name LIKE @LinkedIn;
+INSERT INTO provider_has_attributes(provider_id, attribute_id)
+	SELECT p.id, a.id
+	FROM provider p
+	JOIN attribute a
+		ON a.name LIKE @CurrentPosition
+	WHERE p.name LIKE @LinkedIn;
+
+INSERT INTO attribute(name, subcategory_id, description, reputation, is_enabled, is_deleted, is_updateable, provider_id)
+	SELECT @FirstName, s.id, @FirstName, 8, true, false, true, p.id
+	FROM provider p
+	JOIN subcategory s 
+		ON s.name LIKE @PersonalData
+	WHERE p.name LIKE @LinkedIn;
+INSERT INTO provider_has_attributes(provider_id, attribute_id)
+	SELECT p.id, a.id
+	FROM provider p
+	JOIN attribute a
+		ON a.name LIKE @FirstName
+	WHERE p.name LIKE @LinkedIn;	
+
 
 
 -- Insert consumers in a user
-INSERT INTO domain_person_consumers(domain_person, consumers) 
-	SELECT dp.id_domain_person, c.id_data_consumer 
-	FROM domain_person dp 
-	JOIN data_consumer c 
-		ON c.name LIKE 'Amazon' 
-	WHERE dp.email LIKE 'juan@hotmail.com';
-INSERT INTO domain_person_consumers(domain_person, consumers) 
-	SELECT dp.id_domain_person, c.id_data_consumer 
-	FROM domain_person dp 
-	JOIN data_consumer c 
-		ON c.name LIKE 'Trovit' 
-	WHERE dp.email LIKE 'juan@hotmail.com';
-INSERT INTO domain_person_consumers(domain_person, consumers) 
-	SELECT dp.id_domain_person, c.id_data_consumer 
-	FROM domain_person dp 
-	JOIN data_consumer c 
-		ON c.name LIKE 'La Nevera Roja' 
-	WHERE dp.email LIKE 'juan@hotmail.com';
-INSERT INTO domain_person_consumers(domain_person, consumers) 
-	SELECT dp.id_domain_person, c.id_data_consumer 
-	FROM domain_person dp 
-	JOIN data_consumer c 
-		ON c.name LIKE 'Rastreator' 
-	WHERE dp.email LIKE 'juan@hotmail.com';
+INSERT INTO person_has_consumers(person_id, consumer_id) 
+	SELECT p.id, c.id 
+	FROM person p 
+	JOIN consumer c 
+		ON c.name LIKE @Amazon 
+	WHERE p.email LIKE 'juan@hotmail.com';
+INSERT INTO person_has_consumers(person_id, consumer_id) 
+	SELECT p.id, c.id 
+	FROM person p 
+	JOIN consumer c 
+		ON c.name LIKE @Trovit 
+	WHERE p.email LIKE 'juan@hotmail.com';	
+INSERT INTO person_has_consumers(person_id, consumer_id) 
+	SELECT p.id, c.id 
+	FROM person p 
+	JOIN consumer c 
+		ON c.name LIKE @LaNeveraRoja 
+	WHERE p.email LIKE 'juan@hotmail.com';	
+INSERT INTO person_has_consumers(person_id, consumer_id) 
+	SELECT p.id, c.id 
+	FROM person p 
+	JOIN consumer c 
+		ON c.name LIKE @Rastreator 
+	WHERE p.email LIKE 'juan@hotmail.com';	
 	
 
 -- Insert providers in a user
-INSERT INTO domain_person_providers(domain_person, providers) 
-	SELECT dp.id_domain_person, p.id
-	FROM domain_person dp 
-	JOIN data_provider p 
-		ON p.name LIKE 'La Caixa' 
-	WHERE dp.email LIKE 'juan@hotmail.com';
-INSERT INTO domain_person_providers(domain_person, providers) 
-	SELECT dp.id_domain_person, p.id
-	FROM domain_person dp 
-	JOIN data_provider p 
-		ON p.name LIKE 'Hospital de Terrassa' 
-	WHERE dp.email LIKE 'juan@hotmail.com';
-INSERT INTO domain_person_providers(domain_person, providers) 
-	SELECT dp.id_domain_person, p.id 
-	FROM domain_person dp 
-	JOIN data_provider p 
-		ON p.name LIKE 'LinkedIn' 
-	WHERE dp.email LIKE 'juan@hotmail.com';
+INSERT INTO person_has_providers(person_id, provider_id) 
+	SELECT per.id, pro.id
+	FROM person per 
+	JOIN provider pro
+		ON pro.name LIKE @LaCaixa
+	WHERE per.email LIKE 'juan@hotmail.com';
+INSERT INTO person_has_providers(person_id, provider_id) 
+	SELECT per.id, pro.id
+	FROM person per 
+	JOIN provider pro
+		ON pro.name LIKE @HospitalDeTerrassa
+	WHERE per.email LIKE 'juan@hotmail.com';
+INSERT INTO person_has_providers(person_id, provider_id) 
+	SELECT per.id, pro.id
+	FROM person per 
+	JOIN provider pro
+		ON pro.name LIKE @LinkedIn
+	WHERE per.email LIKE 'juan@hotmail.com';	
 	
 
 -- Insert entity in a user
-INSERT INTO domain_entity(description, email, identifier, name)
-	VALUES ('Test entity', 'entity@hotmail.com', 'xxxx', 'Entity Test');
-INSERT INTO domain_entity(description, email, identifier, name)
+INSERT INTO entity(description, email, identifier, name)
+	VALUES ('Test entity 1', 'entity@hotmail.com', 'xxxx', 'Entity Test');
+INSERT INTO entity(description, email, identifier, name)
 	VALUES ('Test entity 2', 'entity2@hotmail.com', 'yyyy', 'Entity Test 2');
-INSERT INTO domain_entity(description, email, identifier, name)
+INSERT INTO entity(description, email, identifier, name)
 	VALUES ('Test entity 3', 'entity3@hotmail.com', 'zzzz', 'Entity Test 3');
-INSERT INTO domain_entity(description, email, identifier, name)
+INSERT INTO entity(description, email, identifier, name)
 	VALUES ('Test entity 4', 'entity4@hotmail.com', 'ssss', 'Entity Test 4');
-INSERT INTO domain_entity(description, email, identifier, name)
+INSERT INTO entity(description, email, identifier, name)
 	VALUES ('Test entity 5', 'entity5@hotmail.com', 'aaaa', 'Entity Test 5');
 
 
---INSERT INTO domain_entity_admin_users(domain_entity, admin_users)
---	SELECT de.id_domain_entity, dp.id_domain_person
---	FROM domain_entity de
---	JOIN domain_person dp
---		ON dp.email LIKE 'juan@hotmail.com'
---	WHERE de.email LIKE 'entity@hotmail.com';
---INSERT INTO domain_entity_admin_users(domain_entity, admin_users)
---	SELECT de.id_domain_entity, dp.id_domain_person
---	FROM domain_entity de
---	JOIN domain_person dp
---		ON dp.email LIKE 'juan@hotmail.com'
---	WHERE de.email LIKE 'entity2@hotmail.com';
---	
---INSERT INTO domain_entity_verified_users(domain_entity, verified_users)
---	SELECT de.id_domain_entity, dp.id_domain_person
---	FROM domain_entity de
---	JOIN domain_person dp
---		ON dp.email LIKE 'juan@hotmail.com'
---	WHERE de.email LIKE 'entity3@hotmail.com';
---	
---	
---INSERT INTO domain_person_admin_entities(domain_person, admin_entities)
---	SELECT dp.id_domain_person, de.id_domain_entity
---	FROM domain_person dp
---	JOIN domain_entity de
---		ON de.email LIKE 'entity@hotmail.com'
---	WHERE dp.email LIKE 'juan@hotmail.com';
---INSERT INTO domain_person_admin_entities(domain_person, admin_entities)
---	SELECT dp.id_domain_person, de.id_domain_entity
---	FROM domain_person dp
---	JOIN domain_entity de
---		ON de.email LIKE 'entity2@hotmail.com'
---	WHERE dp.email LIKE 'juan@hotmail.com';
---	
---INSERT INTO domain_person_verified_entities(domain_person, verified_entities)
---	SELECT dp.id_domain_person, de.id_domain_entity
---	FROM domain_person dp
---	JOIN domain_entity de
---		ON de.email LIKE 'entity3@hotmail.com'
---	WHERE dp.email LIKE 'juan@hotmail.com';
---INSERT INTO domain_person_entities_to_verify(domain_person, entities_to_verify)
---	SELECT  dp.id_domain_person, de.id_domain_entity
---	FROM domain_person dp
---	JOIN domain_entity de
---		ON de.email LIKE 'entity4@hotmail.com'
---	WHERE dp.email LIKE 'juan@hotmail.com';
---INSERT INTO domain_entity_users_to_verify(users_to_verify, domain_entity)
---	SELECT  dp.id_domain_person, de.id_domain_entity
---	FROM domain_person dp
---	JOIN domain_entity de
---		ON de.email LIKE 'entity4@hotmail.com'
---	WHERE dp.email LIKE 'juan@hotmail.com';
+-- Associations between entities and people
+INSERT INTO person_and_entity_association(state, person_id, organization_id)
+	SELECT 'ASSOCIATED', p.id, e.id
+	FROM person p
+	JOIN entity e
+		ON e.email LIKE 'entity@hotmail.com'
+	WHERE p.email LIKE 'juan@hotmail.com';
 
+INSERT INTO person_and_entity_association(state, person_id, organization_id)
+	SELECT 'ASSOCIATED', p.id, e.id
+	FROM person p
+	JOIN entity e
+		ON e.email LIKE 'entity2@hotmail.com'
+	WHERE p.email LIKE 'juan@hotmail.com';
 
-INSERT INTO user_entity_association(state, person, organization)
-	SELECT 'ASSOCIATED', dp.id_domain_person, de.id_domain_entity
-	FROM domain_person dp
-	JOIN domain_entity de
-		ON de.email LIKE 'entity@hotmail.com'
-	WHERE dp.email LIKE 'juan@hotmail.com';
+INSERT INTO person_and_entity_association(state, person_id, organization_id)
+	SELECT 'REQUESTED_FROM_USER', p.id, e.id
+	FROM person p
+	JOIN entity e
+		ON e.email LIKE 'entity3@hotmail.com'
+	WHERE p.email LIKE 'juan@hotmail.com';
 	
-INSERT INTO user_entity_association(state, person, organization)
-	SELECT 'ASSOCIATED', dp.id_domain_person, de.id_domain_entity
-	FROM domain_person dp
-	JOIN domain_entity de
-		ON de.email LIKE 'entity2@hotmail.com'
-	WHERE dp.email LIKE 'juan@hotmail.com';
+INSERT INTO person_and_entity_association(state, person_id, organization_id)
+	SELECT 'ADMINISTRATOR', p.id, e.id
+	FROM person p
+	JOIN entity e
+		ON e.email LIKE 'entity4@hotmail.com'
+	WHERE p.email LIKE 'juan@hotmail.com';
+
+INSERT INTO person_and_entity_association(state, person_id, organization_id)
+	SELECT 'REQUESTED_FROM_ENTITY', p.id, e.id
+	FROM person p
+	JOIN entity e
+		ON e.email LIKE 'entity5@hotmail.com'
+	WHERE p.email LIKE 'sergi@hotmail.com';
+
+		
+-- Sphere creation
+INSERT INTO sphere( name, description, identifier, type, is_enabled, is_deleted, is_extracted )
+	VALUES ('Bank Data Sphere', 'Contains all my financial data', 'xxxxx', 'Finance type', true, false, true);
+
+INSERT INTO person_has_spheres(person_id, sphere_id)
+	SELECT p.id, s.id
+	FROM person p
+	JOIN sphere s
+		ON s.name LIKE 'Bank Data Sphere'
+	WHERE p.name LIKE 'Juan';
+
+INSERT INTO sphere_has_consumers(sphere_id, consumer_id)
+	SELECT s.id, c.id
+	FROM sphere s
+	JOIN consumer c
+		ON s.name LIKE 'Bank Data Sphere'
+	WHERE c.name LIKE @Amazon;
+INSERT INTO sphere_has_consumers(sphere_id, consumer_id)
+	SELECT s.id, c.id
+	FROM sphere s
+	JOIN consumer c
+		ON s.name LIKE 'Bank Data Sphere'
+	WHERE c.name LIKE @Trovit;
+INSERT INTO sphere_has_consumers(sphere_id, consumer_id)
+	SELECT s.id, c.id
+	FROM sphere s
+	JOIN consumer c
+		ON s.name LIKE 'Bank Data Sphere'
+	WHERE c.name LIKE @BuscadorMedico;	
 	
-INSERT INTO user_entity_association(state, person, organization)
-		SELECT 'REQUESTED_FROM_USER', dp.id_domain_person, de.id_domain_entity
-	FROM domain_person dp
-	JOIN domain_entity de
-		ON de.email LIKE 'entity3@hotmail.com'
-	WHERE dp.email LIKE 'juan@hotmail.com';
+INSERT INTO sphere_has_attributes(sphere_id, attribute_id)
+	SELECT s.id, a.id
+	FROM sphere s
+	JOIN attribute a
+		ON a.name LIKE @AccountNumbers
+	WHERE s.name LIKE 'Bank Data Sphere';
+INSERT INTO sphere_has_attributes(sphere_id, attribute_id)
+	SELECT s.id, a.id
+	FROM sphere s
+	JOIN attribute a
+		ON a.name LIKE @AccountBalances
+	WHERE s.name LIKE 'Bank Data Sphere';
+INSERT INTO sphere_has_attributes(sphere_id, attribute_id)
+	SELECT s.id, a.id
+	FROM sphere s
+	JOIN attribute a
+		ON a.name LIKE @PropertyDetails
+	WHERE s.name LIKE 'Bank Data Sphere';
+INSERT INTO sphere_has_attributes(sphere_id, attribute_id)
+	SELECT s.id, a.id
+	FROM sphere s
+	JOIN attribute a
+		ON a.name LIKE @PropertyTaxes
+	WHERE s.name LIKE 'Bank Data Sphere';
 	
-INSERT INTO user_entity_association(state, person, organization)
-	SELECT 'REQUESTED_FROM_ENTITY', dp.id_domain_person, de.id_domain_entity
-	FROM domain_person dp
-	JOIN domain_entity de
-		ON de.email LIKE 'entity4@hotmail.com'
-	WHERE dp.email LIKE 'juan@hotmail.com';
+
 	
-INSERT INTO user_entity_association(state, person, organization)
-	SELECT 'ADMINISTRATOR', dp.id_domain_person, de.id_domain_entity
-	FROM domain_person dp
-	JOIN domain_entity de
-		ON de.email LIKE 'entity5@hotmail.com'
-	WHERE dp.email LIKE 'juan@hotmail.com';
+INSERT INTO sphere( name, description, identifier, type, is_enabled, is_deleted, is_extracted )
+	VALUES ('Education Sphere', 'Education Life information', 'yyyyy', 'Education', true, false, true);
+
+INSERT INTO person_has_spheres(person_id, sphere_id)
+	SELECT p.id, s.id
+	FROM person p
+	JOIN sphere s
+		ON s.name LIKE 'Education Sphere'
+	WHERE p.name LIKE 'Juan';
+
+INSERT INTO sphere_has_consumers(sphere_id, consumer_id)
+	SELECT s.id, c.id
+	FROM sphere s
+	JOIN consumer c
+		ON s.name LIKE 'Education Sphere'
+	WHERE c.name LIKE @LaNeveraRoja;
+INSERT INTO sphere_has_consumers(sphere_id, consumer_id)
+	SELECT s.id, c.id
+	FROM sphere s
+	JOIN consumer c
+		ON s.name LIKE 'Education Sphere'
+	WHERE c.name LIKE @Rastreator;
 	
-INSERT INTO user_entity_association(state, person, organization)
-	SELECT 'REQUESTED_FROM_ENTITY', dp.id_domain_person, de.id_domain_entity
-	FROM domain_person dp
-	JOIN domain_entity de
-		ON de.email LIKE 'entity5@hotmail.com'
-	WHERE dp.email LIKE 'sergi@hotmail.com';
+INSERT INTO sphere_has_attributes(sphere_id, attribute_id)
+	SELECT s.id, a.id
+	FROM sphere s
+	JOIN attribute a
+		ON a.name LIKE @EducationLevel
+	WHERE s.name LIKE 'Education Sphere';
+INSERT INTO sphere_has_attributes(sphere_id, attribute_id)
+	SELECT s.id, a.id
+	FROM sphere s
+	JOIN attribute a
+		ON a.name LIKE @EducationalInstitutions
+	WHERE s.name LIKE 'Education Sphere';
+INSERT INTO sphere_has_attributes(sphere_id, attribute_id)
+	SELECT s.id, a.id
+	FROM sphere s
+	JOIN attribute a
+		ON a.name LIKE @Thesis
+	WHERE s.name LIKE 'Education Sphere';
+INSERT INTO sphere_has_attributes(sphere_id, attribute_id)
+	SELECT s.id, a.id
+	FROM sphere s
+	JOIN attribute a
+		ON a.name LIKE @Articles
+	WHERE s.name LIKE 'Education Sphere';
 	
+-- INSERT IN ATTRIBUTE MAPPING
+INSERT INTO attribute_map(api_attribute_name, attribute_name, attribute_id, provider_id)
+	SELECT 'headline', @CurrentPosition, a.id, p.id
+	FROM provider p
+	JOIN attribute a
+		ON a.name LIKE @CurrentPosition
+	WHERE p.name LIKE @LinkedIn;
+
+INSERT INTO attribute_map(api_attribute_name, attribute_name, attribute_id, provider_id)
+	SELECT 'firstName', @FirstName, a.id, p.id
+	FROM provider p
+	JOIN attribute a
+		ON a.name LIKE @FirstName
+	WHERE p.name LIKE @LinkedIn;
+	
+	
+-- Insert Token
+INSERT INTO person_and_provider_token (person_id, provider_id, token)
+	SELECT per.id, pro.id, 'AQVkSVFJmiZKfQY89gLeSGBONUIDNo-cm6Vvu9YlVuySsKXjxeDhaFNJQkWNjDccv1he3KSQAeTcx1p37s6uCErIMQWW8Qy5udKfVt1cTqkrq2wxT5IHMqUuF3OgiLfUrXeyK6U6d3mmEflN10TsTJDEZveddXZnQQoFlJvh_54IiomkR3I'
+	FROM person per
+	JOIN provider pro
+		ON pro.name LIKE @LinkedIn
+	WHERE per.name LIKE 'Juan';
+
