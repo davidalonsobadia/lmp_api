@@ -7,7 +7,6 @@ import org.hibernate.SessionFactory;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-import com.lmp.api.model.Person;
 import com.lmp.api.model.Provider;
 
 public class ProviderDaoImpl implements ProviderDao {
@@ -26,6 +25,20 @@ public class ProviderDaoImpl implements ProviderDao {
 		logger.info("in getProvider method");
 		Session session = this.sessionFactory.getCurrentSession();
 		String query = "from Provider where name LIKE '" + providerName + "'";
+		
+		List<Provider> providers = session.createQuery(query).list();
+		
+		if(providers.size() > 0)
+			return providers.get(0);
+		return null;
+	}
+	
+	@Override
+	@SuppressWarnings("unchecked")
+	public Provider getProviderById(int providerId) {
+		logger.info("in getProviderById method");
+		Session session = this.sessionFactory.getCurrentSession();
+		String query = "from Provider where id = " + providerId;
 		
 		List<Provider> providers = session.createQuery(query).list();
 		

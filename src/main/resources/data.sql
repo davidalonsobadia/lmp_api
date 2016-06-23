@@ -62,7 +62,10 @@ SET @Articles = 'Articles';
 SET @Books = 'Books';
 SET @FirstName = 'First Name';
 
-
+-- user Mails
+SET @user1Mail = 'juan@hotmail.com';
+SET @user2Mail = 'sergi@hotmail.com';
+SET @user3Mail = 'david@hotmail.com';
 
 -----------------------------------------------------------------------------------------------
 -- INSERT INTO data ...
@@ -83,11 +86,11 @@ INSERT INTO consumer (identifier, name, description, is_enabled, is_deleted)
 INSERT INTO person (identifier, name, surname, phone, email, password)
 	VALUES ('admin', 'web', 'web', '00000000', 'web@hotmail.com', 'EurecatLMP2016!');
 INSERT INTO person (identifier, name, surname, phone, email, password)
-	VALUES ('xxx', 'Sergi', 'Alonso', '937890532', 'sergi@hotmail.com', '123456');
+	VALUES ('xxx', 'Sergi', 'Alonso', '937890532', @user2Mail, '123456');
 INSERT INTO person (identifier, name, surname, phone, email, password)
-	VALUES ('yyy', 'Juan', 'Caubet', '932322585', 'juan@hotmail.com', '123456');
+	VALUES ('yyy', 'Juan', 'Caubet', '932322585', @user1Mail, '123456');
 INSERT INTO person (identifier, name, surname, phone, email, password)
-	VALUES ('zzz', 'David', 'Alonso', '932322585', 'david@hotmail.com', '123456');
+	VALUES ('zzz', 'David', 'Alonso', '932322585', @user3Mail, '123456');
 	
 
 -- CATEGORY
@@ -148,20 +151,20 @@ INSERT INTO subcategory (name, category_id)
 	WHERE c.name LIKE @Personal;
 	
 -- PROVIDER
-INSERT INTO provider (identifier, name, description, type, url, is_enabled, is_deleted )
-	VALUES ('LACAIXA', @LaCaixa, 'Catalan Bank', 'Financial', 'http://www.lacaixa.es', true, false);
-INSERT INTO provider (identifier, name, description, type, url, is_enabled, is_deleted )
-	VALUES ('HIPERSEGUROS', @HIPERSEGUROS, 'Los mejores seguros', 'Health', 'https://www.hiperseguros.com', true, false);
-INSERT INTO provider (identifier, name, description, type, url, is_enabled, is_deleted )
-	VALUES ('FACEBOOK', @FacebookInc, 'La mayor red social del mundo', 'Social', 'http://www.facebook.com', true, false);
-INSERT INTO provider (identifier, name, description, type, url, is_enabled, is_deleted )
-	VALUES ('TWITTER', @Twitter, 'Twitter', 'Social', 'http://www.twitter.com', true, false);
-INSERT INTO provider (identifier, name, description, type, url, is_enabled, is_deleted )
-	VALUES ('HOSPITALTERRASSA', @HospitalDeTerrassa, 'Hospital public', 'Health', 'http://www.hospitaldeterrassa.com', true, false);
-INSERT INTO provider (identifier, name, description, type, url, is_enabled, is_deleted )
-	VALUES ('HACIENDA', @HaciendaDeEspanna, 'Gobierno de Espanna', 'Public Administration', 'http://www.hacienda.com', true, false);
-INSERT INTO provider (identifier, name, description, type, url, is_enabled, is_deleted )
-	VALUES ('LINKEDIN', @LinkedIn, 'Web para poner el curriculum', 'Education', 'http://www.linkedin.com', true, false);
+INSERT INTO provider (identifier, name, description, type, url, is_enabled, is_deleted, o_auth, o_auth_url )
+	VALUES ('LACAIXA', @LaCaixa, 'Catalan Bank', 'Financial', 'http://www.lacaixa.es', true, false, false, '' );
+INSERT INTO provider (identifier, name, description, type, url, is_enabled, is_deleted, o_auth, o_auth_url )
+	VALUES ('HIPERSEGUROS', @HIPERSEGUROS, 'Los mejores seguros', 'Health', 'https://www.hiperseguros.com', true, false, false, '');
+INSERT INTO provider (identifier, name, description, type, url, is_enabled, is_deleted, o_auth, o_auth_url )
+	VALUES ('FACEBOOK', @FacebookInc, 'La mayor red social del mundo', 'Social', 'http://www.facebook.com', true, false, false, '');
+INSERT INTO provider (identifier, name, description, type, url, is_enabled, is_deleted, o_auth, o_auth_url )
+	VALUES ('TWITTER', @Twitter, 'Twitter', 'Social', 'http://www.twitter.com', true, false, false, '');
+INSERT INTO provider (identifier, name, description, type, url, is_enabled, is_deleted, o_auth, o_auth_url )
+	VALUES ('HOSPITALTERRASSA', @HospitalDeTerrassa, 'Hospital public', 'Health', 'http://www.hospitaldeterrassa.com', true, false, false, '');
+INSERT INTO provider (identifier, name, description, type, url, is_enabled, is_deleted, o_auth, o_auth_url )
+	VALUES ('HACIENDA', @HaciendaDeEspanna, 'Gobierno de Espanna', 'Public Administration', 'http://www.hacienda.com', true, false, false, '');
+INSERT INTO provider (identifier, name, description, type, url, is_enabled, is_deleted, o_auth, o_auth_url )
+	VALUES ('LINKEDIN', @LinkedIn, 'Web para poner el curriculum', 'Education', 'http://www.linkedin.com', true, false, true, '');
 	
 -- ATTRIBUTE
 INSERT INTO attribute(name, subcategory_id, description, reputation, is_enabled, is_deleted, is_updateable, provider_id)
@@ -445,25 +448,33 @@ INSERT INTO person_has_consumers(person_id, consumer_id)
 	FROM person p 
 	JOIN consumer c 
 		ON c.name LIKE @Amazon 
-	WHERE p.email LIKE 'juan@hotmail.com';
+	WHERE p.email LIKE @user1Mail;
 INSERT INTO person_has_consumers(person_id, consumer_id) 
 	SELECT p.id, c.id 
 	FROM person p 
 	JOIN consumer c 
 		ON c.name LIKE @Trovit 
-	WHERE p.email LIKE 'juan@hotmail.com';	
+	WHERE p.email LIKE @user1Mail;	
 INSERT INTO person_has_consumers(person_id, consumer_id) 
 	SELECT p.id, c.id 
 	FROM person p 
 	JOIN consumer c 
 		ON c.name LIKE @LaNeveraRoja 
-	WHERE p.email LIKE 'juan@hotmail.com';	
+	WHERE p.email LIKE @user1Mail;	
 INSERT INTO person_has_consumers(person_id, consumer_id) 
 	SELECT p.id, c.id 
 	FROM person p 
 	JOIN consumer c 
 		ON c.name LIKE @Rastreator 
-	WHERE p.email LIKE 'juan@hotmail.com';	
+	WHERE p.email LIKE @user1Mail;
+
+
+INSERT INTO person_has_providers(person_id, provider_id) 
+	SELECT per.id, pro.id
+	FROM person per 
+	JOIN provider pro
+		ON pro.name LIKE @Trovit
+	WHERE per.email LIKE @user1Mail;
 	
 
 -- Insert providers in a user
@@ -472,20 +483,21 @@ INSERT INTO person_has_providers(person_id, provider_id)
 	FROM person per 
 	JOIN provider pro
 		ON pro.name LIKE @LaCaixa
-	WHERE per.email LIKE 'juan@hotmail.com';
+	WHERE per.email LIKE @user1Mail;
 INSERT INTO person_has_providers(person_id, provider_id) 
 	SELECT per.id, pro.id
 	FROM person per 
 	JOIN provider pro
 		ON pro.name LIKE @HospitalDeTerrassa
-	WHERE per.email LIKE 'juan@hotmail.com';
+	WHERE per.email LIKE @user1Mail;
 INSERT INTO person_has_providers(person_id, provider_id) 
 	SELECT per.id, pro.id
 	FROM person per 
 	JOIN provider pro
 		ON pro.name LIKE @LinkedIn
-	WHERE per.email LIKE 'juan@hotmail.com';	
-	
+	WHERE per.email LIKE @user1Mail;
+
+		
 
 -- Insert entity in a user
 INSERT INTO entity(description, email, identifier, name)
@@ -506,35 +518,35 @@ INSERT INTO person_and_entity_association(state, person_id, organization_id)
 	FROM person p
 	JOIN entity e
 		ON e.email LIKE 'entity@hotmail.com'
-	WHERE p.email LIKE 'juan@hotmail.com';
+	WHERE p.email LIKE @user1Mail;
 
 INSERT INTO person_and_entity_association(state, person_id, organization_id)
 	SELECT 'ASSOCIATED', p.id, e.id
 	FROM person p
 	JOIN entity e
 		ON e.email LIKE 'entity2@hotmail.com'
-	WHERE p.email LIKE 'juan@hotmail.com';
+	WHERE p.email LIKE @user1Mail;
 
 INSERT INTO person_and_entity_association(state, person_id, organization_id)
 	SELECT 'REQUESTED_FROM_USER', p.id, e.id
 	FROM person p
 	JOIN entity e
 		ON e.email LIKE 'entity3@hotmail.com'
-	WHERE p.email LIKE 'juan@hotmail.com';
+	WHERE p.email LIKE @user1Mail;
 	
 INSERT INTO person_and_entity_association(state, person_id, organization_id)
 	SELECT 'ADMINISTRATOR', p.id, e.id
 	FROM person p
 	JOIN entity e
 		ON e.email LIKE 'entity4@hotmail.com'
-	WHERE p.email LIKE 'juan@hotmail.com';
+	WHERE p.email LIKE @user1Mail;
 
 INSERT INTO person_and_entity_association(state, person_id, organization_id)
 	SELECT 'REQUESTED_FROM_ENTITY', p.id, e.id
 	FROM person p
 	JOIN entity e
 		ON e.email LIKE 'entity5@hotmail.com'
-	WHERE p.email LIKE 'sergi@hotmail.com';
+	WHERE p.email LIKE @user2Mail;
 
 		
 -- Sphere creation
@@ -546,7 +558,7 @@ INSERT INTO person_has_spheres(person_id, sphere_id)
 	FROM person p
 	JOIN sphere s
 		ON s.name LIKE 'Bank Data Sphere'
-	WHERE p.name LIKE 'Juan';
+	WHERE p.email LIKE @user1Mail;
 
 INSERT INTO sphere_has_consumers(sphere_id, consumer_id)
 	SELECT s.id, c.id
@@ -602,7 +614,7 @@ INSERT INTO person_has_spheres(person_id, sphere_id)
 	FROM person p
 	JOIN sphere s
 		ON s.name LIKE 'Education Sphere'
-	WHERE p.name LIKE 'Juan';
+	WHERE p.email LIKE @user1Mail;
 
 INSERT INTO sphere_has_consumers(sphere_id, consumer_id)
 	SELECT s.id, c.id
@@ -642,6 +654,17 @@ INSERT INTO sphere_has_attributes(sphere_id, attribute_id)
 		ON a.name LIKE @Articles
 	WHERE s.name LIKE 'Education Sphere';
 	
+	
+INSERT INTO sphere( name, description, identifier, type, is_enabled, is_deleted, is_extracted )
+	VALUES ('XEXI Sphere', 'Xexi first sphere', 'zzzzz', 'Testing Sphere', true, false, true);
+
+INSERT INTO person_has_spheres(person_id, sphere_id)
+	SELECT p.id, s.id
+	FROM person p
+	JOIN sphere s
+		ON s.name LIKE 'Testing Sphere'
+	WHERE p.email LIKE @user2Mail;
+	
 -- INSERT IN ATTRIBUTE MAPPING
 INSERT INTO attribute_map(api_attribute_name, attribute_name, attribute_id, provider_id)
 	SELECT 'headline', @CurrentPosition, a.id, p.id
@@ -659,10 +682,10 @@ INSERT INTO attribute_map(api_attribute_name, attribute_name, attribute_id, prov
 	
 	
 -- Insert Token
-INSERT INTO person_and_provider_token (person_id, provider_id, token)
-	SELECT per.id, pro.id, 'AQVkSVFJmiZKfQY89gLeSGBONUIDNo-cm6Vvu9YlVuySsKXjxeDhaFNJQkWNjDccv1he3KSQAeTcx1p37s6uCErIMQWW8Qy5udKfVt1cTqkrq2wxT5IHMqUuF3OgiLfUrXeyK6U6d3mmEflN10TsTJDEZveddXZnQQoFlJvh_54IiomkR3I'
+INSERT INTO token (person_id, provider_id, token)
+	SELECT per.id, pro.id, 'AQWU9hHB3Gse15qm7BnrAcO1R6dPVPrLtyNW98ugo7Y6fk4cXiRpVuxcbuOI_Pa4-1LIjANHHVZUYnCLb8QcKv_uF8pAo8DSPUKcrtruZK5Vv_LFM24Zr0LyDTg8KZ10HCaEgRwjuRspJXtoMliU1OgsnjoqO688-R-dHdmjjBiSjd7M2pE'
 	FROM person per
 	JOIN provider pro
 		ON pro.name LIKE @LinkedIn
-	WHERE per.name LIKE 'Juan';
+	WHERE per.email LIKE @user1Mail;
 

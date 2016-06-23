@@ -10,9 +10,19 @@ import com.lmp.api.model.Attribute;
 
 public interface AttributeRepository extends PagingAndSortingRepository<Attribute, Long> {
 	
-	@Query(value = "SELECT a.* FROM person dp JOIN person_spheres dps ON dp.id = dps.person JOIN sphere_person sp ON sp.id_sphere = dps.spheres"
-			+ " JOIN sphere_person_consumers spc ON sp.id_sphere = spc.sphere_person JOIN data_consumer dc ON dc.id_data_consumer = spc.consumers JOIN sphere_person_attributes spa ON spa.sphere_person = sp.id_sphere JOIN attribute a ON a.id = spa.attributes"
-			+ " WHERE dp.name LIKE :username AND dc.name LIKE :consumerName",
+	@Query(value = "SELECT a.* "
+			  +" FROM person p "
+			  +" JOIN person_has_spheres phs"
+			  +" 	ON p.id = phs.person_id "
+			  +" JOIN sphere_has_consumers shc "
+			  +" 	ON phs.sphere_id = shc.sphere_id "
+			  +" JOIN consumer c "
+			  +" 	ON c.id = shc.consumer_id "
+			  +" JOIN sphere_has_attributes sha "
+			  +" 	ON sha.sphere_id = phs.sphere_id "
+			  +" JOIN attribute a "
+			  +" 	ON a.id = sha.attribute_id "
+			  +" WHERE p.name LIKE :username AND c.name LIKE :consumerName ",
 			nativeQuery = true)
 	public List<Attribute> findAttributesByUserAndConsumer(
 			@Param("username") String username, 

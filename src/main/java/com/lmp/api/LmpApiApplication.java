@@ -12,38 +12,31 @@ import org.springframework.boot.autoconfigure.SpringBootApplication;
 import org.springframework.boot.builder.SpringApplicationBuilder;
 import org.springframework.boot.context.web.SpringBootServletInitializer;
 import org.springframework.context.annotation.Bean;
-import org.springframework.context.annotation.Configuration;
 import org.springframework.context.annotation.PropertySource;
 import org.springframework.core.env.Environment;
 import org.springframework.dao.annotation.PersistenceExceptionTranslationPostProcessor;
 import org.springframework.orm.hibernate4.HibernateTransactionManager;
 import org.springframework.orm.hibernate4.LocalSessionFactoryBean;
-import org.springframework.security.config.annotation.authentication.builders.AuthenticationManagerBuilder;
-import org.springframework.security.config.annotation.authentication.configurers.GlobalAuthenticationConfigurerAdapter;
-import org.springframework.security.config.annotation.web.builders.HttpSecurity;
-import org.springframework.security.config.annotation.web.configuration.EnableWebSecurity;
-import org.springframework.security.config.annotation.web.configuration.WebSecurityConfigurerAdapter;
-import org.springframework.security.core.authority.AuthorityUtils;
-import org.springframework.security.core.userdetails.User;
-import org.springframework.security.core.userdetails.UserDetails;
-import org.springframework.security.core.userdetails.UserDetailsService;
-import org.springframework.security.core.userdetails.UsernameNotFoundException;
 import org.springframework.transaction.annotation.EnableTransactionManagement;
 
 import com.lmp.api.dao.AttributeDaoImpl;
+import com.lmp.api.dao.ConsumerDaoImpl;
 import com.lmp.api.dao.PersonDaoImpl;
-import com.lmp.api.dao.PersonProviderTokenDaoImpl;
 import com.lmp.api.dao.ProviderDaoImpl;
-import com.lmp.api.model.Person;
-import com.lmp.api.repositories.PersonRepository;
+import com.lmp.api.dao.SphereDaoImpl;
+import com.lmp.api.dao.TokenDaoImpl;
 import com.lmp.api.service.AttributeService;
 import com.lmp.api.service.AttributeServiceImpl;
-import com.lmp.api.service.PersonProviderTokenService;
-import com.lmp.api.service.PersonProviderTokenServiceImpl;
+import com.lmp.api.service.ConsumerService;
+import com.lmp.api.service.ConsumerServiceImpl;
 import com.lmp.api.service.PersonService;
 import com.lmp.api.service.PersonServiceImpl;
 import com.lmp.api.service.ProviderService;
 import com.lmp.api.service.ProviderServiceImpl;
+import com.lmp.api.service.SphereService;
+import com.lmp.api.service.SphereServiceImpl;
+import com.lmp.api.service.TokenService;
+import com.lmp.api.service.TokenServiceImpl;
 
 @EnableTransactionManagement
 @PropertySource({ "classpath:application.properties" })
@@ -134,13 +127,38 @@ public class LmpApiApplication extends SpringBootServletInitializer {
    }
    
    @Bean
-   public PersonProviderTokenService getPersonProviderTokenService(){
-	   PersonProviderTokenServiceImpl personProviderTokenService = new PersonProviderTokenServiceImpl();
-	   PersonProviderTokenDaoImpl personProviderTokenDao = new PersonProviderTokenDaoImpl();
+   public TokenService getPersonProviderTokenService(){
+	   TokenServiceImpl personProviderTokenService = new TokenServiceImpl();
+	   TokenDaoImpl personProviderTokenDao = new TokenDaoImpl();
 	   personProviderTokenService.setPersonProviderTokenDao(personProviderTokenDao);
 	   personProviderTokenDao.setSessionFactory(this.sessionFactory().getObject());
 	   return personProviderTokenService;
    }
+   
+   @Bean
+   public ConsumerService getConsumerService(){
+	   ConsumerServiceImpl consumerServiceImpl = new ConsumerServiceImpl();
+	   ConsumerDaoImpl consumerDaoImpl = new ConsumerDaoImpl();
+	   consumerServiceImpl.setConsumerdao(consumerDaoImpl);
+	   consumerDaoImpl.setSessionFactory(this.sessionFactory().getObject());
+	   return consumerServiceImpl;
+   }
+   
+   @Bean
+   public SphereService getSphereService(){
+	   SphereServiceImpl sphereServiceImpl = new SphereServiceImpl();
+	   SphereDaoImpl sphereDaoImpl = new SphereDaoImpl();
+	   sphereServiceImpl.setSphereDao(sphereDaoImpl);
+	   sphereDaoImpl.setSessionFactory(this.sessionFactory().getObject());
+	   return sphereServiceImpl;
+   }
+   
+//   @Bean
+//   public MappedInterceptor myMappedInterceptor() {
+//	   HandlerInterceptor customInterceptor = new CustomInterceptor();
+//       return new MappedInterceptor(new String[]{"/people/*/providers"}, customInterceptor);
+//   }
+   
 }
 	
 //@Configuration

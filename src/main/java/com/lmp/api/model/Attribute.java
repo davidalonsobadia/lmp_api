@@ -4,7 +4,6 @@ import java.util.List;
 
 import javax.persistence.Column;
 import javax.persistence.Entity;
-import javax.persistence.FetchType;
 import javax.persistence.GeneratedValue;
 import javax.persistence.GenerationType;
 import javax.persistence.Id;
@@ -14,6 +13,7 @@ import javax.persistence.ManyToOne;
 import javax.persistence.OneToMany;
 import javax.persistence.OneToOne;
 import javax.persistence.Table;
+import javax.persistence.Transient;
 
 @Entity
 @Table(name="attribute")
@@ -28,6 +28,15 @@ public class Attribute {
 	
 	@OneToOne
 	private AttributeSubcategory subcategory;
+	
+	@Transient
+	private String subcategoryName;
+	
+	@Transient
+	private String categoryName;
+	
+	@Transient
+	private String providerName;
 	
 	private String description;
 	
@@ -130,6 +139,18 @@ public class Attribute {
 
 	public void setProvider(Provider provider) {
 		this.provider = provider;
+	}
+
+	public String getSubcategoryName() {
+		return this.subcategory.getName();
+	}
+
+	public String getCategoryName() {
+		return this.subcategory.getCategory().getName();
+	}
+
+	public String getProviderName() {
+		return this.provider.getName();
 	}
 	
 }

@@ -3,7 +3,6 @@ package com.lmp.api.service;
 import org.springframework.transaction.annotation.Transactional;
 
 import com.lmp.api.dao.ProviderDao;
-import com.lmp.api.dao.ProviderDaoImpl;
 import com.lmp.api.model.Provider;
 
 public class ProviderServiceImpl implements ProviderService{
@@ -19,6 +18,12 @@ public class ProviderServiceImpl implements ProviderService{
 	@Transactional
 	public Provider getProviderDao(String providerName){
 		return providerDao.getProvider(providerName);
+	}
+	
+	@Override
+	@Transactional
+	public Provider getProviderById(int providerId){
+		return providerDao.getProviderById(providerId);
 	}
 
 }

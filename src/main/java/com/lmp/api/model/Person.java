@@ -1,9 +1,12 @@
 package com.lmp.api.model;
 
 import java.util.List;
+import java.util.Set;
 
+import javax.persistence.CascadeType;
 import javax.persistence.Column;
 import javax.persistence.Entity;
+import javax.persistence.FetchType;
 import javax.persistence.GeneratedValue;
 import javax.persistence.GenerationType;
 import javax.persistence.Id;
@@ -46,19 +49,19 @@ public class Person {
 	)
 	private List<Consumer> consumers;
 	
-	@ManyToMany
+	@ManyToMany(fetch = FetchType.EAGER)
 	@JoinTable(name="person_has_providers", 
 		joinColumns={@JoinColumn(name="person_id")},
 		inverseJoinColumns={@JoinColumn(name="provider_id")}
 	)
-	private List<Provider> providers;
+	private Set<Provider> providers;
 	
-	@OneToMany
+	@OneToMany(fetch = FetchType.EAGER, cascade = CascadeType.ALL)
 	@JoinTable(name="person_has_spheres", 
 		joinColumns={@JoinColumn(name="person_id")},
 		inverseJoinColumns={@JoinColumn(name="sphere_id")}
 	)
-	private List<Sphere> spheres;
+	private Set<Sphere> spheres;
 	
 	//uniones
 	@OneToMany
@@ -67,16 +70,7 @@ public class Person {
 		inverseJoinColumns={@JoinColumn(name="association_id")}
 	)
 	private List<PersonOrganizationRelationship> associations;
-	
-	//tokens
-	@OneToMany
-	@JoinTable(name="person_has_tokens", 
-		joinColumns={@JoinColumn(name="person_id")},
-		inverseJoinColumns={@JoinColumn(name="token_id")}
-	)
-	private List<ProviderToken> providerTokens;
-
-	
+		
 	public long getId() {
 		return id;
 	}
@@ -149,19 +143,19 @@ public class Person {
 		this.consumers = consumers;
 	}
 
-	public List<Provider> getProviders() {
+	public Set<Provider> getProviders() {
 		return providers;
 	}
 
-	public void setProviders(List<Provider> providers) {
+	public void setProviders(Set<Provider> providers) {
 		this.providers = providers;
 	}
 
-	public List<Sphere> getSpheres() {
+	public Set<Sphere> getSpheres() {
 		return spheres;
 	}
 
-	public void setSpheres(List<Sphere> spheres) {
+	public void setSpheres(Set<Sphere> spheres) {
 		this.spheres = spheres;
 	}
 
@@ -172,13 +166,4 @@ public class Person {
 	public void setAssociations(List<PersonOrganizationRelationship> associations) {
 		this.associations = associations;
 	}
-
-	public List<ProviderToken> getPersonProviderTokens() {
-		return providerTokens;
-	}
-
-	public void setPersonProviderTokens(List<ProviderToken> personProviderTokens) {
-		this.providerTokens = personProviderTokens;
-	}
-
 }

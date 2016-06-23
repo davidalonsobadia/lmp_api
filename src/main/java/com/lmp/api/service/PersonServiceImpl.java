@@ -1,9 +1,12 @@
 package com.lmp.api.service;
 
+import java.util.Set;
+
 import org.springframework.transaction.annotation.Transactional;
 
 import com.lmp.api.dao.PersonDao;
 import com.lmp.api.model.Person;
+import com.lmp.api.model.Sphere;
 
 public class PersonServiceImpl implements PersonService{
 
@@ -16,8 +19,37 @@ public class PersonServiceImpl implements PersonService{
 	
 	@Override
 	@Transactional
-	public Person getPersonDao(String username) {
-		return personDao.getPerson(username);
+	public Person getPersonByName(String username) {
+		return personDao.getPersonByName(username);
+	}
+	
+	@Override
+	@Transactional
+	public Person getPersonByEmail(String email) {
+		return personDao.getPersonByEmail(email);
+	}
+	
+	@Override
+	@Transactional
+	public Person getPersonById(int id) {
+		return personDao.getPersonById(id);
+	}
+		
+	@Override
+	@Transactional
+	public void updatePersonProviderAssociation(int providerId, int personId) {
+		this.personDao.updatePersonProviderAssociation(providerId, personId);
 	}
 
+	@Override
+	@Transactional
+	public boolean isConsumerInList(String userName, String consumerName) {
+		return this.personDao.isConsumerInList(userName, consumerName);
+	}
+	
+	@Override
+	@Transactional
+	public Set<Sphere> getSpheres(Person person) {
+		return personDao.getSpheres(person);
+	}
 }

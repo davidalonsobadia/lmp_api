@@ -2,8 +2,10 @@ package com.lmp.api.model;
 
 import java.util.List;
 
+import javax.persistence.CascadeType;
 import javax.persistence.Column;
 import javax.persistence.Entity;
+import javax.persistence.FetchType;
 import javax.persistence.GeneratedValue;
 import javax.persistence.GenerationType;
 import javax.persistence.Id;
@@ -13,7 +15,6 @@ import javax.persistence.ManyToMany;
 import javax.persistence.OneToMany;
 import javax.persistence.Table;
 
-import com.fasterxml.jackson.annotation.JsonIgnore;
 
 @Entity
 @Table(name="provider")
@@ -34,13 +35,17 @@ public class Provider {
 	
 	private String url;
 	
+	private boolean oAuth;
+	
+	private String oAuthUrl;
+	
 	@Column(name="is_enabled")
 	private boolean isEnabled;
 	
 	@Column(name="is_deleted")
 	private boolean isDeleted;
 	
-	@ManyToMany(mappedBy = "providers")
+	@ManyToMany(fetch = FetchType.EAGER, mappedBy = "providers")
 	private List<Person> people;
 
 	@ManyToMany(mappedBy = "providers")
@@ -54,12 +59,12 @@ public class Provider {
 	private List<Attribute> attributes;
 		
 	//tokens
-	@ManyToMany
-	@JoinTable(name="provider_has_tokens", 
-		joinColumns={@JoinColumn(name="provider_id")},
-		inverseJoinColumns={@JoinColumn(name="token_id")}
-	)
-	private List<ProviderToken> providerTokens;
+	@OneToMany(cascade=CascadeType.ALL, orphanRemoval=true, mappedBy="provider")
+//	@JoinTable(name="provider_has_tokens", 
+//		joinColumns={@JoinColumn(name="provider_id")},
+//		inverseJoinColumns={@JoinColumn(name="token_id")}
+//	)
+	private List<Token> providerTokens;
 	
 	//attributeMapping
 	@OneToMany
@@ -157,19 +162,35 @@ public class Provider {
 		this.organizations = organizations;
 	}
 
-	public List<ProviderToken> getPersonProviderTokens() {
-		return providerTokens;
-	}
-
-	public void setPersonProviderTokens(List<ProviderToken> personProviderTokens) {
-		this.providerTokens = personProviderTokens;
-	}
-
 	public List<AttributeMap> getAttributeMaps() {
 		return attributeMaps;
 	}
 
 	public void setAttributeMaps(List<AttributeMap> attributeMaps) {
 		this.attributeMaps = attributeMaps;
+	}
+
+	public boolean isoAuth() {
+		return oAuth;
+	}
+
+	public void setoAuth(boolean oAuth) {
+		this.oAuth = oAuth;
+	}
+
+	public String getoAuthUrl() {
+		return oAuthUrl;
+	}
+
+	public void setoAuthUrl(String oAuthUrl) {
+		this.oAuthUrl = oAuthUrl;
+	}
+
+	public List<Token> getProviderTokens() {
+		return providerTokens;
+	}
+
+	public void setProviderTokens(List<Token> providerTokens) {
+		this.providerTokens = providerTokens;
 	}
 }

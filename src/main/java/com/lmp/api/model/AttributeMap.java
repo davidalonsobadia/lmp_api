@@ -2,7 +2,6 @@ package com.lmp.api.model;
 
 import javax.persistence.Column;
 import javax.persistence.Entity;
-import javax.persistence.FetchType;
 import javax.persistence.GeneratedValue;
 import javax.persistence.GenerationType;
 import javax.persistence.Id;
@@ -21,7 +20,7 @@ public class AttributeMap {
 	private String apiAttributeName;
 	
 	@Column(name="attribute_name")
-	private String attributeName;
+	private String lmpAttributeName;
 		
 	@ManyToOne  
 	private Provider provider;
@@ -45,12 +44,12 @@ public class AttributeMap {
 		this.apiAttributeName = apiAttributeName;
 	}
 
-	public String getAttributeName() {
-		return attributeName;
+	public String getLmpAttributeName() {
+		return lmpAttributeName;
 	}
 
-	public void setAttributeName(String attributeName) {
-		this.attributeName = attributeName;
+	public void setLmpAttributeName(String attributeName) {
+		this.lmpAttributeName = attributeName;
 	}
 
 	public Provider getProvider() {
@@ -72,6 +71,6 @@ public class AttributeMap {
 	@Override
 	public String toString(){
 		return "Attribute name in the API: " + this.apiAttributeName + "\n"
-				+ "Internal attribute name: " + this.attributeName;
+				+ "Internal attribute name: " + this.lmpAttributeName;
 	}
 }

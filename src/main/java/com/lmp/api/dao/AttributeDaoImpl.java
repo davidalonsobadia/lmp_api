@@ -7,6 +7,7 @@ import org.hibernate.SessionFactory;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
+import com.lmp.api.model.Attribute;
 import com.lmp.api.model.AttributeMap;
 
 public class AttributeDaoImpl implements AttributeDao {
@@ -34,7 +35,7 @@ public class AttributeDaoImpl implements AttributeDao {
 		
 		if(attributeMaps.size() > 0){
 			logger.info(attributeMaps.get(0).toString());
-			logger.info(attributeMaps.get(0).getAttributeName());
+			logger.info(attributeMaps.get(0).getLmpAttributeName());
 			return attributeMaps.get(0).getApiAttributeName();
 		}
 		
@@ -51,8 +52,23 @@ public class AttributeDaoImpl implements AttributeDao {
 		List<AttributeMap> attributeMaps = session.createQuery(query).list();
 		
 		if(attributeMaps.size() > 0)
-			return attributeMaps.get(0).getAttributeName();
+			return attributeMaps.get(0).getLmpAttributeName();
 		return null;
+	}
+
+
+	@Override
+	@SuppressWarnings("unchecked")
+	public Attribute getAttributeByName(String name) {
+    	logger.info("in getAttributeByName method");
+		Session session = this.sessionFactory.getCurrentSession();
+		String query = "from Attribute where name LIKE '" + name + "'";
+		
+		List<Attribute> attributeList = session.createQuery(query).list();
+
+		if(attributeList.size() > 0)
+			return attributeList.get(0);
+		return null;		
 	}
 
 }

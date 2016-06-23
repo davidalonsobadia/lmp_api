@@ -9,4 +9,6 @@ public interface ProviderService {
 	
 	public Provider getProviderDao(String providerName);
 
+	public Provider getProviderById(int providerId);
+
 }
