@@ -88,11 +88,13 @@ public class MainController {
 	
 	private Provider provider;
 	
+	private Consumer consumer;
+	
 	private final ProviderOauthFactory providerOauthFactory = new ProviderOauthFactory();
 	private ProviderOauthObject providerOauth;
 	
-	@RequestMapping("/getAttribute2")
-	public Map<String, String> getAttribute2(
+	@RequestMapping("/getAttribute")
+	public Map<String, String> getAttribute(
     		@RequestParam(value="name", required=false) String lmpAttributeName,
     		@RequestParam(value="user", required=true) String username,
     		@RequestParam(value="consumer", required=false) String consumerName,
@@ -103,7 +105,7 @@ public class MainController {
 		 * 1. averiguar si el consumidor esta dado de alta para ese atributo en ese usuario
 		 * 
 		 * 1.1 obtener consumidor
-		 * 		 * 
+		 * 		 
 		 * 1.2 obtener usuario
 		 * 
 		 * 1.3 ver si ese usuario tiene 'dado de alta' ese consumidor
@@ -134,46 +136,66 @@ public class MainController {
 		 * 
 		 * 2. Obtener y Mandar dicho atributo
 		 * 
-		 * 
 		 */
 		
+		logger.info("In getAttribute");
+		
+		//1. averiguar si el consumidor esta dado de alta para ese atributo en ese usuario
+		
+		//0 --> cargar la respuesta
 		Map<String, String> responseMap = new HashMap<String, String>();
-		//1.
 		
-		//1.1
-		Consumer consumer = consumerService.getConsumerByName(consumerName);
+		//1.1 obtener consumidor
+		//Consumer consumer = consumerService.getConsumerByName(consumerName);
+		consumer = consumerService.getConsumerByName(consumerName);
 		
-		//1.2
-		Person person = personService.getPersonByName(username);
+		if(consumer == null){
+    		responseMap.put("key", "error");
+    		responseMap.put("value", "There is no consumer with name '" + consumerName);
+    		return responseMap;
+		}
 		
-		//1.3 + 1.3.1
-		if( ! personService.isConsumerInList(username, consumerName) ){
+		//1.2 obtener usuario
+		//Person person = personService.getPersonByName(username);
+		person = personService.getPersonByName(username);
+		
+		if(person == null){
+    		responseMap.put("key", "error");
+    		responseMap.put("value", "There is no user with name '" + username);
+    		return responseMap;
+		}
+		
+		//1.3 ver si ese usuario tiene 'dado de alta' ese consumidor 
+		//1.3.1 sino, fuera --> no puede acceder al recurso
+		if(! personService.isConsumerInList(username, consumerName) ){
     		responseMap.put("key", "error");
     		responseMap.put("value", "The user doesn't add the consumer '" + consumerName+ "' to their consumers List.");
     		return responseMap;
 		}
+		//1.3.1 si sí que está dado de alta, sigue...
 		
-		//1.4
+		//1.4 obtener esferas del usuario.
 		Set<Sphere> spheresList = personService.getSpheres(person);
 		
-		//1.5
+		//1.5 ver en qué esferas está incorporado ese consumidor.
 		List<Sphere> spheresWithConsumer = new ArrayList<>();
 		for(Sphere sphere : spheresList){
 			if( sphereService.isConsumer(sphere, consumer))
 				spheresWithConsumer.add(sphere);
 		}
 		
-		//1.5.1
+		//1.5.1 si no esta incorporado en ninguna esfera, fuera
 		if( spheresWithConsumer.size() <= 0) {
     		responseMap.put("key", "error");
     		responseMap.put("value", "The user doesn't add the consumer '" + consumerName+ "' in any of their Spheres.");
     		return responseMap;
 		}
+		//1.5.2 si sí que está en alguna esfera, seguir...
 		
-		//1.6
+		//1.6 obtener atributo
 		Attribute attribute = attributeService.getAttributeByName(lmpAttributeName);
 		
-		//1.7
+		//1.7 obtener atributos de las esferas donde está incorporado el consumidor.
 		List<Attribute> sphereAttributes = new ArrayList<>();
 		for (Sphere sphereConsumer : spheresWithConsumer){
 			sphereAttributes.addAll(sphereConsumer.getAttributes());
@@ -181,15 +203,18 @@ public class MainController {
 		
 		
 		for (Attribute sphereAttribute : sphereAttributes){
-			//1.8
-			//1.8.2
+			//1.8 ver si el atributo que hay en el parámetro está en la lista de atributos de las esferas
+			//1.8.2 si esta, hacer la consulta
 			if(attribute.getId() == sphereAttribute.getId()){
+				//1.9 utilizar el proveedor correspondiente para hacer dicha consulta.
 				Provider provider = attribute.getProvider();
+				
+				//2. Obtener y Mandar dicho atributo
 				return makeRequest(lmpAttributeName, username, provider.getName());
 			}
 		}
 		
-		//1.8.1
+		//1.8.1 si no está, fuera
 		responseMap.put("key", "error");
 		responseMap.put("value", "The user doesn't add the Attribute '" + lmpAttributeName +
 				"' in any of the Spheres it has the consumer '" + consumerName + "'.");
@@ -199,7 +224,8 @@ public class MainController {
 		
 	}
 	
-    public Map<String, String> makeRequest(
+    @SuppressWarnings("rawtypes")
+	public Map<String, String> makeRequest(
     		String lmpAttributeName,
     		String username,
     		String providerName) {  	
@@ -208,10 +234,11 @@ public class MainController {
     	Map<String, String> responseMap = new HashMap<String, String>();
     	
     	// 1. Get the user
-    	Person person = personService.getPersonByName(username);
-    	
-    	//1.1 Get the provider
-    	Provider provider = providerService.getProviderDao(providerName);
+//    	Person person = personService.getPersonByName(username);
+//    	
+//    	//1.1 Get the provider
+//    	Provider provider = providerService.getProviderDao(providerName);
+    	provider = providerService.getProviderDao(providerName);
     	
     	providerOauth = providerOauthFactory.getProviderOauthObject(providerName);
     	
@@ -239,7 +266,6 @@ public class MainController {
 	    	HttpEntity<String> request = new HttpEntity<String>(headers);
 	    	
 	    	// 6. send the query and get the response
-	    	//ResponseEntity<LinkedInObject> response = restTemplate.exchange(API_URI, HttpMethod.GET, request, LinkedInObject.class);
 	    	ResponseEntity<HashMap> response = restTemplate.exchange(providerOauth.getApiUri(), HttpMethod.GET, request, HashMap.class);
 	    	
 	    	// 7. get the data
@@ -271,13 +297,14 @@ public class MainController {
     	}
     }
 		
-    @RequestMapping("/getAttribute")
-    public Map<String, String> getAttribute(
+/*
+    @RequestMapping("/getAttributeOld")
+    public Map<String, String> getAttributeOld(
     		@RequestParam(value="name", required=false) String lmpAttributeName,
     		@RequestParam(value="user", required=true) String username,
     		@RequestParam(value="provider", required=false) String providerName,
     		HttpServletResponse httpServletResponse) {  	
-    	logger.info("in getAttribute");
+    	logger.info("in getAttributeOld");
     	
     	Map<String, String> responseMap = new HashMap<String, String>();
     	
@@ -319,12 +346,7 @@ public class MainController {
 	    	// 7. get the data
 	    	if( response.getStatusCode().is2xxSuccessful() ) {
 	    		HashMap<?, ?> objectResponse = response.getBody();
-	    		
-	    		System.out.print("objectResponse: ");
-	    		for (Object s : objectResponse.values()){
-	    			System.out.println(s);
-	    		}
-		    	
+	    				    	
 	    		// return the data you are interested in
 		    	responseMap.put("key", lmpAttributeName);
 		    	responseMap.put("value", objectResponse.get(apiAttributeName).toString());
@@ -340,12 +362,11 @@ public class MainController {
 	    	
     	} else {
     		responseMap.put("key", "no data yet");
-    		return responseMap;
-    		
-    	}
-    	
+    		return responseMap;	
+    	}	
     }
-    
+*/
+   
     @RequestMapping("/checkToken")
     public String checkToken(
     		@RequestParam(value="user", required=true) String username,
@@ -375,11 +396,11 @@ public class MainController {
     		HttpServletRequest httpServletRequest,
     		HttpServletResponse httpServletResponse) throws IOException{
 		
+		logger.info("creating new token for provider: " + providerName);
+		
     	person = personService.getPersonByEmail(userEmail);
     	    	
     	provider = providerService.getProviderDao(providerName);
-		
-		logger.info("creating new token for provider: " + providerName);
 		
 		providerOauth = providerOauthFactory.getProviderOauthObject(providerName);
 				
@@ -482,7 +503,7 @@ public class MainController {
 		if(token != null) {
 			tokenService.deleteToken(token);
 		}
-
 	}
+	
 }
 

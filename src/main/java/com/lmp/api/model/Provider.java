@@ -35,6 +35,7 @@ public class Provider {
 	
 	private String url;
 	
+	@Column(name="o_auth")
 	private boolean oAuth;
 	
 	private String oAuthUrl;
