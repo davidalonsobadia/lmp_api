@@ -51,8 +51,8 @@ public class Attribute {
 	@Column(name="is_updateable")
 	private boolean isUpdateable;
 	
-	@ManyToOne
-	private Provider provider;
+//	@ManyToOne
+//	private Provider provider;
 	
 	@OneToMany
 	@JoinTable(name="attribute_has_attribute_maps", 
@@ -133,13 +133,13 @@ public class Attribute {
 		this.isUpdateable = isUpdateable;
 	}
 
-	public Provider getProvider() {
-		return provider;
-	}
-
-	public void setProvider(Provider provider) {
-		this.provider = provider;
-	}
+//	public Provider getProvider() {
+//		return provider;
+//	}
+//
+//	public void setProvider(Provider provider) {
+//		this.provider = provider;
+//	}
 
 	public String getSubcategoryName() {
 		return this.subcategory.getName();
@@ -149,8 +149,8 @@ public class Attribute {
 		return this.subcategory.getCategory().getName();
 	}
 
-	public String getProviderName() {
-		return this.provider.getName();
-	}
+//	public String getProviderName() {
+//		return this.provider.getName();
+//	}
 	
 }

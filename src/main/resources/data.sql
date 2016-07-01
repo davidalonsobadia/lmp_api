@@ -20,9 +20,9 @@ SET @PersonalData = 'Personal Data';
 
 
 -- Provider names
-SET @LaCaixa = 'La Caixa';
+SET @LaCaixa = 'La Caixa';	
 SET @HIPERSEGUROS = 'HIPERSEGUROS';
-SET @FacebookInc = 'Facebook Inc';
+SET @Facebook = 'Facebook';
 SET @Twitter = 'Twitter';
 SET @HospitalDeTerrassa = 'Hospital de Terrassa';
 SET @HaciendaDeEspanna = 'Hacienda de Espanna';
@@ -156,7 +156,7 @@ INSERT INTO provider (identifier, name, description, type, url, is_enabled, is_d
 INSERT INTO provider (identifier, name, description, type, url, is_enabled, is_deleted, o_auth, o_auth_url )
 	VALUES ('HIPERSEGUROS', @HIPERSEGUROS, 'Los mejores seguros', 'Health', 'https://www.hiperseguros.com', true, false, false, '');
 INSERT INTO provider (identifier, name, description, type, url, is_enabled, is_deleted, o_auth, o_auth_url )
-	VALUES ('FACEBOOK', @FacebookInc, 'La mayor red social del mundo', 'Social', 'http://www.facebook.com', true, false, false, '');
+	VALUES ('FACEBOOK', @Facebook, 'La mayor red social del mundo', 'Social', 'http://www.facebook.com', true, false, true, '');
 INSERT INTO provider (identifier, name, description, type, url, is_enabled, is_deleted, o_auth, o_auth_url )
 	VALUES ('TWITTER', @Twitter, 'Twitter', 'Social', 'http://www.twitter.com', true, false, false, '');
 INSERT INTO provider (identifier, name, description, type, url, is_enabled, is_deleted, o_auth, o_auth_url )
@@ -167,19 +167,36 @@ INSERT INTO provider (identifier, name, description, type, url, is_enabled, is_d
 	VALUES ('LINKEDIN', @LinkedIn, 'Web para poner el curriculum', 'Education', 'http://www.linkedin.com', true, false, true, '');
 	
 -- ATTRIBUTE
-INSERT INTO attribute(name, subcategory_id, description, reputation, is_enabled, is_deleted, is_updateable, provider_id)
-	SELECT @AllergicConditions, s.id, @AllergicConditions, 8, true, false, true, p.id
-	FROM provider p
-	JOIN subcategory s 
-		ON s.name LIKE @HealthConditions
-	WHERE p.name LIKE @HospitalDeTerrassa;
-INSERT INTO provider_has_attributes(provider_id, attribute_id)
-	SELECT p.id, a.id
+INSERT INTO attribute(name, subcategory_id, description, reputation, is_enabled, is_deleted, is_updateable)
+	SELECT @AllergicConditions, s.id, @AllergicConditions, 8, true, false, true
+	FROM subcategory s 
+	WHERE s.name LIKE @HealthConditions;
+	
+INSERT INTO attribute_map(provider_attribute_name, lmp_attribute_name, provider_id, attribute_id)
+	SELECT @AllergicConditions, @AllergicConditions, p.id, a.id
 	FROM provider p
 	JOIN attribute a
-		ON a.name LIKE @AllergicConditions 
+		ON a.name LIKE @AllergicConditions
+	WHERE p.name LIKE @HospitalDeTerrassa;
+		
+	
+INSERT INTO provider_has_attribute_maps(provider_id, attribute_map_id)
+	SELECT p.id, a.id
+	FROM provider p
+	JOIN attribute_map a
+		ON a.provider_attribute_name LIKE @AllergicConditions 
 	WHERE p.name LIKE @HospitalDeTerrassa;
 	
+INSERT INTO attribute_has_attribute_maps(attribute_id, attribute_map_id)
+	SELECT a.id, am.id
+	FROM attribute a
+	JOIN attribute_map am
+		ON am.lmp_attribute_name LIKE @AllergicConditions 
+	WHERE a.name LIKE @AllergicConditions;
+	
+-- PARECE QUE ESTE PRIMER ATTRIBUTO ESTA MONTADO CORRECTAMENTE, HACER CON ESTA BASE TODOS LOS SIGUIENTES	
+-- .........................................	
+
 INSERT INTO attribute(name, subcategory_id, description, reputation, is_enabled, is_deleted, is_updateable, provider_id)
 	SELECT @ChronicConditions, s.id, @ChronicConditions, 8, true, false, true, p.id
 	FROM provider p
@@ -440,6 +457,18 @@ INSERT INTO provider_has_attributes(provider_id, attribute_id)
 		ON a.name LIKE @FirstName
 	WHERE p.name LIKE @LinkedIn;	
 
+INSERT INTO attribute(name, subcategory_id, description, reputation, is_enabled, is_deleted, is_updateable, provider_id)
+	SELECT @FirstName, s.id, @FirstName, 8, true, false, true, p.id
+	FROM provider p
+	JOIN subcategory s 
+		ON s.name LIKE @PersonalData
+	WHERE p.name LIKE @Facebook;
+--INSERT INTO provider_has_attributes(provider_id, attribute_id)
+--	SELECT p.id, a.id
+--	FROM provider p
+--	JOIN attribute a
+--		ON a.name LIKE @FirstName
+--	WHERE p.name LIKE @Facebook;
 
 
 -- Insert consumers in a user
@@ -680,6 +709,13 @@ INSERT INTO attribute_map(api_attribute_name, attribute_name, attribute_id, prov
 		ON a.name LIKE @FirstName
 	WHERE p.name LIKE @LinkedIn;
 	
+INSERT INTO attribute_map(api_attribute_name, attribute_name, attribute_id, provider_id)
+	SELECT 'name', @FirstName, a.id, p.id
+	FROM provider p
+	JOIN attribute a
+		ON a.name LIKE @FirstName
+	WHERE p.name LIKE @Facebook;
+
 	
 -- Insert Token
 INSERT INTO token (person_id, provider_id, token)

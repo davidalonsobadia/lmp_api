@@ -35,7 +35,6 @@ public class Provider {
 	
 	private String url;
 	
-	@Column(name="o_auth")
 	private boolean oAuth;
 	
 	private String oAuthUrl;
@@ -52,12 +51,12 @@ public class Provider {
 	@ManyToMany(mappedBy = "providers")
 	private List<Organization> organizations;
 	
-	@OneToMany
-	@JoinTable(name="provider_has_attributes", 
-		joinColumns={@JoinColumn(name="provider_id")},
-		inverseJoinColumns={@JoinColumn(name="attribute_id")}
-	)
-	private List<Attribute> attributes;
+//	@OneToMany
+//	@JoinTable(name="provider_has_attributes", 
+//		joinColumns={@JoinColumn(name="provider_id")},
+//		inverseJoinColumns={@JoinColumn(name="attribute_id")}
+//	)
+//	private List<Attribute> attributes;
 		
 	//tokens
 	@OneToMany(cascade=CascadeType.ALL, orphanRemoval=true, mappedBy="provider")
@@ -69,8 +68,8 @@ public class Provider {
 	
 	//attributeMapping
 	@OneToMany
-	@JoinTable(name="attribute_has_attribute_maps", 
-		joinColumns={@JoinColumn(name="attribute_id")},
+	@JoinTable(name="provider_has_attribute_maps", 
+		joinColumns={@JoinColumn(name="provider_id")},
 		inverseJoinColumns={@JoinColumn(name="attribute_map_id")}
 	)
 	private List<AttributeMap> attributeMaps;
@@ -139,13 +138,13 @@ public class Provider {
 		this.isDeleted = isDeleted;
 	}
 
-	public List<Attribute> getAttributes() {
-		return attributes;
-	}
-
-	public void setAttributes(List<Attribute> attributes) {
-		this.attributes = attributes;
-	}
+//	public List<Attribute> getAttributes() {
+//		return attributes;
+//	}
+//
+//	public void setAttributes(List<Attribute> attributes) {
+//		this.attributes = attributes;
+//	}
 
 	public List<Person> getPeople() {
 		return people;

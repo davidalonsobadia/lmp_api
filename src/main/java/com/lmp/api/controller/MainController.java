@@ -207,7 +207,11 @@ public class MainController {
 			//1.8.2 si esta, hacer la consulta
 			if(attribute.getId() == sphereAttribute.getId()){
 				//1.9 utilizar el proveedor correspondiente para hacer dicha consulta.
-				Provider provider = attribute.getProvider();
+				
+				//Provider provider = attribute.getProvider();
+				
+				//TODO: Aqui saldra una lista de proveedores. De momento, elegir el primero, pero mas adelante
+				// habrá que elegir el que tenga más reputación, por ejemplo.
 				
 				//2. Obtener y Mandar dicho atributo
 				return makeRequest(lmpAttributeName, username, provider.getName());

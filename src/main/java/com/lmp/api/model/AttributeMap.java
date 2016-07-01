@@ -16,10 +16,10 @@ public class AttributeMap {
 	@GeneratedValue(strategy = GenerationType.AUTO)
 	private long Id;
 	
-	@Column(name="api_attribute_name")
-	private String apiAttributeName;
+	@Column(name="provider_attribute_name")
+	private String providerAttributeName;
 	
-	@Column(name="attribute_name")
+	@Column(name="lmp_attribute_name")
 	private String lmpAttributeName;
 		
 	@ManyToOne  
@@ -37,11 +37,11 @@ public class AttributeMap {
 	}
 
 	public String getApiAttributeName() {
-		return apiAttributeName;
+		return providerAttributeName;
 	}
 
 	public void setApiAttributeName(String apiAttributeName) {
-		this.apiAttributeName = apiAttributeName;
+		this.providerAttributeName = apiAttributeName;
 	}
 
 	public String getLmpAttributeName() {
@@ -70,7 +70,7 @@ public class AttributeMap {
 	
 	@Override
 	public String toString(){
-		return "Attribute name in the API: " + this.apiAttributeName + "\n"
+		return "Attribute name in the API: " + this.providerAttributeName + "\n"
 				+ "Internal attribute name: " + this.lmpAttributeName;
 	}
 }
