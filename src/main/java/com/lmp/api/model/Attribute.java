@@ -60,6 +60,7 @@ public class Attribute {
 		inverseJoinColumns={@JoinColumn(name="attribute_map_id")}
 	)
 	private List<AttributeMap> attributeMaps;
+	
 
 	public List<AttributeMap> getAttributeMaps() {
 		return attributeMaps;

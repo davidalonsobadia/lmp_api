@@ -166,311 +166,336 @@ INSERT INTO provider (identifier, name, description, type, url, is_enabled, is_d
 INSERT INTO provider (identifier, name, description, type, url, is_enabled, is_deleted, o_auth, o_auth_url )
 	VALUES ('LINKEDIN', @LinkedIn, 'Web para poner el curriculum', 'Education', 'http://www.linkedin.com', true, false, true, '');
 	
--- ATTRIBUTE
+	
+----ATTRIBUTE AllergicConditions -----
 INSERT INTO attribute(name, subcategory_id, description, reputation, is_enabled, is_deleted, is_updateable)
 	SELECT @AllergicConditions, s.id, @AllergicConditions, 8, true, false, true
 	FROM subcategory s 
 	WHERE s.name LIKE @HealthConditions;
-	
 INSERT INTO attribute_map(provider_attribute_name, lmp_attribute_name, provider_id, attribute_id)
-	SELECT @AllergicConditions, @AllergicConditions, p.id, a.id
+	SELECT @AllergicConditions, @AllergicConditions, @provider_id:= p.id, @attribute_id:= LAST_INSERT_ID()
 	FROM provider p
-	JOIN attribute a
-		ON a.name LIKE @AllergicConditions
 	WHERE p.name LIKE @HospitalDeTerrassa;
-		
-	
 INSERT INTO provider_has_attribute_maps(provider_id, attribute_map_id)
-	SELECT p.id, a.id
-	FROM provider p
-	JOIN attribute_map a
-		ON a.provider_attribute_name LIKE @AllergicConditions 
-	WHERE p.name LIKE @HospitalDeTerrassa;
-	
+	VALUES (@provider_id, @attribute_map_id:= LAST_INSERT_ID() );
 INSERT INTO attribute_has_attribute_maps(attribute_id, attribute_map_id)
-	SELECT a.id, am.id
-	FROM attribute a
-	JOIN attribute_map am
-		ON am.lmp_attribute_name LIKE @AllergicConditions 
-	WHERE a.name LIKE @AllergicConditions;
-	
--- PARECE QUE ESTE PRIMER ATTRIBUTO ESTA MONTADO CORRECTAMENTE, HACER CON ESTA BASE TODOS LOS SIGUIENTES	
--- .........................................	
+	VALUES (@attribute_id, @attribute_map_id);
+----------------------------------------------------------------------------------------------------------------
 
-INSERT INTO attribute(name, subcategory_id, description, reputation, is_enabled, is_deleted, is_updateable, provider_id)
-	SELECT @ChronicConditions, s.id, @ChronicConditions, 8, true, false, true, p.id
+----ATTRIBUTE ChronicConditions -----
+INSERT INTO attribute(name, subcategory_id, description, reputation, is_enabled, is_deleted, is_updateable)
+	SELECT @ChronicConditions, s.id, @ChronicConditions, 8, true, false, true
+	FROM subcategory s 
+	WHERE s.name LIKE @HealthConditions;
+INSERT INTO attribute_map(provider_attribute_name, lmp_attribute_name, provider_id, attribute_id)
+	SELECT @ChronicConditions, @ChronicConditions, @provider_id:= p.id, @attribute_id:= LAST_INSERT_ID()
 	FROM provider p
-	JOIN subcategory s 
-		ON s.name LIKE @HealthConditions
 	WHERE p.name LIKE @HospitalDeTerrassa;
-INSERT INTO provider_has_attributes(provider_id, attribute_id)
-	SELECT p.id, a.id
-	FROM provider p
-	JOIN attribute a
-		ON a.name LIKE @ChronicConditions 
-	WHERE p.name LIKE @HospitalDeTerrassa;
-	
-INSERT INTO attribute(name, subcategory_id, description, reputation, is_enabled, is_deleted, is_updateable, provider_id)
-	SELECT @MentalHealth, s.id, @MentalHealth, 8, true, false, true, p.id
-	FROM provider p
-	JOIN subcategory s 
-		ON s.name LIKE @RiskFactors
-	WHERE p.name LIKE @HospitalDeTerrassa;
-INSERT INTO provider_has_attributes(provider_id, attribute_id)
-	SELECT p.id, a.id
-	FROM provider p
-	JOIN attribute a
-		ON a.name LIKE @MentalHealth 
-	WHERE p.name LIKE @HospitalDeTerrassa;
+INSERT INTO provider_has_attribute_maps(provider_id, attribute_map_id)
+	VALUES (@provider_id, @attribute_map_id:= LAST_INSERT_ID() );
+INSERT INTO attribute_has_attribute_maps(attribute_id, attribute_map_id)
+	VALUES (@attribute_id, @attribute_map_id);
+----------------------------------------------------------------------------------------------------------------
 
-INSERT INTO attribute(name, subcategory_id, description, reputation, is_enabled, is_deleted, is_updateable, provider_id)
-	SELECT @CholesterolLevel, s.id, @CholesterolLevel, 8, true, false, true, p.id
+----ATTRIBUTE MentalHealth -----
+INSERT INTO attribute(name, subcategory_id, description, reputation, is_enabled, is_deleted, is_updateable)
+	SELECT @MentalHealth, s.id, @MentalHealth, 8, true, false, true
+	FROM subcategory s 
+	WHERE s.name LIKE @RiskFactors;
+INSERT INTO attribute_map(provider_attribute_name, lmp_attribute_name, provider_id, attribute_id)
+	SELECT @MentalHealth, @MentalHealth, @provider_id:= p.id, @attribute_id:= LAST_INSERT_ID()
 	FROM provider p
-	JOIN subcategory s 
-		ON s.name LIKE @RiskFactors
 	WHERE p.name LIKE @HospitalDeTerrassa;
-INSERT INTO provider_has_attributes(provider_id, attribute_id)
-	SELECT p.id, a.id
-	FROM provider p
-	JOIN attribute a
-		ON a.name LIKE @CholesterolLevel 
-	WHERE p.name LIKE @HospitalDeTerrassa;
+INSERT INTO provider_has_attribute_maps(provider_id, attribute_map_id)
+	VALUES (@provider_id, @attribute_map_id:= LAST_INSERT_ID() );
+INSERT INTO attribute_has_attribute_maps(attribute_id, attribute_map_id)
+	VALUES (@attribute_id, @attribute_map_id);
+----------------------------------------------------------------------------------------------------------------
 
-INSERT INTO attribute(name, subcategory_id, description, reputation, is_enabled, is_deleted, is_updateable, provider_id)
-	SELECT @TobaccoSmoking, s.id, @TobaccoSmoking, 8, true, false, true, p.id
+----ATTRIBUTE MentalHealth -----
+INSERT INTO attribute(name, subcategory_id, description, reputation, is_enabled, is_deleted, is_updateable)
+	SELECT @CholesterolLevel, s.id, @CholesterolLevel, 8, true, false, true
+	FROM subcategory s 
+	WHERE s.name LIKE @RiskFactors;
+INSERT INTO attribute_map(provider_attribute_name, lmp_attribute_name, provider_id, attribute_id)
+	SELECT @CholesterolLevel, @CholesterolLevel, @provider_id:= p.id, @attribute_id:= LAST_INSERT_ID()
 	FROM provider p
-	JOIN subcategory s 
-		ON s.name LIKE @RiskFactors
 	WHERE p.name LIKE @HospitalDeTerrassa;
-INSERT INTO provider_has_attributes(provider_id, attribute_id)
-	SELECT p.id, a.id
+INSERT INTO provider_has_attribute_maps(provider_id, attribute_map_id)
+	VALUES (@provider_id, @attribute_map_id:= LAST_INSERT_ID() );
+INSERT INTO attribute_has_attribute_maps(attribute_id, attribute_map_id)
+	VALUES (@attribute_id, @attribute_map_id);
+----------------------------------------------------------------------------------------------------------------
+
+----ATTRIBUTE TobaccoSmoking -----
+INSERT INTO attribute(name, subcategory_id, description, reputation, is_enabled, is_deleted, is_updateable)
+	SELECT @TobaccoSmoking, s.id, @TobaccoSmoking, 8, true, false, true
+	FROM subcategory s 
+	WHERE s.name LIKE @RiskFactors;
+INSERT INTO attribute_map(provider_attribute_name, lmp_attribute_name, provider_id, attribute_id)
+	SELECT @TobaccoSmoking, @TobaccoSmoking, @provider_id:= p.id, @attribute_id:= LAST_INSERT_ID()
 	FROM provider p
-	JOIN attribute a
-		ON a.name LIKE @TobaccoSmoking
 	WHERE p.name LIKE @HospitalDeTerrassa;
-	
-INSERT INTO attribute(name, subcategory_id, description, reputation, is_enabled, is_deleted, is_updateable, provider_id)
-	SELECT @PhysicalConditions, s.id, @PhysicalConditions, 8, true, false, true, p.id
+INSERT INTO provider_has_attribute_maps(provider_id, attribute_map_id)
+	VALUES (@provider_id, @attribute_map_id:= LAST_INSERT_ID() );
+INSERT INTO attribute_has_attribute_maps(attribute_id, attribute_map_id)
+	VALUES (@attribute_id, @attribute_map_id);
+----------------------------------------------------------------------------------------------------------------
+
+----ATTRIBUTE PhysicalConditions -----
+INSERT INTO attribute(name, subcategory_id, description, reputation, is_enabled, is_deleted, is_updateable)
+	SELECT @PhysicalConditions, s.id, @PhysicalConditions, 8, true, false, true
+	FROM subcategory s 
+	WHERE s.name LIKE @RiskFactors;
+INSERT INTO attribute_map(provider_attribute_name, lmp_attribute_name, provider_id, attribute_id)
+	SELECT @PhysicalConditions, @PhysicalConditions, @provider_id:= p.id, @attribute_id:= LAST_INSERT_ID()
 	FROM provider p
-	JOIN subcategory s 
-		ON s.name LIKE @RiskFactors
 	WHERE p.name LIKE @HospitalDeTerrassa;
-INSERT INTO provider_has_attributes(provider_id, attribute_id)
-	SELECT p.id, a.id
+INSERT INTO provider_has_attribute_maps(provider_id, attribute_map_id)
+	VALUES (@provider_id, @attribute_map_id:= LAST_INSERT_ID() );
+INSERT INTO attribute_has_attribute_maps(attribute_id, attribute_map_id)
+	VALUES (@attribute_id, @attribute_map_id);
+----------------------------------------------------------------------------------------------------------------
+
+----ATTRIBUTE SocialSecurityNumber -----
+INSERT INTO attribute(name, subcategory_id, description, reputation, is_enabled, is_deleted, is_updateable)
+	SELECT @SocialSecurityNumber, s.id, @SocialSecurityNumber, 8, true, false, true
+	FROM subcategory s 
+	WHERE s.name LIKE @AdministrationInfo;
+INSERT INTO attribute_map(provider_attribute_name, lmp_attribute_name, provider_id, attribute_id)
+	SELECT @SocialSecurityNumber, @SocialSecurityNumber, @provider_id:= p.id, @attribute_id:= LAST_INSERT_ID()
 	FROM provider p
-	JOIN attribute a
-		ON a.name LIKE @PhysicalConditions
-	WHERE p.name LIKE @HospitalDeTerrassa;	
-	
-INSERT INTO attribute(name, subcategory_id, description, reputation, is_enabled, is_deleted, is_updateable, provider_id)
-	SELECT @SocialSecurityNumber, s.id, @SocialSecurityNumber, 8, true, false, true, p.id
-	FROM provider p
-	JOIN subcategory s 
-		ON s.name LIKE @AdministrationInfo
 	WHERE p.name LIKE @HaciendaDeEspanna;
-INSERT INTO provider_has_attributes(provider_id, attribute_id)
-	SELECT p.id, a.id
+INSERT INTO provider_has_attribute_maps(provider_id, attribute_map_id)
+	VALUES (@provider_id, @attribute_map_id:= LAST_INSERT_ID() );
+INSERT INTO attribute_has_attribute_maps(attribute_id, attribute_map_id)
+	VALUES (@attribute_id, @attribute_map_id);
+----------------------------------------------------------------------------------------------------------------
+
+----ATTRIBUTE UnemploymentBenefitStatus -----
+INSERT INTO attribute(name, subcategory_id, description, reputation, is_enabled, is_deleted, is_updateable)
+	SELECT @UnemploymentBenefitStatus, s.id, @UnemploymentBenefitStatus, 8, true, false, true
+	FROM subcategory s 
+	WHERE s.name LIKE @EmploymentDetails;
+INSERT INTO attribute_map(provider_attribute_name, lmp_attribute_name, provider_id, attribute_id)
+	SELECT @UnemploymentBenefitStatus, @UnemploymentBenefitStatus, @provider_id:= p.id, @attribute_id:= LAST_INSERT_ID()
 	FROM provider p
-	JOIN attribute a
-		ON a.name LIKE @SocialSecurityNumber
-	WHERE p.name LIKE @HaciendaDeEspanna;	
-	
-INSERT INTO attribute(name, subcategory_id, description, reputation, is_enabled, is_deleted, is_updateable, provider_id)
-	SELECT @UnemploymentBenefitStatus, s.id, @UnemploymentBenefitStatus, 8, true, false, true, p.id
-	FROM provider p
-	JOIN subcategory s 
-		ON s.name LIKE @EmploymentDetails
 	WHERE p.name LIKE @HaciendaDeEspanna;
-INSERT INTO provider_has_attributes(provider_id, attribute_id)
-	SELECT p.id, a.id
-	FROM provider p
-	JOIN attribute a
-		ON a.name LIKE @UnemploymentBenefitStatus
-	WHERE p.name LIKE @HaciendaDeEspanna;	
-	
-INSERT INTO attribute(name, subcategory_id, description, reputation, is_enabled, is_deleted, is_updateable, provider_id)
-	SELECT @EmploymentHistory, s.id, @EmploymentHistory, 8, true, false, true, p.id
-	FROM provider p
-	JOIN subcategory s 
-		ON s.name LIKE @EmploymentDetails
-	WHERE p.name LIKE @HaciendaDeEspanna;
-INSERT INTO provider_has_attributes(provider_id, attribute_id)
-	SELECT p.id, a.id
-	FROM provider p
-	JOIN attribute a
-		ON a.name LIKE @EmploymentHistory
-	WHERE p.name LIKE @HaciendaDeEspanna;	
-	
-INSERT INTO attribute(name, subcategory_id, description, reputation, is_enabled, is_deleted, is_updateable, provider_id)
-	SELECT @AccountNumbers, s.id, @AccountNumbers, 8, true, false, true, p.id
-	FROM provider p
-	JOIN subcategory s 
-		ON s.name LIKE @BankDetails
-	WHERE p.name LIKE @LaCaixa;
-INSERT INTO provider_has_attributes(provider_id, attribute_id)
-	SELECT p.id, a.id
-	FROM provider p
-	JOIN attribute a
-		ON a.name LIKE @AccountNumbers
-	WHERE p.name LIKE @LaCaixa;
-	
-INSERT INTO attribute(name, subcategory_id, description, reputation, is_enabled, is_deleted, is_updateable, provider_id)
-	SELECT @AccountBalances, s.id, @AccountBalances, 8, true, false, true, p.id
-	FROM provider p
-	JOIN subcategory s 
-		ON s.name LIKE @BankDetails
-	WHERE p.name LIKE @LaCaixa;
-INSERT INTO provider_has_attributes(provider_id, attribute_id)
-	SELECT p.id, a.id
-	FROM provider p
-	JOIN attribute a
-		ON a.name LIKE @AccountBalances
-	WHERE p.name LIKE @LaCaixa;
-	
-INSERT INTO attribute(name, subcategory_id, description, reputation, is_enabled, is_deleted, is_updateable, provider_id)
-	SELECT @PropertyDetails, s.id, @PropertyDetails, 8, true, false, true, p.id
-	FROM provider p
-	JOIN subcategory s 
-		ON s.name LIKE @Properties
-	WHERE p.name LIKE @LaCaixa;
-INSERT INTO provider_has_attributes(provider_id, attribute_id)
-	SELECT p.id, a.id
-	FROM provider p
-	JOIN attribute a
-		ON a.name LIKE @PropertyDetails
-	WHERE p.name LIKE @LaCaixa;	
-	
-INSERT INTO attribute(name, subcategory_id, description, reputation, is_enabled, is_deleted, is_updateable, provider_id)
-	SELECT @PropertyTaxes, s.id, @PropertyTaxes, 8, true, false, true, p.id
-	FROM provider p
-	JOIN subcategory s 
-		ON s.name LIKE @Properties
-	WHERE p.name LIKE @LaCaixa;
-INSERT INTO provider_has_attributes(provider_id, attribute_id)
-	SELECT p.id, a.id
-	FROM provider p
-	JOIN attribute a
-		ON a.name LIKE @PropertyTaxes
-	WHERE p.name LIKE @LaCaixa;	
-
-INSERT INTO attribute(name, subcategory_id, description, reputation, is_enabled, is_deleted, is_updateable, provider_id)
-	SELECT @EducationalInstitutions, s.id, @EducationalInstitutions, 8, true, false, true, p.id
-	FROM provider p
-	JOIN subcategory s 
-		ON s.name LIKE @Education
-	WHERE p.name LIKE @LinkedIn;
-INSERT INTO provider_has_attributes(provider_id, attribute_id)
-	SELECT p.id, a.id
-	FROM provider p
-	JOIN attribute a
-		ON a.name LIKE @EducationalInstitutions
-	WHERE p.name LIKE @LinkedIn;	
-
-INSERT INTO attribute(name, subcategory_id, description, reputation, is_enabled, is_deleted, is_updateable, provider_id)
-	SELECT @EducationLevel, s.id, @EducationLevel, 8, true, false, true, p.id
-	FROM provider p
-	JOIN subcategory s 
-		ON s.name LIKE @Education
-	WHERE p.name LIKE @LinkedIn;
-INSERT INTO provider_has_attributes(provider_id, attribute_id)
-	SELECT p.id, a.id
-	FROM provider p
-	JOIN attribute a
-		ON a.name LIKE @EducationLevel
-	WHERE p.name LIKE @LinkedIn;
-
-INSERT INTO attribute(name, subcategory_id, description, reputation, is_enabled, is_deleted, is_updateable, provider_id)
-	SELECT @Thesis, s.id, @Thesis, 8, true, false, true, p.id
-	FROM provider p
-	JOIN subcategory s 
-		ON s.name LIKE @Education
-	WHERE p.name LIKE @LinkedIn;
-INSERT INTO provider_has_attributes(provider_id, attribute_id)
-	SELECT p.id, a.id
-	FROM provider p
-	JOIN attribute a
-		ON a.name LIKE @Thesis
-	WHERE p.name LIKE @LinkedIn;	
-	
-INSERT INTO attribute(name, subcategory_id, description, reputation, is_enabled, is_deleted, is_updateable, provider_id)
-	SELECT @Articles, s.id, @Articles, 8, true, false, true, p.id
-	FROM provider p
-	JOIN subcategory s 
-		ON s.name LIKE @Research
-	WHERE p.name LIKE @LinkedIn;
-INSERT INTO provider_has_attributes(provider_id, attribute_id)
-	SELECT p.id, a.id
-	FROM provider p
-	JOIN attribute a
-		ON a.name LIKE @Articles
-	WHERE p.name LIKE @LinkedIn;
+INSERT INTO provider_has_attribute_maps(provider_id, attribute_map_id)
+	VALUES (@provider_id, @attribute_map_id:= LAST_INSERT_ID() );
+INSERT INTO attribute_has_attribute_maps(attribute_id, attribute_map_id)
+	VALUES (@attribute_id, @attribute_map_id);
+----------------------------------------------------------------------------------------------------------------
 		
-INSERT INTO attribute(name, subcategory_id, description, reputation, is_enabled, is_deleted, is_updateable, provider_id)
-	SELECT @Books, s.id, @Books, 8, true, false, true, p.id
+----ATTRIBUTE EmploymentHistory -----
+INSERT INTO attribute(name, subcategory_id, description, reputation, is_enabled, is_deleted, is_updateable)
+	SELECT @EmploymentHistory, s.id, @EmploymentHistory, 8, true, false, true
+	FROM subcategory s 
+	WHERE s.name LIKE @EmploymentDetails;
+INSERT INTO attribute_map(provider_attribute_name, lmp_attribute_name, provider_id, attribute_id)
+	SELECT @EmploymentHistory, @EmploymentHistory, @provider_id:= p.id, @attribute_id:= LAST_INSERT_ID()
 	FROM provider p
-	JOIN subcategory s 
-		ON s.name LIKE @Research
-	WHERE p.name LIKE @LinkedIn;
-INSERT INTO provider_has_attributes(provider_id, attribute_id)
-	SELECT p.id, a.id
-	FROM provider p
-	JOIN attribute a
-		ON a.name LIKE @Books
-	WHERE p.name LIKE @LinkedIn;	
+	WHERE p.name LIKE @HaciendaDeEspanna;
+INSERT INTO provider_has_attribute_maps(provider_id, attribute_map_id)
+	VALUES (@provider_id, @attribute_map_id:= LAST_INSERT_ID() );
+INSERT INTO attribute_has_attribute_maps(attribute_id, attribute_map_id)
+	VALUES (@attribute_id, @attribute_map_id);
+----------------------------------------------------------------------------------------------------------------	
 
-INSERT INTO attribute(name, subcategory_id, description, reputation, is_enabled, is_deleted, is_updateable, provider_id)
-	SELECT @Conferences, s.id, @Conferences, 8, true, false, true, p.id
+----ATTRIBUTE AccountNumbers -----
+INSERT INTO attribute(name, subcategory_id, description, reputation, is_enabled, is_deleted, is_updateable)
+	SELECT @AccountNumbers, s.id, @AccountNumbers, 8, true, false, true
+	FROM subcategory s 
+	WHERE s.name LIKE @BankDetails;
+INSERT INTO attribute_map(provider_attribute_name, lmp_attribute_name, provider_id, attribute_id)
+	SELECT @AccountNumbers, @AccountNumbers, @provider_id:= p.id, @attribute_id:= LAST_INSERT_ID()
 	FROM provider p
-	JOIN subcategory s 
-		ON s.name LIKE @Research
+	WHERE p.name LIKE @LaCaixa;
+INSERT INTO provider_has_attribute_maps(provider_id, attribute_map_id)
+	VALUES (@provider_id, @attribute_map_id:= LAST_INSERT_ID() );
+INSERT INTO attribute_has_attribute_maps(attribute_id, attribute_map_id)
+	VALUES (@attribute_id, @attribute_map_id);
+----------------------------------------------------------------------------------------------------------------
+	
+----ATTRIBUTE AccountBalances -----
+INSERT INTO attribute(name, subcategory_id, description, reputation, is_enabled, is_deleted, is_updateable)
+	SELECT @AccountBalances, s.id, @AccountBalances, 8, true, false, true
+	FROM subcategory s 
+	WHERE s.name LIKE @BankDetails;
+INSERT INTO attribute_map(provider_attribute_name, lmp_attribute_name, provider_id, attribute_id)
+	SELECT @AccountBalances, @AccountBalances, @provider_id:= p.id, @attribute_id:= LAST_INSERT_ID()
+	FROM provider p
+	WHERE p.name LIKE @LaCaixa;
+INSERT INTO provider_has_attribute_maps(provider_id, attribute_map_id)
+	VALUES (@provider_id, @attribute_map_id:= LAST_INSERT_ID() );
+INSERT INTO attribute_has_attribute_maps(attribute_id, attribute_map_id)
+	VALUES (@attribute_id, @attribute_map_id);
+----------------------------------------------------------------------------------------------------------------
+	
+----ATTRIBUTE PropertyDetails -----
+INSERT INTO attribute(name, subcategory_id, description, reputation, is_enabled, is_deleted, is_updateable)
+	SELECT @PropertyDetails, s.id, @PropertyDetails, 8, true, false, true
+	FROM subcategory s 
+	WHERE s.name LIKE @Properties;
+INSERT INTO attribute_map(provider_attribute_name, lmp_attribute_name, provider_id, attribute_id)
+	SELECT @PropertyDetails, @PropertyDetails, @provider_id:= p.id, @attribute_id:= LAST_INSERT_ID()
+	FROM provider p
+	WHERE p.name LIKE @LaCaixa;
+INSERT INTO provider_has_attribute_maps(provider_id, attribute_map_id)
+	VALUES (@provider_id, @attribute_map_id:= LAST_INSERT_ID() );
+INSERT INTO attribute_has_attribute_maps(attribute_id, attribute_map_id)
+	VALUES (@attribute_id, @attribute_map_id);
+----------------------------------------------------------------------------------------------------------------
+	
+----ATTRIBUTE PropertyTaxes -----
+INSERT INTO attribute(name, subcategory_id, description, reputation, is_enabled, is_deleted, is_updateable)
+	SELECT @PropertyTaxes, s.id, @PropertyTaxes, 8, true, false, true
+	FROM subcategory s 
+	WHERE s.name LIKE @Properties;
+INSERT INTO attribute_map(provider_attribute_name, lmp_attribute_name, provider_id, attribute_id)
+	SELECT @PropertyTaxes, @PropertyTaxes, @provider_id:= p.id, @attribute_id:= LAST_INSERT_ID()
+	FROM provider p
+	WHERE p.name LIKE @LaCaixa;
+INSERT INTO provider_has_attribute_maps(provider_id, attribute_map_id)
+	VALUES (@provider_id, @attribute_map_id:= LAST_INSERT_ID() );
+INSERT INTO attribute_has_attribute_maps(attribute_id, attribute_map_id)
+	VALUES (@attribute_id, @attribute_map_id);
+----------------------------------------------------------------------------------------------------------------
+	
+----ATTRIBUTE EducationalInstitutions -----
+INSERT INTO attribute(name, subcategory_id, description, reputation, is_enabled, is_deleted, is_updateable)
+	SELECT @EducationalInstitutions, s.id, @EducationalInstitutions, 8, true, false, true
+	FROM subcategory s 
+	WHERE s.name LIKE @Education;
+INSERT INTO attribute_map(provider_attribute_name, lmp_attribute_name, provider_id, attribute_id)
+	SELECT @EducationalInstitutions, @EducationalInstitutions, @provider_id:= p.id, @attribute_id:= LAST_INSERT_ID()
+	FROM provider p
 	WHERE p.name LIKE @LinkedIn;
-INSERT INTO provider_has_attributes(provider_id, attribute_id)
-	SELECT p.id, a.id
-	FROM provider p
-	JOIN attribute a
-		ON a.name LIKE @Conferences
-	WHERE p.name LIKE @LinkedIn;		
+INSERT INTO provider_has_attribute_maps(provider_id, attribute_map_id)
+	VALUES (@provider_id, @attribute_map_id:= LAST_INSERT_ID() );
+INSERT INTO attribute_has_attribute_maps(attribute_id, attribute_map_id)
+	VALUES (@attribute_id, @attribute_map_id);
+----------------------------------------------------------------------------------------------------------------	
 
-INSERT INTO attribute(name, subcategory_id, description, reputation, is_enabled, is_deleted, is_updateable, provider_id)
-	SELECT @CurrentPosition, s.id, @CurrentPosition, 8, true, false, true, p.id
+----ATTRIBUTE EducationLevel -----
+INSERT INTO attribute(name, subcategory_id, description, reputation, is_enabled, is_deleted, is_updateable)
+	SELECT @EducationLevel, s.id, @EducationLevel, 8, true, false, true
+	FROM subcategory s 
+	WHERE s.name LIKE @Education;
+INSERT INTO attribute_map(provider_attribute_name, lmp_attribute_name, provider_id, attribute_id)
+	SELECT @EducationLevel, @EducationLevel, @provider_id:= p.id, @attribute_id:= LAST_INSERT_ID()
 	FROM provider p
-	JOIN subcategory s 
-		ON s.name LIKE @CurrentJobPosition
 	WHERE p.name LIKE @LinkedIn;
-INSERT INTO provider_has_attributes(provider_id, attribute_id)
-	SELECT p.id, a.id
-	FROM provider p
-	JOIN attribute a
-		ON a.name LIKE @CurrentPosition
-	WHERE p.name LIKE @LinkedIn;
+INSERT INTO provider_has_attribute_maps(provider_id, attribute_map_id)
+	VALUES (@provider_id, @attribute_map_id:= LAST_INSERT_ID() );
+INSERT INTO attribute_has_attribute_maps(attribute_id, attribute_map_id)
+	VALUES (@attribute_id, @attribute_map_id);
+----------------------------------------------------------------------------------------------------------------	
 
-INSERT INTO attribute(name, subcategory_id, description, reputation, is_enabled, is_deleted, is_updateable, provider_id)
-	SELECT @FirstName, s.id, @FirstName, 8, true, false, true, p.id
+----ATTRIBUTE Thesis -----
+INSERT INTO attribute(name, subcategory_id, description, reputation, is_enabled, is_deleted, is_updateable)
+	SELECT @Thesis, s.id, @Thesis, 8, true, false, true
+	FROM subcategory s 
+	WHERE s.name LIKE @Education;
+INSERT INTO attribute_map(provider_attribute_name, lmp_attribute_name, provider_id, attribute_id)
+	SELECT @Thesis, @Thesis, @provider_id:= p.id, @attribute_id:= LAST_INSERT_ID()
 	FROM provider p
-	JOIN subcategory s 
-		ON s.name LIKE @PersonalData
 	WHERE p.name LIKE @LinkedIn;
-INSERT INTO provider_has_attributes(provider_id, attribute_id)
-	SELECT p.id, a.id
+INSERT INTO provider_has_attribute_maps(provider_id, attribute_map_id)
+	VALUES (@provider_id, @attribute_map_id:= LAST_INSERT_ID() );
+INSERT INTO attribute_has_attribute_maps(attribute_id, attribute_map_id)
+	VALUES (@attribute_id, @attribute_map_id);
+----------------------------------------------------------------------------------------------------------------	
+
+----ATTRIBUTE Articles -----
+INSERT INTO attribute(name, subcategory_id, description, reputation, is_enabled, is_deleted, is_updateable)
+	SELECT @Articles, s.id, @Articles, 8, true, false, true
+	FROM subcategory s 
+	WHERE s.name LIKE @Research;
+INSERT INTO attribute_map(provider_attribute_name, lmp_attribute_name, provider_id, attribute_id)
+	SELECT @Articles, @Articles, @provider_id:= p.id, @attribute_id:= LAST_INSERT_ID()
+	FROM provider p
+	WHERE p.name LIKE @LinkedIn;
+INSERT INTO provider_has_attribute_maps(provider_id, attribute_map_id)
+	VALUES (@provider_id, @attribute_map_id:= LAST_INSERT_ID() );
+INSERT INTO attribute_has_attribute_maps(attribute_id, attribute_map_id)
+	VALUES (@attribute_id, @attribute_map_id);
+----------------------------------------------------------------------------------------------------------------
+	
+----ATTRIBUTE Books -----
+INSERT INTO attribute(name, subcategory_id, description, reputation, is_enabled, is_deleted, is_updateable)
+	SELECT @Books, s.id, @Books, 8, true, false, true
+	FROM subcategory s 
+	WHERE s.name LIKE @Research;
+INSERT INTO attribute_map(provider_attribute_name, lmp_attribute_name, provider_id, attribute_id)
+	SELECT @Books, @Books, @provider_id:= p.id, @attribute_id:= LAST_INSERT_ID()
+	FROM provider p
+	WHERE p.name LIKE @LinkedIn;
+INSERT INTO provider_has_attribute_maps(provider_id, attribute_map_id)
+	VALUES (@provider_id, @attribute_map_id:= LAST_INSERT_ID() );
+INSERT INTO attribute_has_attribute_maps(attribute_id, attribute_map_id)
+	VALUES (@attribute_id, @attribute_map_id);
+----------------------------------------------------------------------------------------------------------------
+		
+----ATTRIBUTE Conferences -----
+INSERT INTO attribute(name, subcategory_id, description, reputation, is_enabled, is_deleted, is_updateable)
+	SELECT @Conferences, s.id, @Conferences, 8, true, false, true
+	FROM subcategory s 
+	WHERE s.name LIKE @Research;
+INSERT INTO attribute_map(provider_attribute_name, lmp_attribute_name, provider_id, attribute_id)
+	SELECT @Conferences, @Conferences, @provider_id:= p.id, @attribute_id:= LAST_INSERT_ID()
+	FROM provider p
+	WHERE p.name LIKE @LinkedIn;
+INSERT INTO provider_has_attribute_maps(provider_id, attribute_map_id)
+	VALUES (@provider_id, @attribute_map_id:= LAST_INSERT_ID() );
+INSERT INTO attribute_has_attribute_maps(attribute_id, attribute_map_id)
+	VALUES (@attribute_id, @attribute_map_id);
+----------------------------------------------------------------------------------------------------------------	
+
+----ATTRIBUTE CurrentPosition -----
+INSERT INTO attribute(name, subcategory_id, description, reputation, is_enabled, is_deleted, is_updateable)
+	SELECT @CurrentPosition, s.id, @CurrentPosition, 8, true, false, true
+	FROM subcategory s 
+	WHERE s.name LIKE @CurrentJobPosition;
+INSERT INTO attribute_map(provider_attribute_name, lmp_attribute_name, provider_id, attribute_id)
+	SELECT 'headline', @CurrentPosition, @provider_id:= p.id, @attribute_id:= LAST_INSERT_ID()
+	FROM provider p
+	WHERE p.name LIKE @LinkedIn;
+INSERT INTO provider_has_attribute_maps(provider_id, attribute_map_id)
+	VALUES (@provider_id, @attribute_map_id:= LAST_INSERT_ID() );
+INSERT INTO attribute_has_attribute_maps(attribute_id, attribute_map_id)
+	VALUES (@attribute_id, @attribute_map_id);
+----------------------------------------------------------------------------------------------------------------		
+
+----ATTRIBUTE FirstName -----
+INSERT INTO attribute(name, subcategory_id, description, reputation, is_enabled, is_deleted, is_updateable)
+	SELECT @FirstName, s.id, @FirstName, 8, true, false, true
+	FROM subcategory s 
+	WHERE s.name LIKE @PersonalData;
+INSERT INTO attribute_map(provider_attribute_name, lmp_attribute_name, provider_id, attribute_id)
+	SELECT 'firstName', @FirstName, @provider_id:= p.id, @attribute_id:= LAST_INSERT_ID()
+	FROM provider p
+	WHERE p.name LIKE @LinkedIn;
+INSERT INTO provider_has_attribute_maps(provider_id, attribute_map_id)
+	VALUES (@provider_id, @attribute_map_id:= LAST_INSERT_ID() );
+INSERT INTO attribute_has_attribute_maps(attribute_id, attribute_map_id)
+	VALUES (@attribute_id, @attribute_map_id);
+----------------------------------------------------------------------------------------------------------------
+
+----ATTRIBUTE FirstName WITH OTHER PROVIDER -----
+INSERT INTO attribute_map(provider_attribute_name, lmp_attribute_name, provider_id, attribute_id)
+	SELECT 'name', @FirstName, @provider_id:= p.id, @attribute_id:= a.id
 	FROM provider p
 	JOIN attribute a
 		ON a.name LIKE @FirstName
-	WHERE p.name LIKE @LinkedIn;	
-
-INSERT INTO attribute(name, subcategory_id, description, reputation, is_enabled, is_deleted, is_updateable, provider_id)
-	SELECT @FirstName, s.id, @FirstName, 8, true, false, true, p.id
-	FROM provider p
-	JOIN subcategory s 
-		ON s.name LIKE @PersonalData
 	WHERE p.name LIKE @Facebook;
---INSERT INTO provider_has_attributes(provider_id, attribute_id)
---	SELECT p.id, a.id
---	FROM provider p
---	JOIN attribute a
---		ON a.name LIKE @FirstName
---	WHERE p.name LIKE @Facebook;
-
-
+INSERT INTO provider_has_attribute_maps(provider_id, attribute_map_id)
+	VALUES (@provider_id, @attribute_map_id:= LAST_INSERT_ID() );
+INSERT INTO attribute_has_attribute_maps(attribute_id, attribute_map_id)
+	VALUES (@attribute_id, @attribute_map_id);
+----------------------------------------------------------------------------------------------------------------	
+	
+	
 -- Insert consumers in a user
 INSERT INTO person_has_consumers(person_id, consumer_id) 
 	SELECT p.id, c.id 
@@ -694,34 +719,12 @@ INSERT INTO person_has_spheres(person_id, sphere_id)
 		ON s.name LIKE 'Testing Sphere'
 	WHERE p.email LIKE @user2Mail;
 	
--- INSERT IN ATTRIBUTE MAPPING
-INSERT INTO attribute_map(api_attribute_name, attribute_name, attribute_id, provider_id)
-	SELECT 'headline', @CurrentPosition, a.id, p.id
-	FROM provider p
-	JOIN attribute a
-		ON a.name LIKE @CurrentPosition
-	WHERE p.name LIKE @LinkedIn;
-
-INSERT INTO attribute_map(api_attribute_name, attribute_name, attribute_id, provider_id)
-	SELECT 'firstName', @FirstName, a.id, p.id
-	FROM provider p
-	JOIN attribute a
-		ON a.name LIKE @FirstName
-	WHERE p.name LIKE @LinkedIn;
-	
-INSERT INTO attribute_map(api_attribute_name, attribute_name, attribute_id, provider_id)
-	SELECT 'name', @FirstName, a.id, p.id
-	FROM provider p
-	JOIN attribute a
-		ON a.name LIKE @FirstName
-	WHERE p.name LIKE @Facebook;
-
 	
 -- Insert Token
-INSERT INTO token (person_id, provider_id, token)
-	SELECT per.id, pro.id, 'AQWU9hHB3Gse15qm7BnrAcO1R6dPVPrLtyNW98ugo7Y6fk4cXiRpVuxcbuOI_Pa4-1LIjANHHVZUYnCLb8QcKv_uF8pAo8DSPUKcrtruZK5Vv_LFM24Zr0LyDTg8KZ10HCaEgRwjuRspJXtoMliU1OgsnjoqO688-R-dHdmjjBiSjd7M2pE'
-	FROM person per
-	JOIN provider pro
-		ON pro.name LIKE @LinkedIn
-	WHERE per.email LIKE @user1Mail;
+--INSERT INTO token (person_id, provider_id, token)
+--	SELECT per.id, pro.id, 'AQWU9hHB3Gse15qm7BnrAcO1R6dPVPrLtyNW98ugo7Y6fk4cXiRpVuxcbuOI_Pa4-1LIjANHHVZUYnCLb8QcKv_uF8pAo8DSPUKcrtruZK5Vv_LFM24Zr0LyDTg8KZ10HCaEgRwjuRspJXtoMliU1OgsnjoqO688-R-dHdmjjBiSjd7M2pE'
+--	FROM person per
+--	JOIN provider pro
+--		ON pro.name LIKE @LinkedIn
+--	WHERE per.email LIKE @user1Mail;
 
