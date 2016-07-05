@@ -21,10 +21,13 @@ public class Organization {
 	@Column(name="id")
 	private long id;
 	
+	@Column(unique=true, nullable=false)
 	private String identifier;
+	
 	
 	private String name;
 	
+	@Column(unique=true, nullable=false)
 	private String email;
 	
 	private String description;

@@ -83,14 +83,14 @@ INSERT INTO consumer (identifier, name, description, is_enabled, is_deleted)
 	VALUES ('LANEVERAROJA.COM', @LaNeveraRoja, 'Comida a domicilio', true, false);
 	
 -- PERSON
-INSERT INTO person (identifier, name, surname, phone, email, password)
-	VALUES ('admin', 'web', 'web', '00000000', 'web@hotmail.com', 'EurecatLMP2016!');
-INSERT INTO person (identifier, name, surname, phone, email, password)
-	VALUES ('xxx', 'Sergi', 'Alonso', '937890532', @user2Mail, '123456');
-INSERT INTO person (identifier, name, surname, phone, email, password)
-	VALUES ('yyy', 'Juan', 'Caubet', '932322585', @user1Mail, '123456');
-INSERT INTO person (identifier, name, surname, phone, email, password)
-	VALUES ('zzz', 'David', 'Alonso', '932322585', @user3Mail, '123456');
+INSERT INTO person (identifier, name, surname, phone, email, password, personal_id)
+	VALUES ('admin', 'web', 'web', '00000000', 'web@hotmail.com', 'EurecatLMP2016!', '000000');
+INSERT INTO person (identifier, name, surname, phone, email, password, personal_id)
+	VALUES ('xxx', 'Sergi', 'Alonso', '937890532', @user2Mail, '123456', '111111');
+INSERT INTO person (identifier, name, surname, phone, email, password, personal_id)
+	VALUES ('yyy', 'Juan', 'Caubet', '932322585', @user1Mail, '123456', '222222');
+INSERT INTO person (identifier, name, surname, phone, email, password, personal_id)
+	VALUES ('zzz', 'David', 'Alonso', '932322585', @user3Mail, '123456', '333333');
 	
 
 -- CATEGORY
@@ -718,13 +718,4 @@ INSERT INTO person_has_spheres(person_id, sphere_id)
 	JOIN sphere s
 		ON s.name LIKE 'Testing Sphere'
 	WHERE p.email LIKE @user2Mail;
-	
-	
--- Insert Token
---INSERT INTO token (person_id, provider_id, token)
---	SELECT per.id, pro.id, 'AQWU9hHB3Gse15qm7BnrAcO1R6dPVPrLtyNW98ugo7Y6fk4cXiRpVuxcbuOI_Pa4-1LIjANHHVZUYnCLb8QcKv_uF8pAo8DSPUKcrtruZK5Vv_LFM24Zr0LyDTg8KZ10HCaEgRwjuRspJXtoMliU1OgsnjoqO688-R-dHdmjjBiSjd7M2pE'
---	FROM person per
---	JOIN provider pro
---		ON pro.name LIKE @LinkedIn
---	WHERE per.email LIKE @user1Mail;
 
