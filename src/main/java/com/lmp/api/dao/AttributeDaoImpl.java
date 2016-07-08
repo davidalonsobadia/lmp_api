@@ -22,23 +22,18 @@ public class AttributeDaoImpl implements AttributeDao {
 
 	@SuppressWarnings("unchecked")
 	@Override
-	public String getApiAttributeName(String attributeName) {
+	public String getApiAttributeName(String lmpAttributeName) {
     	logger.info("in getApiAttributeName method");
 		Session session = this.sessionFactory.getCurrentSession();
-		String query = "from AttributeMap where attribute_name LIKE '" + attributeName + "'";
+		String query = "from AttributeMap where lmpAttributeName LIKE '" + lmpAttributeName + "'";
 		
 		logger.info(query);
 		
 		List<AttributeMap> attributeMaps = session.createQuery(query).list();
-		
-		logger.info(attributeName);
-		
+				
 		if(attributeMaps.size() > 0){
-			logger.info(attributeMaps.get(0).toString());
-			logger.info(attributeMaps.get(0).getLmpAttributeName());
 			return attributeMaps.get(0).getApiAttributeName();
 		}
-		
 		return null;
 	}
 

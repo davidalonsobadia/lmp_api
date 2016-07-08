@@ -22,11 +22,13 @@ public class Provider {
 	
 	@Id
 	@GeneratedValue(strategy = GenerationType.AUTO)
+	@Column(name="id")
 	private long id;
 	
+	@Column(unique=true, nullable=false)
 	private String identifier;
 	
-	@Column(unique=true)
+	@Column(unique=true, nullable=false)
 	private String name;
 	
 	private String description;
@@ -35,8 +37,10 @@ public class Provider {
 	
 	private String url;
 	
-	private boolean oAuth;
+	@Column(name="is_oauth")
+	private boolean isOAuth;
 	
+	@Column(name="oauth_url")
 	private String oAuthUrl;
 	
 	@Column(name="is_enabled")
@@ -51,19 +55,9 @@ public class Provider {
 	@ManyToMany(mappedBy = "providers")
 	private List<Organization> organizations;
 	
-//	@OneToMany
-//	@JoinTable(name="provider_has_attributes", 
-//		joinColumns={@JoinColumn(name="provider_id")},
-//		inverseJoinColumns={@JoinColumn(name="attribute_id")}
-//	)
-//	private List<Attribute> attributes;
 		
 	//tokens
 	@OneToMany(cascade=CascadeType.ALL, orphanRemoval=true, mappedBy="provider")
-//	@JoinTable(name="provider_has_tokens", 
-//		joinColumns={@JoinColumn(name="provider_id")},
-//		inverseJoinColumns={@JoinColumn(name="token_id")}
-//	)
 	private List<Token> providerTokens;
 	
 	//attributeMapping
@@ -171,11 +165,11 @@ public class Provider {
 	}
 
 	public boolean isoAuth() {
-		return oAuth;
+		return isOAuth;
 	}
 
 	public void setoAuth(boolean oAuth) {
-		this.oAuth = oAuth;
+		this.isOAuth = oAuth;
 	}
 
 	public String getoAuthUrl() {

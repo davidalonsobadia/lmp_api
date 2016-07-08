@@ -129,4 +129,17 @@ public class PersonDaoImpl implements PersonDao{
 			return persons.get(0).getSpheres();
 		return null;
 	}
+
+	@Override
+	public void addProvider(Person person, Provider provider) {
+		logger.info("in getSpheres method");
+		Session session = this.sessionFactory.getCurrentSession();
+		
+		Set<Provider> providersPerson = person.getProviders();
+		providersPerson.add(provider);		
+		
+		person.setProviders(providersPerson);
+		session.update(person);
+		
+	}
 }

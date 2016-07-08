@@ -24,7 +24,6 @@ public class Organization {
 	@Column(unique=true, nullable=false)
 	private String identifier;
 	
-	
 	private String name;
 	
 	@Column(unique=true, nullable=false)

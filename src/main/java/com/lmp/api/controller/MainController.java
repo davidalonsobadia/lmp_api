@@ -6,7 +6,6 @@ import java.io.InputStream;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Collection;
-import java.util.Enumeration;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -84,11 +83,11 @@ public class MainController {
 	@Autowired
 	private SphereService sphereService;
 	
+	// TODO: revisar si esto realmente esta bien aqui
 	private Person person;
 	
 	private Provider provider;
 	
-	private Consumer consumer;
 	
 	private final ProviderOauthFactory providerOauthFactory = new ProviderOauthFactory();
 	private ProviderOauthObject providerOauth;
@@ -147,7 +146,7 @@ public class MainController {
 		
 		//1.1 obtener consumidor
 		//Consumer consumer = consumerService.getConsumerByName(consumerName);
-		consumer = consumerService.getConsumerByName(consumerName);
+		Consumer consumer = consumerService.getConsumerByName(consumerName);
 		
 		if(consumer == null){
     		responseMap.put("key", "error");
@@ -157,7 +156,7 @@ public class MainController {
 		
 		//1.2 obtener usuario
 		//Person person = personService.getPersonByName(username);
-		person = personService.getPersonByName(username);
+		Person person = personService.getPersonByName(username);
 		
 		if(person == null){
     		responseMap.put("key", "error");
@@ -208,13 +207,12 @@ public class MainController {
 			if(attribute.getId() == sphereAttribute.getId()){
 				//1.9 utilizar el proveedor correspondiente para hacer dicha consulta.
 				
-				//Provider provider = attribute.getProvider();
-				
 				//TODO: Aqui saldra una lista de proveedores. De momento, elegir el primero, pero mas adelante
 				// habrá que elegir el que tenga más reputación, por ejemplo.
+				Provider provider = attribute.getAttributeMaps().get(0).getProvider();
 				
 				//2. Obtener y Mandar dicho atributo
-				return makeRequest(lmpAttributeName, username, provider.getName());
+				return makeRequest(lmpAttributeName, username, person,  provider);
 			}
 		}
 		
@@ -232,7 +230,8 @@ public class MainController {
 	public Map<String, String> makeRequest(
     		String lmpAttributeName,
     		String username,
-    		String providerName) {  	
+    		Person person,
+    		Provider provider) {  	
     	logger.info("in makeRequest");
     	
     	Map<String, String> responseMap = new HashMap<String, String>();
@@ -242,9 +241,8 @@ public class MainController {
 //    	
 //    	//1.1 Get the provider
 //    	Provider provider = providerService.getProviderDao(providerName);
-    	provider = providerService.getProviderDao(providerName);
     	
-    	providerOauth = providerOauthFactory.getProviderOauthObject(providerName);
+    	providerOauth = providerOauthFactory.getProviderOauthObject(provider.getName());
     	
     	// 2. Check whether the user has an access token.
     	Token token = tokenService.getToken(person, provider);
@@ -269,21 +267,31 @@ public class MainController {
 	    	
 	    	HttpEntity<String> request = new HttpEntity<String>(headers);
 	    	
+	    	//5.1 get the complete URI
+	    	
+	    	
+	    	String ApiUri = String.format(providerOauth.getApiUri(), apiAttributeName);
+	    	
 	    	// 6. send the query and get the response
-	    	ResponseEntity<HashMap> response = restTemplate.exchange(providerOauth.getApiUri(), HttpMethod.GET, request, HashMap.class);
+	    	ResponseEntity<HashMap> response = restTemplate.exchange(ApiUri, HttpMethod.GET, request, HashMap.class);
 	    	
 	    	// 7. get the data
 	    	if( response.getStatusCode().is2xxSuccessful() ) {
 	    		HashMap<?, ?> objectResponse = response.getBody();
-	    		
-	    		System.out.print("objectResponse: ");
-	    		for (Object s : objectResponse.values()){
-	    			System.out.println(s);
-	    		}
-		    	
+	    			    	
 	    		// return the data you are interested in
 		    	responseMap.put("key", lmpAttributeName);
-		    	responseMap.put("value", objectResponse.get(apiAttributeName).toString());
+		    	
+		    	Object apiAttributeValue =  objectResponse.get(apiAttributeName);
+		    	
+		    	if(apiAttributeValue == null){
+		    		logger.error("The third party API doesn't answer correctly. It seems it hasn't the attribute %s properly configured. Please check API configuration classes.", apiAttributeValue);
+		    		responseMap.put("key", "error");
+			    	responseMap.put("value", "Bad configuration for " +lmpAttributeName+" with third parties. Please check with LMP administrator");
+			    	return responseMap;
+		    	}
+		    	
+		    	responseMap.put("value", apiAttributeValue.toString());
 		    	return responseMap;
 	    	} else {
 	    		logger.error("There was a problem in the API");
@@ -300,77 +308,7 @@ public class MainController {
     		
     	}
     }
-		
-/*
-    @RequestMapping("/getAttributeOld")
-    public Map<String, String> getAttributeOld(
-    		@RequestParam(value="name", required=false) String lmpAttributeName,
-    		@RequestParam(value="user", required=true) String username,
-    		@RequestParam(value="provider", required=false) String providerName,
-    		HttpServletResponse httpServletResponse) {  	
-    	logger.info("in getAttributeOld");
-    	
-    	Map<String, String> responseMap = new HashMap<String, String>();
-    	
-    	// 1. Get the user
-    	Person person = personService.getPersonByName(username);
-    	
-    	//1.1 Get the provider
-    	Provider provider = providerService.getProviderDao(providerName);
-    	
-    	providerOauth = providerOauthFactory.getProviderOauthObject(providerName);
-    	
-    	// 2. Check whether the user has an access token.
-    	Token token = tokenService.getToken(person, provider);
-    	
-    	// 3. If not, go to authorization process ( to get the access token)
-    	if (token == null && provider.isoAuth()){
-
-    		responseMap.put("key", "error");
-    		responseMap.put("value", "No access Token permission to get this attribute data");
-    		return responseMap;
-    	} else if(token != null){
-    	
-	    	// 5. prepare the query	    	
-	    	RestTemplate restTemplate = new RestTemplate();
-	    	
-	    	String apiAttributeName = attributeService.getApiAttributeName(lmpAttributeName);  	 	
-	    	
-	    	String token4header = "Bearer " + token.getToken();
-	    	    	
-	    	HttpHeaders headers = new HttpHeaders();
-	    	headers.add("Authorization", token4header);
-	    	
-	    	HttpEntity<String> request = new HttpEntity<String>(headers);
-	    	
-	    	// 6. send the query and get the response
-	    	//ResponseEntity<LinkedInObject> response = restTemplate.exchange(API_URI, HttpMethod.GET, request, LinkedInObject.class);
-	    	ResponseEntity<HashMap> response = restTemplate.exchange(providerOauth.getApiUri(), HttpMethod.GET, request, HashMap.class);
-	    	
-	    	// 7. get the data
-	    	if( response.getStatusCode().is2xxSuccessful() ) {
-	    		HashMap<?, ?> objectResponse = response.getBody();
-	    				    	
-	    		// return the data you are interested in
-		    	responseMap.put("key", lmpAttributeName);
-		    	responseMap.put("value", objectResponse.get(apiAttributeName).toString());
-		    	return responseMap;
-	    	} else {
-	    		logger.error("There was a problem in the API");
-	    		logger.error(response.getStatusCode().getReasonPhrase());
-	    		
-	    		responseMap.put("key", "error");
-		    	responseMap.put("value", response.getStatusCode().getReasonPhrase());
-	    		return responseMap;
-	    	}
-	    	
-    	} else {
-    		responseMap.put("key", "no data yet");
-    		return responseMap;	
-    	}	
-    }
-*/
-   
+		   
     @RequestMapping("/checkToken")
     public String checkToken(
     		@RequestParam(value="user", required=true) String username,
@@ -454,42 +392,46 @@ public class MainController {
 		if(error != null){
 			logger.error(error);
 			logger.error(request.getParameter("error_description"));
-			
-			
-		}
+		
+		} else {
 				
-		String authorizationCode = request.getParameter(providerOauth.getAuthorizationCodeParameter());
-		
-		AuthorizationCodeTokenRequest authorizationCodeTokenRequest = authorizationCodeFlow.newTokenRequest(authorizationCode);
-		
-		authorizationCodeTokenRequest.setGrantType(providerOauth.getGrantType());
-		authorizationCodeTokenRequest.setRedirectUri(providerOauth.getRedirectAuthorizationUri());
-
-		HttpResponse httpResponse = authorizationCodeTokenRequest.executeUnparsed();
-		
-		InputStream inputStreamResponse = httpResponse.getContent();
-		String stringResponse = IOUtils.toString(inputStreamResponse, "UTF-8");
-		ObjectMapper mapper = new ObjectMapper();
-		Map<String, Object> jsonMap = mapper.readValue(stringResponse, Map.class);
-		
-		String accessToken = jsonMap.get(providerOauth.getAccessTokenParameter()).toString(); 
-		
-		Token oldToken = tokenService.getToken(person, provider);
-		
-		// habia un token viejo...
-		if (oldToken != null){
-			tokenService.deleteToken(oldToken);
+			String authorizationCode = request.getParameter(providerOauth.getAuthorizationCodeParameter());
+			
+			AuthorizationCodeTokenRequest authorizationCodeTokenRequest = authorizationCodeFlow.newTokenRequest(authorizationCode);
+			
+			authorizationCodeTokenRequest.setGrantType(providerOauth.getGrantType());
+			authorizationCodeTokenRequest.setRedirectUri(providerOauth.getRedirectAuthorizationUri());
+	
+			HttpResponse httpResponse = authorizationCodeTokenRequest.executeUnparsed();
+			
+			InputStream inputStreamResponse = httpResponse.getContent();
+			String stringResponse = IOUtils.toString(inputStreamResponse, "UTF-8");
+			ObjectMapper mapper = new ObjectMapper();
+			Map<String, Object> jsonMap = mapper.readValue(stringResponse, Map.class);
+			
+			String accessToken = jsonMap.get(providerOauth.getAccessTokenParameter()).toString(); 
+			
+			Token oldToken = tokenService.getToken(person, provider);
+			
+			// habia un token viejo...
+			if (oldToken != null){
+				tokenService.deleteToken(oldToken);
+			}
+			
+			Token token = new Token();
+			token.setToken(accessToken);
+			token.setPerson(person);
+			token.setProvider(provider);
+			
+			tokenService.addPersonProviderToken(token);
+						
+			personService.addProvider(person, provider);
+	
 		}
-		
-		Token token = new Token();
-		token.setToken(accessToken);
-		token.setPerson(person);
-		token.setProvider(provider);
-		
-		tokenService.addPersonProviderToken(token);
 		
 		response.setStatus(302);
 		response.setHeader("location", providerOauth.getRedirectUri());
+		
 	}
 	
 	@RequestMapping("/delete/provider/{providerId}/user/{userId}")

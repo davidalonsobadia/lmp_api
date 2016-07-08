@@ -14,7 +14,7 @@ public interface TokenRepository extends PagingAndSortingRepository<Token, Long>
 			  +" JOIN token.provider pro "
 			  +" WHERE pro.name LIKE :providerName AND per.email LIKE :email "
 			)
-	Token findByproviderNameAndUserEmail(
+	Token findTokenByProviderNameAndUserEmail(
 			@Param("provider") String providerName,
 			@Param("email") String userEmail);
 }

@@ -14,14 +14,15 @@ public class AttributeMap {
 
 	@Id
 	@GeneratedValue(strategy = GenerationType.AUTO)
-	private long Id;
+	@Column(name="id")
+	private long id;
 	
 	@Column(name="provider_attribute_name")
 	private String providerAttributeName;
 	
 	@Column(name="lmp_attribute_name")
 	private String lmpAttributeName;
-		
+			
 	@ManyToOne  
 	private Provider provider;
 	
@@ -29,11 +30,11 @@ public class AttributeMap {
 	private Attribute attribute;
 
 	public long getId() {
-		return Id;
+		return id;
 	}
 
 	public void setId(long id) {
-		Id = id;
+		this.id = id;
 	}
 
 	public String getApiAttributeName() {
@@ -68,6 +69,14 @@ public class AttributeMap {
 		this.attribute = attribute;
 	}
 	
+	public String getProviderAttributeName() {
+		return providerAttributeName;
+	}
+
+	public void setProviderAttributeName(String providerAttributeName) {
+		this.providerAttributeName = providerAttributeName;
+	}
+
 	@Override
 	public String toString(){
 		return "Attribute name in the API: " + this.providerAttributeName + "\n"

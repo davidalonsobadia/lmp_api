@@ -20,14 +20,10 @@ import javax.persistence.Table;
 @Table(name="person")
 public class Person {
 	
-	public Person() {}
-
 	@Id
 	@GeneratedValue(strategy = GenerationType.AUTO)
 	@Column(name="id")
 	private long id;
-	
-	private String identifier;
 	
 	private String name;
 	
@@ -41,7 +37,7 @@ public class Person {
 	private String password;
 	
 	@Column(unique=true, nullable=false)
-	private String personal_id;
+	private String identifier;
 	
 	@ManyToMany
 	@JoinTable(name="person_has_consumers", 
@@ -88,14 +84,6 @@ public class Person {
 		this.email = email;
 	}
 
-	public String getIdentifier() {
-		return identifier;
-	}
-
-	public void setIdentifier(String identifier) {
-		this.identifier = identifier;
-	}
-
 	public String getName() {
 		return name;
 	}
@@ -129,11 +117,11 @@ public class Person {
 	}
 
 	public String getPersonal_id() {
-		return personal_id;
+		return identifier;
 	}
 
 	public void setPersonal_id(String personal_id) {
-		this.personal_id = personal_id;
+		this.identifier = personal_id;
 	}
 	
 	public List<Consumer> getConsumers() {

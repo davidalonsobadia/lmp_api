@@ -61,6 +61,11 @@ SET @Thesis = 'Thesis';
 SET @Articles = 'Articles';
 SET @Books = 'Books';
 SET @FirstName = 'First Name';
+SET @Birthday = 'Birthday';
+SET @LastName = 'Last Name';
+SET @Email = 'Email';
+SET @Languages = 'Languages';
+SET @Gender = 'Gender';
 
 -- user Mails
 SET @user1Mail = 'juan@hotmail.com';
@@ -83,14 +88,14 @@ INSERT INTO consumer (identifier, name, description, is_enabled, is_deleted)
 	VALUES ('LANEVERAROJA.COM', @LaNeveraRoja, 'Comida a domicilio', true, false);
 	
 -- PERSON
-INSERT INTO person (identifier, name, surname, phone, email, password, personal_id)
-	VALUES ('admin', 'web', 'web', '00000000', 'web@hotmail.com', 'EurecatLMP2016!', '000000');
-INSERT INTO person (identifier, name, surname, phone, email, password, personal_id)
-	VALUES ('xxx', 'Sergi', 'Alonso', '937890532', @user2Mail, '123456', '111111');
-INSERT INTO person (identifier, name, surname, phone, email, password, personal_id)
-	VALUES ('yyy', 'Juan', 'Caubet', '932322585', @user1Mail, '123456', '222222');
-INSERT INTO person (identifier, name, surname, phone, email, password, personal_id)
-	VALUES ('zzz', 'David', 'Alonso', '932322585', @user3Mail, '123456', '333333');
+INSERT INTO person (identifier, name, surname, phone, email, password)
+	VALUES ('admin', 'web', 'web', '00000000', 'web@hotmail.com', 'EurecatLMP2016!');
+INSERT INTO person (identifier, name, surname, phone, email, password)
+	VALUES ('xxx', 'Sergi', 'Alonso', '937890532', @user2Mail, '123456');
+INSERT INTO person (identifier, name, surname, phone, email, password)
+	VALUES ('yyy', 'Juan', 'Caubet', '932322585', @user1Mail, '123456');
+INSERT INTO person (identifier, name, surname, phone, email, password)
+	VALUES ('zzz', 'David', 'Alonso', '932322585', @user3Mail, '123456');
 	
 
 -- CATEGORY
@@ -151,19 +156,19 @@ INSERT INTO subcategory (name, category_id)
 	WHERE c.name LIKE @Personal;
 	
 -- PROVIDER
-INSERT INTO provider (identifier, name, description, type, url, is_enabled, is_deleted, o_auth, o_auth_url )
+INSERT INTO provider (identifier, name, description, type, url, is_enabled, is_deleted, is_oauth, oauth_url )
 	VALUES ('LACAIXA', @LaCaixa, 'Catalan Bank', 'Financial', 'http://www.lacaixa.es', true, false, false, '' );
-INSERT INTO provider (identifier, name, description, type, url, is_enabled, is_deleted, o_auth, o_auth_url )
+INSERT INTO provider (identifier, name, description, type, url, is_enabled, is_deleted, is_oauth, oauth_url )
 	VALUES ('HIPERSEGUROS', @HIPERSEGUROS, 'Los mejores seguros', 'Health', 'https://www.hiperseguros.com', true, false, false, '');
-INSERT INTO provider (identifier, name, description, type, url, is_enabled, is_deleted, o_auth, o_auth_url )
+INSERT INTO provider (identifier, name, description, type, url, is_enabled, is_deleted, is_oauth, oauth_url )
 	VALUES ('FACEBOOK', @Facebook, 'La mayor red social del mundo', 'Social', 'http://www.facebook.com', true, false, true, '');
-INSERT INTO provider (identifier, name, description, type, url, is_enabled, is_deleted, o_auth, o_auth_url )
+INSERT INTO provider (identifier, name, description, type, url, is_enabled, is_deleted, is_oauth, oauth_url )
 	VALUES ('TWITTER', @Twitter, 'Twitter', 'Social', 'http://www.twitter.com', true, false, false, '');
-INSERT INTO provider (identifier, name, description, type, url, is_enabled, is_deleted, o_auth, o_auth_url )
+INSERT INTO provider (identifier, name, description, type, url, is_enabled, is_deleted, is_oauth, oauth_url )
 	VALUES ('HOSPITALTERRASSA', @HospitalDeTerrassa, 'Hospital public', 'Health', 'http://www.hospitaldeterrassa.com', true, false, false, '');
-INSERT INTO provider (identifier, name, description, type, url, is_enabled, is_deleted, o_auth, o_auth_url )
+INSERT INTO provider (identifier, name, description, type, url, is_enabled, is_deleted, is_oauth, oauth_url )
 	VALUES ('HACIENDA', @HaciendaDeEspanna, 'Gobierno de Espanna', 'Public Administration', 'http://www.hacienda.com', true, false, false, '');
-INSERT INTO provider (identifier, name, description, type, url, is_enabled, is_deleted, o_auth, o_auth_url )
+INSERT INTO provider (identifier, name, description, type, url, is_enabled, is_deleted, is_oauth, oauth_url )
 	VALUES ('LINKEDIN', @LinkedIn, 'Web para poner el curriculum', 'Education', 'http://www.linkedin.com', true, false, true, '');
 	
 	
@@ -494,7 +499,74 @@ INSERT INTO provider_has_attribute_maps(provider_id, attribute_map_id)
 INSERT INTO attribute_has_attribute_maps(attribute_id, attribute_map_id)
 	VALUES (@attribute_id, @attribute_map_id);
 ----------------------------------------------------------------------------------------------------------------	
-	
+
+----ATTRIBUTE Birthday -----
+INSERT INTO attribute(name, subcategory_id, description, reputation, is_enabled, is_deleted, is_updateable)
+	SELECT @Birthday, s.id, @Birthday, 8, true, false, true
+	FROM subcategory s 
+	WHERE s.name LIKE @PersonalData;
+INSERT INTO attribute_map(provider_attribute_name, lmp_attribute_name, provider_id, attribute_id)
+	SELECT 'birthday', @Birthday, @provider_id:= p.id, @attribute_id:= a.id
+	FROM provider p
+	JOIN attribute a
+		ON a.name LIKE @Birthday
+	WHERE p.name LIKE @Facebook;
+INSERT INTO provider_has_attribute_maps(provider_id, attribute_map_id)
+	VALUES (@provider_id, @attribute_map_id:= LAST_INSERT_ID() );
+INSERT INTO attribute_has_attribute_maps(attribute_id, attribute_map_id)
+	VALUES (@attribute_id, @attribute_map_id);
+----------------------------------------------------------------------------------------------------------------
+
+----ATTRIBUTE Email -----
+INSERT INTO attribute(name, subcategory_id, description, reputation, is_enabled, is_deleted, is_updateable)
+	SELECT @Email, s.id, @Email, 8, true, false, true
+	FROM subcategory s 
+	WHERE s.name LIKE @PersonalData;
+INSERT INTO attribute_map(provider_attribute_name, lmp_attribute_name, provider_id, attribute_id)
+	SELECT 'email', @Email, @provider_id:= p.id, @attribute_id:= a.id
+	FROM provider p
+	JOIN attribute a
+		ON a.name LIKE @Email
+	WHERE p.name LIKE @Facebook;
+INSERT INTO provider_has_attribute_maps(provider_id, attribute_map_id)
+	VALUES (@provider_id, @attribute_map_id:= LAST_INSERT_ID() );
+INSERT INTO attribute_has_attribute_maps(attribute_id, attribute_map_id)
+	VALUES (@attribute_id, @attribute_map_id);
+----------------------------------------------------------------------------------------------------------------
+
+----ATTRIBUTE Gender -----
+INSERT INTO attribute(name, subcategory_id, description, reputation, is_enabled, is_deleted, is_updateable)
+	SELECT @Gender, s.id, @Gender, 8, true, false, true
+	FROM subcategory s 
+	WHERE s.name LIKE @PersonalData;
+INSERT INTO attribute_map(provider_attribute_name, lmp_attribute_name, provider_id, attribute_id)
+	SELECT 'gender', @Gender, @provider_id:= p.id, @attribute_id:= a.id
+	FROM provider p
+	JOIN attribute a
+		ON a.name LIKE @Gender
+	WHERE p.name LIKE @Facebook;
+INSERT INTO provider_has_attribute_maps(provider_id, attribute_map_id)
+	VALUES (@provider_id, @attribute_map_id:= LAST_INSERT_ID() );
+INSERT INTO attribute_has_attribute_maps(attribute_id, attribute_map_id)
+	VALUES (@attribute_id, @attribute_map_id);
+----------------------------------------------------------------------------------------------------------------
+
+----ATTRIBUTE Languages -----
+INSERT INTO attribute(name, subcategory_id, description, reputation, is_enabled, is_deleted, is_updateable)
+	SELECT @Languages, s.id, @Languages, 8, true, false, true
+	FROM subcategory s 
+	WHERE s.name LIKE @PersonalData;
+INSERT INTO attribute_map(provider_attribute_name, lmp_attribute_name, provider_id, attribute_id)
+	SELECT 'languages', @Languages, @provider_id:= p.id, @attribute_id:= a.id
+	FROM provider p
+	JOIN attribute a
+		ON a.name LIKE @Languages
+	WHERE p.name LIKE @Facebook;
+INSERT INTO provider_has_attribute_maps(provider_id, attribute_map_id)
+	VALUES (@provider_id, @attribute_map_id:= LAST_INSERT_ID() );
+INSERT INTO attribute_has_attribute_maps(attribute_id, attribute_map_id)
+	VALUES (@attribute_id, @attribute_map_id);
+----------------------------------------------------------------------------------------------------------------
 	
 -- Insert consumers in a user
 INSERT INTO person_has_consumers(person_id, consumer_id) 

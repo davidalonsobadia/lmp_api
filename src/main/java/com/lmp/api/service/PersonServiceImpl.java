@@ -6,6 +6,7 @@ import org.springframework.transaction.annotation.Transactional;
 
 import com.lmp.api.dao.PersonDao;
 import com.lmp.api.model.Person;
+import com.lmp.api.model.Provider;
 import com.lmp.api.model.Sphere;
 
 public class PersonServiceImpl implements PersonService{
@@ -51,5 +52,12 @@ public class PersonServiceImpl implements PersonService{
 	@Transactional
 	public Set<Sphere> getSpheres(Person person) {
 		return personDao.getSpheres(person);
+	}
+
+	@Override
+	@Transactional
+	public void addProvider(Person person, Provider provider) {
+		this.personDao.addProvider(person, provider);
+		
 	}
 }

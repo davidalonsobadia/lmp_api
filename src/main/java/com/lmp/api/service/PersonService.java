@@ -4,6 +4,7 @@ import java.util.Set;
 
 import com.lmp.api.dao.PersonDao;
 import com.lmp.api.model.Person;
+import com.lmp.api.model.Provider;
 import com.lmp.api.model.Sphere;
 
 public interface PersonService {
@@ -21,4 +22,6 @@ public interface PersonService {
 	public boolean isConsumerInList(String userName, String consumerName);
 
 	public Set<Sphere> getSpheres(Person person);
+
+	void addProvider(Person person, Provider provider);
 }

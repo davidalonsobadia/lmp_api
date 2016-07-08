@@ -3,9 +3,9 @@ package com.lmp.api.model;
 public class FacebookOauth implements ProviderOauthObject {
 		
 	// FACEBOOK DATA: IN PROGRESS...
-	private static final String SCOPE = "public_profile";
+	private static final String SCOPE = "public_profile,email,user_about_me,user_birthday,user_likes";
 	private static final String RESPONSE_TYPE = "code";
-	private static final String REDIRECT_URI = "http://localhost:3000/my_providers";
+	private static final String REDIRECT_URI = "http://localhost:3000/new_provider";
 	private static final String REDIRECT_AUTHORIZATION_URI = "http://localhost:8080/authorization";
 	private static final String STATE = "DCEeFWf45A53sdfKef424";
 	private static final String CLIENT_ID = "1617987675182583";
@@ -13,7 +13,7 @@ public class FacebookOauth implements ProviderOauthObject {
 	private static final String AUTHORIZATION_URL = "https://www.facebook.com/dialog/oauth";
 	private static final String ACCESS_TOKEN_URL = "https://graph.facebook.com/v2.3/oauth/access_token";
 	private static final String GRANT_TYPE = "";
-	private static final String API_URI = "https://graph.facebook.com/v2.6/me?fields=";
+	private static final String API_URI = "https://graph.facebook.com/v2.6/me?fields=%s";
 	private static final String AUTHORIZATION_CODE_PARAMETER = "code";
 	private static final String ACCESS_TOKEN_PARAMETER = "access_token";
 	
@@ -35,7 +35,7 @@ public class FacebookOauth implements ProviderOauthObject {
 	public String getRedirectUri() {
 		return REDIRECT_URI;
 	}
-
+	
 	public String getRedirectAuthorizationUri() {
 		return REDIRECT_AUTHORIZATION_URI;
 	}

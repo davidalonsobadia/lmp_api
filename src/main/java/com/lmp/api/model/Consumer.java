@@ -19,6 +19,7 @@ public class Consumer {
 	@Column(name="id")
 	private long id;
 	
+	@Column(unique=true, nullable=false)
 	private String identifier;
 	
 	@Column(unique=true)

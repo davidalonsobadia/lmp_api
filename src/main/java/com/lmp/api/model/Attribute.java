@@ -4,12 +4,12 @@ import java.util.List;
 
 import javax.persistence.Column;
 import javax.persistence.Entity;
+import javax.persistence.FetchType;
 import javax.persistence.GeneratedValue;
 import javax.persistence.GenerationType;
 import javax.persistence.Id;
 import javax.persistence.JoinColumn;
 import javax.persistence.JoinTable;
-import javax.persistence.ManyToOne;
 import javax.persistence.OneToMany;
 import javax.persistence.OneToOne;
 import javax.persistence.Table;
@@ -23,7 +23,7 @@ public class Attribute {
 	@GeneratedValue(strategy = GenerationType.AUTO)
 	private long id;
 
-	@Column(unique=true)
+	@Column(unique=true, nullable=false)
 	private String name;
 	
 	@OneToOne
@@ -54,7 +54,7 @@ public class Attribute {
 //	@ManyToOne
 //	private Provider provider;
 	
-	@OneToMany
+	@OneToMany(fetch = FetchType.EAGER)
 	@JoinTable(name="attribute_has_attribute_maps", 
 		joinColumns={@JoinColumn(name="attribute_id")},
 		inverseJoinColumns={@JoinColumn(name="attribute_map_id")}
