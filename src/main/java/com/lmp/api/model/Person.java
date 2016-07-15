@@ -116,12 +116,12 @@ public class Person {
 		this.password = password;
 	}
 
-	public String getPersonal_id() {
+	public String getIdentifier() {
 		return identifier;
 	}
 
-	public void setPersonal_id(String personal_id) {
-		this.identifier = personal_id;
+	public void setIdentifier(String identifier) {
+		this.identifier = identifier;
 	}
 	
 	public List<Consumer> getConsumers() {

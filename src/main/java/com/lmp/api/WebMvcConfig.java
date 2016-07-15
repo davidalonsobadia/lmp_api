@@ -15,17 +15,4 @@ public class WebMvcConfig extends RepositoryRestMvcConfiguration {
     protected void configureRepositoryRestConfiguration(RepositoryRestConfiguration config) {
         config.exposeIdsFor(Person.class, Provider.class, Sphere.class);
     }
-	
-//  @Override 
-//  public JpaHelper jpaHelper() { 
-//	  JpaHelper helper = new JpaHelper();  
-//	  helper.getInterceptors().add(new CustomInterceptor());
-//	  return helper;
-//  }
-  
-//  @Override
-//  public void addInterceptors(InterceptorRegistry registry) {
-//	  registry.addInterceptor(new CustomInterceptor()).addPathPatterns("/people/*");;
-//
-//  }
 }

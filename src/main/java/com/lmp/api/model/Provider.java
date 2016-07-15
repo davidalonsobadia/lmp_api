@@ -132,14 +132,6 @@ public class Provider {
 		this.isDeleted = isDeleted;
 	}
 
-//	public List<Attribute> getAttributes() {
-//		return attributes;
-//	}
-//
-//	public void setAttributes(List<Attribute> attributes) {
-//		this.attributes = attributes;
-//	}
-
 	public List<Person> getPeople() {
 		return people;
 	}

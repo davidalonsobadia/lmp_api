@@ -2,15 +2,15 @@ package com.lmp.api.repositories;
 
 import java.util.List;
 
+import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.data.jpa.repository.Query;
-import org.springframework.data.repository.PagingAndSortingRepository;
 import org.springframework.data.repository.query.Param;
 import org.springframework.data.rest.core.annotation.RepositoryRestResource;
 
 import com.lmp.api.model.Organization;
 
 @RepositoryRestResource(collectionResourceRel = "entities", path = "entities")
-public interface OrganizationRepository extends PagingAndSortingRepository<Organization, Long>{
+public interface OrganizationRepository extends JpaRepository<Organization, Long>{
 
 	Organization findFirstByIdentifier(@Param("identifier") String identifier);
 	

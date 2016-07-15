@@ -83,7 +83,6 @@ public class MainController {
 	@Autowired
 	private SphereService sphereService;
 	
-	// TODO: revisar si esto realmente esta bien aqui
 	private Person person;
 	
 	private Provider provider;
@@ -450,6 +449,5 @@ public class MainController {
 			tokenService.deleteToken(token);
 		}
 	}
-	
 }
 

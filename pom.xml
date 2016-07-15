@@ -7,7 +7,7 @@
 	<artifactId>lmp.api</artifactId>
 	<version>0.0.1-SNAPSHOT</version>
 	<packaging>war</packaging>
-
+	
 	<name>LmpApi</name>
 	<description>Book Shop Example to learn JPA and REST</description>
 

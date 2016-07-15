@@ -17,6 +17,9 @@ import org.springframework.core.env.Environment;
 import org.springframework.dao.annotation.PersistenceExceptionTranslationPostProcessor;
 import org.springframework.orm.hibernate4.HibernateTransactionManager;
 import org.springframework.orm.hibernate4.LocalSessionFactoryBean;
+import org.springframework.orm.jpa.LocalContainerEntityManagerFactoryBean;
+import org.springframework.orm.jpa.vendor.Database;
+import org.springframework.orm.jpa.vendor.HibernateJpaVendorAdapter;
 import org.springframework.transaction.annotation.EnableTransactionManagement;
 
 import com.lmp.api.dao.AttributeDaoImpl;
@@ -152,62 +155,4 @@ public class LmpApiApplication extends SpringBootServletInitializer {
 	   sphereDaoImpl.setSessionFactory(this.sessionFactory().getObject());
 	   return sphereServiceImpl;
    }
-   
-//   @Bean
-//   public MappedInterceptor myMappedInterceptor() {
-//	   HandlerInterceptor customInterceptor = new CustomInterceptor();
-//       return new MappedInterceptor(new String[]{"/people/*/providers"}, customInterceptor);
-//   }
-   
 }
-	
-//@Configuration
-//class WebSecurityConfiguration extends GlobalAuthenticationConfigurerAdapter {
-//
-//	@Autowired
-//	PersonRepository personRepository;
-//
-//	@Override
-//	public void init(AuthenticationManagerBuilder auth) throws Exception {
-//		auth.userDetailsService(userDetailsService());
-//	}
-//	
-//	@Bean
-//	UserDetailsService userDetailsService() {
-//		return new UserDetailsService() {
-//			@Override
-//			public UserDetails loadUserByUsername(String email) throws UsernameNotFoundException {
-//				Person person = personRepository.findFirstByEmail(email);
-//				if(person != null) {
-//					return new User(person.getName(), person.getPassword(), true, true, true, true,
-//							AuthorityUtils.createAuthorityList("USER"));
-//				} else {
-//					throw new UsernameNotFoundException("could not find the user '"
-//							+ email + "'");
-//				}	
-//			}
-//		};
-//	}
-//}
-//
-//@EnableWebSecurity
-//@Configuration
-//class SecurityConfiguration extends WebSecurityConfigurerAdapter {
-//	
-//	@Autowired
-//	private UserDetailsService userDetailsService;
-//	
-//	@Override
-//	protected void configure(AuthenticationManagerBuilder auth) throws Exception {
-//		auth.userDetailsService(userDetailsService);
-//	}
-//	
-//	@Override
-//	protected void configure(HttpSecurity http) throws Exception {
-//		http.authorizeRequests().anyRequest().fullyAuthenticated();
-//		http.httpBasic();
-//		http.csrf().disable();
-//	}
-//  
-//}
-
