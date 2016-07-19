@@ -1,5 +1,7 @@
 package com.lmp.api.model;
 
+import com.google.api.client.http.HttpRequestInitializer;
+
 public class LinkedInOauth implements ProviderOauthObject {
 	
 	//LINKEDIN DATA
@@ -72,5 +74,9 @@ public class LinkedInOauth implements ProviderOauthObject {
 		return AUTHORIZATION_CODE_PARAMETER;
 	}
 
-	
+	@Override
+	public HttpRequestInitializer getRequestInitializer() {
+		// TODO Auto-generated method stub
+		return null;
+	}
 }

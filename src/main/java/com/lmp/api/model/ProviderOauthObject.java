@@ -1,5 +1,7 @@
 package com.lmp.api.model;
 
+import com.google.api.client.http.HttpRequestInitializer;
+
 public interface ProviderOauthObject {
 
 	public String getAccessTokenParameter();
@@ -15,4 +17,7 @@ public interface ProviderOauthObject {
 	public String getGrantType();
 	public String getApiUri();
 	public String getAuthorizationCodeParameter();
+	
+	public HttpRequestInitializer getRequestInitializer();
+
 }

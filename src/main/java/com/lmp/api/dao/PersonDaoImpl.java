@@ -132,7 +132,7 @@ public class PersonDaoImpl implements PersonDao{
 
 	@Override
 	public void addProvider(Person person, Provider provider) {
-		logger.info("in getSpheres method");
+		logger.info("in addProvider method");
 		Session session = this.sessionFactory.getCurrentSession();
 		
 		Set<Provider> providersPerson = person.getProviders();

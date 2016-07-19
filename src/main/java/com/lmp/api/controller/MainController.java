@@ -3,6 +3,7 @@ package com.lmp.api.controller;
 
 import java.io.IOException;
 import java.io.InputStream;
+import java.io.StringReader;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Collection;
@@ -11,10 +12,14 @@ import java.util.List;
 import java.util.Map;
 import java.util.Set;
 
+import javax.json.Json;
+import javax.json.stream.JsonParser;
+import javax.json.stream.JsonParser.Event;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
 import org.apache.commons.io.IOUtils;
+import org.json.JSONObject;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -56,6 +61,7 @@ import com.lmp.api.service.PersonService;
 import com.lmp.api.service.ProviderService;
 import com.lmp.api.service.SphereService;
 import com.lmp.api.service.TokenService;
+
 
 @RestController
 public class MainController {
@@ -277,14 +283,30 @@ public class MainController {
 	    	// 7. get the data
 	    	if( response.getStatusCode().is2xxSuccessful() ) {
 	    		HashMap<?, ?> objectResponse = response.getBody();
+
+	    		
+	    		JSONObject jsonObject = new JSONObject(objectResponse);
+	    		JsonParser parser = Json.createParser(new StringReader(jsonObject.toString()));
+
+	    		
+	    		Object apiAttributeValue = null;
+	    		
+	    		while (parser.hasNext()){
+	    			Event e = parser.next();
+	    			if (e == Event.KEY_NAME){
+	    				if(parser.getString().equals(apiAttributeName)){
+	    					parser.next();
+	    					apiAttributeValue = parser.getString();
+	    				}
+	    			}
+	    			
+	    		}
 	    			    	
 	    		// return the data you are interested in
 		    	responseMap.put("key", lmpAttributeName);
-		    	
-		    	Object apiAttributeValue =  objectResponse.get(apiAttributeName);
-		    	
+		    		    			    	
 		    	if(apiAttributeValue == null){
-		    		logger.error("The third party API doesn't answer correctly. It seems it hasn't the attribute %s properly configured. Please check API configuration classes.", apiAttributeValue);
+		    		logger.error("The third party API doesn't answer correctly. It seems it hasn't the attribute " + lmpAttributeName + " properly configured. Please check API configuration classes.", apiAttributeValue);
 		    		responseMap.put("key", "error");
 			    	responseMap.put("value", "Bad configuration for " +lmpAttributeName+" with third parties. Please check with LMP administrator");
 			    	return responseMap;
@@ -398,8 +420,12 @@ public class MainController {
 			
 			AuthorizationCodeTokenRequest authorizationCodeTokenRequest = authorizationCodeFlow.newTokenRequest(authorizationCode);
 			
+						
+			authorizationCodeTokenRequest.setRequestInitializer(providerOauth.getRequestInitializer());
+			
 			authorizationCodeTokenRequest.setGrantType(providerOauth.getGrantType());
 			authorizationCodeTokenRequest.setRedirectUri(providerOauth.getRedirectAuthorizationUri());
+			
 	
 			HttpResponse httpResponse = authorizationCodeTokenRequest.executeUnparsed();
 			

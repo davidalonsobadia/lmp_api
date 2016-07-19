@@ -2,24 +2,32 @@ package com.lmp.api.model;
 
 import com.google.api.client.http.HttpRequestInitializer;
 
-public class FacebookOauth implements ProviderOauthObject {
-		
-	// FACEBOOK DATA
-	private static final String SCOPE = "public_profile,email,user_about_me,user_birthday,user_likes";
-	private static final String RESPONSE_TYPE = "code";
-	private static final String REDIRECT_URI = "http://localhost:3000/new_provider";
-	private static final String REDIRECT_AUTHORIZATION_URI = "http://localhost:8080/authorization";
-	private static final String STATE = "DCEeFWf45A53sdfKef424";
-	private static final String CLIENT_ID = "1617987675182583";
-	private static final String SECRET_ID = "ac40ff181ed97d1cac92246170d36c71";
-	private static final String AUTHORIZATION_URL = "https://www.facebook.com/dialog/oauth";
-	private static final String ACCESS_TOKEN_URL = "https://graph.facebook.com/v2.3/oauth/access_token";
-	private static final String GRANT_TYPE = "";
-	private static final String API_URI = "https://graph.facebook.com/v2.6/me?fields=%s";
-	private static final String AUTHORIZATION_CODE_PARAMETER = "code";
-	private static final String ACCESS_TOKEN_PARAMETER = "access_token";
+public class StravaOAuth implements ProviderOauthObject {
 	
-	public FacebookOauth() {
+	// STRAVA DATA:
+	
+	// Parameters for building the authorization code request
+	private static final String AUTHORIZATION_URL = "https://www.strava.com/oauth/authorize";
+	private static final String REDIRECT_AUTHORIZATION_URI = "http://localhost:8080/authorization";
+	private static final String CLIENT_ID = "12531";
+	private static final String RESPONSE_TYPE = "code";
+	private static final String STATE = "DCEeFWf45A53sdfKef424";
+	private static final String SCOPE = "view_private";
+	
+	// Parameters for building the access token request
+	private static final String ACCESS_TOKEN_URL = "https://www.strava.com/oauth/token";
+	private static final String SECRET_ID = "6b66f849a6a30babb7fa1a2380ba08536c04877b";
+	private static final String AUTHORIZATION_CODE_PARAMETER = "code";
+	
+	//Other
+	private static final String REDIRECT_URI = "http://localhost:3000/new_provider";
+	
+	//Parameters to rule the API
+	private static final String GRANT_TYPE = "";
+	private static final String API_URI = "https://www.strava.com/api/v3/athlete";
+	private static final String ACCESS_TOKEN_PARAMETER = "access_token";
+
+	public StravaOAuth() {
 	}
 
 	public String getAccessTokenParameter() {
@@ -73,9 +81,10 @@ public class FacebookOauth implements ProviderOauthObject {
 	public String getAuthorizationCodeParameter() {
 		return AUTHORIZATION_CODE_PARAMETER;
 	}
-	
+
 	@Override
 	public HttpRequestInitializer getRequestInitializer() {
+		// TODO Auto-generated method stub
 		return null;
-	}
+	}	
 }

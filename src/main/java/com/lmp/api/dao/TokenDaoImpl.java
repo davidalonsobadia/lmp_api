@@ -40,6 +40,7 @@ public class TokenDaoImpl implements TokenDao{
 		
 	@Override
 	public void addToken(Token token){
+		logger.info("in addToken method");
 		Session session = this.sessionFactory.getCurrentSession();
 		session.persist(token);
 		logger.info("Token saved successfully, token Details: " + token.toString());

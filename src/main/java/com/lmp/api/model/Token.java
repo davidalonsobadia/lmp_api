@@ -23,6 +23,7 @@ public class Token {
 	@ManyToOne
 	private Provider provider;
 	
+	@Column(columnDefinition = "longblob")
 	private String token;
 
 	public long getId() {
@@ -59,8 +60,8 @@ public class Token {
 	
 	@Override
 	public String toString(){
-		return "token: " + this.token + "\n" +
-				"Person Name: " + this.person.getName() + "\n" +
+		return "token: " + this.token + "\t" +
+				"Person Name: " + this.person.getName() + "\t" +
 				"Provider Name: " + this.provider.getName();
 				
 	}

@@ -27,6 +27,8 @@ SET @Twitter = 'Twitter';
 SET @HospitalDeTerrassa = 'Hospital de Terrassa';
 SET @HaciendaDeEspanna = 'Hacienda de Espanna';
 SET @LinkedIn = 'LinkedIn';
+SET @Strava = 'Strava';
+SET @Fitbit = 'FitBit';
 
 -- Consumer names
 SET @Amazon = 'Amazon';
@@ -66,6 +68,10 @@ SET @LastName = 'Last Name';
 SET @Email = 'Email';
 SET @Languages = 'Languages';
 SET @Gender = 'Gender';
+SET @City = 'City';
+SET @Height = 'Height';
+SET @Weight = 'Weight';
+
 
 -- user Mails
 SET @user1Mail = 'juan@hotmail.com';
@@ -170,7 +176,10 @@ INSERT INTO provider (identifier, name, description, type, url, is_enabled, is_d
 	VALUES ('HACIENDA', @HaciendaDeEspanna, 'Gobierno de Espanna', 'Public Administration', 'http://www.hacienda.com', true, false, false, '');
 INSERT INTO provider (identifier, name, description, type, url, is_enabled, is_deleted, is_oauth, oauth_url )
 	VALUES ('LINKEDIN', @LinkedIn, 'Web para poner el curriculum', 'Education', 'http://www.linkedin.com', true, false, true, '');
-	
+INSERT INTO provider (identifier, name, description, type, url, is_enabled, is_deleted, is_oauth, oauth_url )
+	VALUES ('STRAVA', @Strava, 'App de deporte', 'Health', 'http://www.strava.com', true, false, true, '');
+INSERT INTO provider (identifier, name, description, type, url, is_enabled, is_deleted, is_oauth, oauth_url )
+	VALUES ('FitBit', @Fitbit, 'App de deporte con dispositivos IoT', 'Health', 'http://www.fitbit.com', true, false, true, '');	
 	
 ----ATTRIBUTE AllergicConditions -----
 INSERT INTO attribute(name, subcategory_id, description, reputation, is_enabled, is_deleted, is_updateable)
@@ -567,6 +576,58 @@ INSERT INTO provider_has_attribute_maps(provider_id, attribute_map_id)
 INSERT INTO attribute_has_attribute_maps(attribute_id, attribute_map_id)
 	VALUES (@attribute_id, @attribute_map_id);
 ----------------------------------------------------------------------------------------------------------------
+
+----ATTRIBUTE City -----
+INSERT INTO attribute(name, subcategory_id, description, reputation, is_enabled, is_deleted, is_updateable)
+	SELECT @City, s.id, @City, 8, true, false, true
+	FROM subcategory s 
+	WHERE s.name LIKE @PersonalData;
+INSERT INTO attribute_map(provider_attribute_name, lmp_attribute_name, provider_id, attribute_id)
+	SELECT 'city', @City, @provider_id:= p.id, @attribute_id:= a.id
+	FROM provider p
+	JOIN attribute a
+		ON a.name LIKE @City
+	WHERE p.name LIKE @Strava;
+INSERT INTO provider_has_attribute_maps(provider_id, attribute_map_id)
+	VALUES (@provider_id, @attribute_map_id:= LAST_INSERT_ID() );
+INSERT INTO attribute_has_attribute_maps(attribute_id, attribute_map_id)
+	VALUES (@attribute_id, @attribute_map_id);
+----------------------------------------------------------------------------------------------------------------
+
+----ATTRIBUTE Height -----
+INSERT INTO attribute(name, subcategory_id, description, reputation, is_enabled, is_deleted, is_updateable)
+	SELECT @Height, s.id, @Height, 8, true, false, true
+	FROM subcategory s 
+	WHERE s.name LIKE @PersonalData;
+INSERT INTO attribute_map(provider_attribute_name, lmp_attribute_name, provider_id, attribute_id)
+	SELECT 'height', @Height, @provider_id:= p.id, @attribute_id:= a.id
+	FROM provider p
+	JOIN attribute a
+		ON a.name LIKE @Height
+	WHERE p.name LIKE @Fitbit;
+INSERT INTO provider_has_attribute_maps(provider_id, attribute_map_id)
+	VALUES (@provider_id, @attribute_map_id:= LAST_INSERT_ID() );
+INSERT INTO attribute_has_attribute_maps(attribute_id, attribute_map_id)
+	VALUES (@attribute_id, @attribute_map_id);
+----------------------------------------------------------------------------------------------------------------
+	
+----ATTRIBUTE Weight -----
+INSERT INTO attribute(name, subcategory_id, description, reputation, is_enabled, is_deleted, is_updateable)
+	SELECT @Weight, s.id, @Weight, 8, true, false, true
+	FROM subcategory s 
+	WHERE s.name LIKE @PersonalData;
+INSERT INTO attribute_map(provider_attribute_name, lmp_attribute_name, provider_id, attribute_id)
+	SELECT 'weight', @Weight, @provider_id:= p.id, @attribute_id:= a.id
+	FROM provider p
+	JOIN attribute a
+		ON a.name LIKE @Weight
+	WHERE p.name LIKE @Fitbit;
+INSERT INTO provider_has_attribute_maps(provider_id, attribute_map_id)
+	VALUES (@provider_id, @attribute_map_id:= LAST_INSERT_ID() );
+INSERT INTO attribute_has_attribute_maps(attribute_id, attribute_map_id)
+	VALUES (@attribute_id, @attribute_map_id);
+----------------------------------------------------------------------------------------------------------------
+
 	
 -- Insert consumers in a user
 INSERT INTO person_has_consumers(person_id, consumer_id) 
