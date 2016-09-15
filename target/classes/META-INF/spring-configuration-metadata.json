@@ -1,0 +1,9 @@
+{
+  "groups": [{
+    "name": "provider.fitbit",
+    "type": "com.lmp.api.model.providers.FitbitOauth",
+    "sourceType": "com.lmp.api.model.providers.FitbitOauth"
+  }],
+  "properties": [],
+  "hints": []
+}
