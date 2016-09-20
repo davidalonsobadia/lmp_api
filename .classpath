@@ -28,7 +28,6 @@
 			<attribute name="org.eclipse.jst.component.dependency" value="/WEB-INF/lib"/>
 		</attributes>
 	</classpathentry>
-	<classpathentry kind="lib" path="C:/Users/david.alonso/Desktop/external_lib_lmpApiBackend/org.wso2.carbon.authenticator.stub_4.2.0.jar"/>
 	<classpathentry kind="lib" path="C:/Users/david.alonso/Desktop/external_lib_lmpApiBackend/org.wso2.carbon.um.ws.api_4.2.2.jar"/>
 	<classpathentry kind="lib" path="C:/Users/david.alonso/Desktop/external_lib_lmpApiBackend/org.wso2.carbon.user.api_4.2.0.jar"/>
 	<classpathentry kind="lib" path="C:/Users/david.alonso/Desktop/external_lib_lmpApiBackend/org.wso2.carbon.user.core_4.2.0.jar"/>
@@ -37,5 +36,6 @@
 			<attribute name="optional" value="true"/>
 		</attributes>
 	</classpathentry>
+	<classpathentry kind="lib" path="C:/Users/david.alonso/Desktop/external_lib_lmpApiBackend/org.wso2.carbon.authenticator.stub_4.2.0.jar"/>
 	<classpathentry kind="output" path="target/classes"/>
 </classpath>

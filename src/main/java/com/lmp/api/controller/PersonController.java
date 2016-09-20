@@ -37,7 +37,7 @@ public class PersonController {
 		logger.info("----------------- in ResponseEntity<Person> saveUser");
 		try{
 			
-			Map<String, String> claims = new HashMap<>();
+			Map<String, String> claims = new HashMap<String, String>();
 			claims.put("http://wso2.org/claims/givenname", person.getName());
 			claims.put("http://wso2.org/claims/lastname", person.getSurname());
 			claims.put("http://wso2.org/claims/emailaddress", person.getEmail());
@@ -50,7 +50,7 @@ public class PersonController {
 			throw e;
 		}
 		personService.save(person);
-		Resource<Person> resource = new Resource<>(person);
+		Resource<Person> resource = new Resource<Person>(person);
 		ResponseEntity<Person> responseEntity = new ResponseEntity(resource, HttpStatus.CREATED);
 		return responseEntity;
     }
@@ -88,7 +88,7 @@ public class PersonController {
 			throw new Exception("Not person found with ID "+id);
 		}
 		try{
-			Map<String, String> claims = new HashMap<>();
+			Map<String, String> claims = new HashMap<String, String>();
 			claims.put("http://wso2.org/claims/givenname", newPerson.getName());
 			claims.put("http://wso2.org/claims/lastname", newPerson.getSurname());
 			claims.put("http://wso2.org/claims/emailaddress", newPerson.getEmail());
@@ -103,7 +103,7 @@ public class PersonController {
 			throw e;
 		}
 		personService.save(newPerson);
-		Resource<Person> resource = new Resource<>(newPerson);
+		Resource<Person> resource = new Resource<Person>(newPerson);
 		ResponseEntity<Person> responseEntity = new ResponseEntity(resource, HttpStatus.OK);
 		return responseEntity;
     }

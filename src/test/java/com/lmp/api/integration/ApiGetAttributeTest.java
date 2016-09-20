@@ -1,10 +1,12 @@
 package com.lmp.api.integration;
 
-import static org.junit.Assert.*;
+import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertNotNull;
 
 import java.util.HashMap;
 import java.util.Map;
 
+import org.junit.Ignore;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -23,6 +25,7 @@ public class ApiGetAttributeTest {
 	private TestRestTemplate restTemplate;
 
 	@Test
+	@Ignore
 	public void getAttribute() {
 		
 		final String GET_ATTRIBUTE_URL = API_URL + "getAttribute?name={name}&user={user}&consumer={consumer}";
@@ -31,7 +34,7 @@ public class ApiGetAttributeTest {
 		String consumer = "Amazon";
 		String user = "Juan";
 		
-		Map<String, String> urlVariables = new HashMap<>();
+		Map<String, String> urlVariables = new HashMap<String, String>();
 		urlVariables.put("name", attribute);
 		urlVariables.put("consumer", consumer);
 		urlVariables.put("user", user);

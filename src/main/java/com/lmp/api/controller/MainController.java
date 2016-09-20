@@ -200,7 +200,7 @@ public class MainController {
 		Set<Sphere> spheresList = personService.getSpheres(person);
 		
 		//1.5 ver en qué esferas está incorporado ese consumidor.
-		List<Sphere> spheresWithConsumer = new ArrayList<>();
+		List<Sphere> spheresWithConsumer = new ArrayList<Sphere>();
 		for(Sphere sphere : spheresList){
 			if( sphereService.isConsumerInList(sphere, consumer))
 				spheresWithConsumer.add(sphere);
@@ -218,7 +218,7 @@ public class MainController {
 		Attribute attribute = attributeService.findAttributeByName(lmpAttributeName);
 		
 		//1.7 obtener atributos de las esferas donde está incorporado el consumidor.
-		List<Attribute> sphereAttributes = new ArrayList<>();
+		List<Attribute> sphereAttributes = new ArrayList<Attribute>();
 		for (Sphere sphereConsumer : spheresWithConsumer){
 			sphereAttributes.addAll(sphereConsumer.getAttributes());
 		}

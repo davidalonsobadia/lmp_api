@@ -118,9 +118,9 @@
     <factorypathentry kind="VARJAR" id="M2_REPO/org/apache/axis2/axis2-transport-http/1.6.1/axis2-transport-http-1.6.1.jar" enabled="true" runInBatchMode="false"/>
     <factorypathentry kind="VARJAR" id="M2_REPO/org/apache/httpcomponents/httpcore/4.4.5/httpcore-4.4.5.jar" enabled="true" runInBatchMode="false"/>
     <factorypathentry kind="VARJAR" id="M2_REPO/org/springframework/boot/spring-boot-configuration-processor/1.4.0.RELEASE/spring-boot-configuration-processor-1.4.0.RELEASE.jar" enabled="true" runInBatchMode="false"/>
-    <factorypathentry kind="EXTJAR" id="C:\Users\david.alonso\Desktop\external_lib_lmpApiBackend\org.wso2.carbon.authenticator.stub_4.2.0.jar" enabled="true" runInBatchMode="false"/>
     <factorypathentry kind="EXTJAR" id="C:\Users\david.alonso\Desktop\external_lib_lmpApiBackend\org.wso2.carbon.um.ws.api_4.2.2.jar" enabled="true" runInBatchMode="false"/>
     <factorypathentry kind="EXTJAR" id="C:\Users\david.alonso\Desktop\external_lib_lmpApiBackend\org.wso2.carbon.user.api_4.2.0.jar" enabled="true" runInBatchMode="false"/>
     <factorypathentry kind="EXTJAR" id="C:\Users\david.alonso\Desktop\external_lib_lmpApiBackend\org.wso2.carbon.user.core_4.2.0.jar" enabled="true" runInBatchMode="false"/>
+    <factorypathentry kind="EXTJAR" id="C:\Users\david.alonso\Desktop\external_lib_lmpApiBackend\org.wso2.carbon.authenticator.stub_4.4.1.jar" enabled="true" runInBatchMode="false"/>
     <factorypathentry kind="PLUGIN" id="org.eclipse.jst.ws.annotations.core" enabled="true" runInBatchMode="false"/>
 </factorypath>
