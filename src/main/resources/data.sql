@@ -76,7 +76,7 @@ SET @Weight = 'Weight';
 -- user Mails
 SET @user1Mail = 'juan@hotmail.com';
 SET @user2Mail = 'sergi@hotmail.com';
-SET @user3Mail = 'david@hotmail.com';
+ --SET @user3Mail = 'david@hotmail.com';
 
 -----------------------------------------------------------------------------------------------
 -- INSERT INTO data ...
@@ -100,8 +100,8 @@ INSERT INTO person (identifier, name, surname, phone, email, password)
 	VALUES ('xxx', 'Sergi', 'Alonso', '937890532', @user2Mail, '123456');
 INSERT INTO person (identifier, name, surname, phone, email, password)
 	VALUES ('yyy', 'Juan', 'Caubet', '932322585', @user1Mail, '123456');
-INSERT INTO person (identifier, name, surname, phone, email, password)
-	VALUES ('zzz', 'David', 'Alonso', '932322585', @user3Mail, '123456');
+--INSERT INTO person (identifier, name, surname, phone, email, password)
+--	VALUES ('zzz', 'David', 'Alonso', '932322585', @user3Mail, '123456');
 	
 
 -- CATEGORY

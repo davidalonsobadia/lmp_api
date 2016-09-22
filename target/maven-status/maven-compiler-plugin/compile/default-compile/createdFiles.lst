@@ -9,6 +9,7 @@ com\lmp\api\repositories\PersonRepository.class
 com\lmp\api\service\SphereServiceImpl.class
 com\lmp\api\service\interfaces\SphereService.class
 com\lmp\api\service\TokenServiceImpl.class
+com\lmp\api\controller\LoginController.class
 com\lmp\api\model\AttributeMap.class
 com\lmp\api\service\ProviderServiceImpl.class
 com\lmp\api\model\providers\FacebookOauth.class

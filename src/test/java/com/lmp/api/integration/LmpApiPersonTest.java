@@ -8,6 +8,7 @@ import java.util.Collections;
 import java.util.HashMap;
 import java.util.Map;
 
+import org.junit.Ignore;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -18,7 +19,7 @@ import org.springframework.http.HttpEntity;
 import org.springframework.http.HttpHeaders;
 import org.springframework.http.HttpMethod;
 import org.springframework.http.MediaType;
-import org.springframework.test.context.ContextConfiguration;
+import org.springframework.http.ResponseEntity;
 import org.springframework.test.context.junit4.SpringJUnit4ClassRunner;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
@@ -29,6 +30,7 @@ import com.lmp.api.repositories.PersonRepository;
 @SpringBootTest(webEnvironment=WebEnvironment.DEFINED_PORT)
 public class LmpApiPersonTest {
 	
+	private static final String API_URL = "http://localhost:8080/";
 	private static final String PERSON_URL = "http://localhost:8080/people/";
 
 	//Required to Generate JSON content from Java objects
@@ -125,6 +127,33 @@ public class LmpApiPersonTest {
 	    
 	    assertNull(personDeleted);
 	}
+	
+	@Test
+	public void loginPerson(){
 		
+		String loginUrl = API_URL + "loginWithPassword?user={user}&password={password}";
+		
+		// OK -- AUTHORIZED
+		String user2 = "david.alonsobadia@gmail.com";
+		String password2 = "123456";
+		Map<String, String> urlVariables2 = new HashMap<String, String>();
+		urlVariables2.put("user", user2);
+		urlVariables2.put("password", password2);
+		ResponseEntity response2 = restTemplate.getForEntity(loginUrl, Object.class, urlVariables2);
+		assertNotNull(response2);
+		assertEquals(200, response2.getStatusCodeValue());
+				
+		
+		// NOT OK --- UNAUTHORIZED
+		String user = "david.alonsobadia@gmail.com";
+		String password = "1234567";
+		Map<String, String> urlVariables = new HashMap<String, String>();
+		urlVariables.put("user", user);
+		urlVariables.put("password", password);
+		ResponseEntity response = restTemplate.getForEntity(loginUrl, Object.class, urlVariables);
+		assertNotNull(response);
+		assertEquals(401, response.getStatusCodeValue());
 
+	}
+		
 }
