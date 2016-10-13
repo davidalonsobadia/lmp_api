@@ -74,9 +74,19 @@ SET @Weight = 'Weight';
 
 
 -- user Mails
-SET @user1Mail = 'juan@hotmail.com';
+SET @user1Mail = 'david@hotmail.com';
 SET @user2Mail = 'sergi@hotmail.com';
- --SET @user3Mail = 'david@hotmail.com';
+SET @user3Mail = 'juan@hotmail.com';
+SET @user4Mail = 'xec@hotmail.com';
+SET @user5Mail = 'gibet@hotmail.com';
+
+-- Entity Mails
+SET @entity1Mail = 'entity1@hotmail.com';
+SET @entity2Mail = 'entity2@hotmail.com';
+SET @entity3Mail = 'entity3@hotmail.com';
+SET @entity4Mail = 'entity4@hotmail.com';
+SET @entity5Mail = 'entity5@hotmail.com';
+
 
 -----------------------------------------------------------------------------------------------
 -- INSERT INTO data ...
@@ -97,11 +107,16 @@ INSERT INTO consumer (identifier, name, description, is_enabled, is_deleted)
 INSERT INTO person (identifier, name, surname, phone, email, password)
 	VALUES ('admin', 'web', 'web', '00000000', 'web@hotmail.com', 'EurecatLMP2016!');
 INSERT INTO person (identifier, name, surname, phone, email, password)
+	VALUES ('yyy', 'David', 'Alonso', '932322585', @user1Mail, '123456');
+INSERT INTO person (identifier, name, surname, phone, email, password)
 	VALUES ('xxx', 'Sergi', 'Alonso', '937890532', @user2Mail, '123456');
 INSERT INTO person (identifier, name, surname, phone, email, password)
-	VALUES ('yyy', 'Juan', 'Caubet', '932322585', @user1Mail, '123456');
---INSERT INTO person (identifier, name, surname, phone, email, password)
---	VALUES ('zzz', 'David', 'Alonso', '932322585', @user3Mail, '123456');
+	VALUES ('qqq', 'Juan', 'Caubet', '932322585', @user3Mail, '123456');
+INSERT INTO person (identifier, name, surname, phone, email, password)
+	VALUES ('zzz', 'Xec', 'Catala', '932322585', @user4Mail, '123456');
+INSERT INTO person (identifier, name, surname, phone, email, password)
+	VALUES ('www', 'Gibet', 'Benejam', '932322585', @user5Mail, '123456');
+
 	
 
 -- CATEGORY
@@ -679,7 +694,7 @@ INSERT INTO person_has_providers(person_id, provider_id)
 
 -- Insert entity in a user
 INSERT INTO entity(description, email, identifier, name)
-	VALUES ('Test entity 1', 'entity@hotmail.com', 'xxxx', 'Entity Test');
+	VALUES ('Test entity 1', 'entity1@hotmail.com', 'xxxx', 'Entity Test');
 INSERT INTO entity(description, email, identifier, name)
 	VALUES ('Test entity 2', 'entity2@hotmail.com', 'yyyy', 'Entity Test 2');
 INSERT INTO entity(description, email, identifier, name)
@@ -690,43 +705,114 @@ INSERT INTO entity(description, email, identifier, name)
 	VALUES ('Test entity 5', 'entity5@hotmail.com', 'aaaa', 'Entity Test 5');
 
 
--- Associations between entities and people
+-- Associations between entities and people for user1 (david@hotmail.com)
 INSERT INTO person_and_entity_association(state, person_id, organization_id)
 	SELECT 'ASSOCIATED', p.id, e.id
 	FROM person p
 	JOIN entity e
-		ON e.email LIKE 'entity@hotmail.com'
+		ON e.email LIKE @entity1Mail
 	WHERE p.email LIKE @user1Mail;
 
 INSERT INTO person_and_entity_association(state, person_id, organization_id)
 	SELECT 'ASSOCIATED', p.id, e.id
 	FROM person p
 	JOIN entity e
-		ON e.email LIKE 'entity2@hotmail.com'
+		ON e.email LIKE @entity2Mail
 	WHERE p.email LIKE @user1Mail;
 
 INSERT INTO person_and_entity_association(state, person_id, organization_id)
 	SELECT 'REQUESTED_FROM_USER', p.id, e.id
 	FROM person p
 	JOIN entity e
-		ON e.email LIKE 'entity3@hotmail.com'
+		ON e.email LIKE @entity3Mail
 	WHERE p.email LIKE @user1Mail;
 	
 INSERT INTO person_and_entity_association(state, person_id, organization_id)
 	SELECT 'ADMINISTRATOR', p.id, e.id
 	FROM person p
 	JOIN entity e
-		ON e.email LIKE 'entity4@hotmail.com'
+		ON e.email LIKE @entity4Mail
 	WHERE p.email LIKE @user1Mail;
 
 INSERT INTO person_and_entity_association(state, person_id, organization_id)
 	SELECT 'REQUESTED_FROM_ENTITY', p.id, e.id
 	FROM person p
 	JOIN entity e
-		ON e.email LIKE 'entity5@hotmail.com'
+		ON e.email LIKE @entity5Mail
+	WHERE p.email LIKE @user1Mail;
+
+	
+-- Associations between entities and people for user2 (sergi@hotmail.com)
+INSERT INTO person_and_entity_association(state, person_id, organization_id)
+	SELECT 'ADMINISTRATOR', p.id, e.id
+	FROM person p
+	JOIN entity e
+		ON e.email LIKE @entity1Mail
+	WHERE p.email LIKE @user2Mail;
+INSERT INTO person_and_entity_association(state, person_id, organization_id)
+	SELECT 'ADMINISTRATOR', p.id, e.id
+	FROM person p
+	JOIN entity e
+		ON e.email LIKE @entity2Mail
+	WHERE p.email LIKE @user2Mail;
+INSERT INTO person_and_entity_association(state, person_id, organization_id)
+	SELECT 'ADMINISTRATOR', p.id, e.id
+	FROM person p
+	JOIN entity e
+		ON e.email LIKE @entity3Mail
+	WHERE p.email LIKE @user2Mail;
+INSERT INTO person_and_entity_association(state, person_id, organization_id)
+	SELECT 'ASSOCIATED', p.id, e.id
+	FROM person p
+	JOIN entity e
+		ON e.email LIKE @entity4Mail
 	WHERE p.email LIKE @user2Mail;
 
-		
+INSERT INTO person_and_entity_association(state, person_id, organization_id)
+	SELECT 'ASSOCIATED', p.id, e.id
+	FROM person p
+	JOIN entity e
+		ON e.email LIKE @entity5Mail
+	WHERE p.email LIKE @user2Mail;
+
+-- Associations between entities and people for user3 (juan@hotmail.com)
+INSERT INTO person_and_entity_association(state, person_id, organization_id)
+	SELECT 'REQUESTED_FROM_USER', p.id, e.id
+	FROM person p
+	JOIN entity e
+		ON e.email LIKE @entity1Mail
+	WHERE p.email LIKE @user3Mail;
+	
+INSERT INTO person_and_entity_association(state, person_id, organization_id)
+	SELECT 'REQUESTED_FROM_USER', p.id, e.id
+	FROM person p
+	JOIN entity e
+		ON e.email LIKE @entity2Mail
+	WHERE p.email LIKE @user3Mail;
+
+INSERT INTO person_and_entity_association(state, person_id, organization_id)
+	SELECT 'REQUESTED_FROM_ENTITY', p.id, e.id
+	FROM person p
+	JOIN entity e
+		ON e.email LIKE @entity3Mail
+	WHERE p.email LIKE @user3Mail;
+	
+INSERT INTO person_and_entity_association(state, person_id, organization_id)
+	SELECT 'REQUESTED_FROM_ENTITY', p.id, e.id
+	FROM person p
+	JOIN entity e
+		ON e.email LIKE @entity4Mail
+	WHERE p.email LIKE @user3Mail;
+
+INSERT INTO person_and_entity_association(state, person_id, organization_id)
+	SELECT 'ADMINISTRATOR', p.id, e.id
+	FROM person p
+	JOIN entity e
+		ON e.email LIKE @entity5Mail
+	WHERE p.email LIKE @user3Mail;
+
+
+	
 -- Sphere creation
 INSERT INTO sphere( name, description, identifier, type, is_enabled, is_deleted, is_extracted )
 	VALUES ('Bank Data Sphere', 'Contains all my financial data', 'xxxxx', 'Finance type', true, false, true);

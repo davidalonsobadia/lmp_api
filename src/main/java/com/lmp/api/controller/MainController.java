@@ -64,7 +64,6 @@ import com.lmp.api.service.interfaces.ProviderService;
 import com.lmp.api.service.interfaces.SphereService;
 import com.lmp.api.service.interfaces.TokenService;	
 
-
 @RestController
 public class MainController {
 	private static final Logger logger = LoggerFactory.getLogger(MainController.class);
@@ -444,9 +443,17 @@ public class MainController {
 		responseTypes.add(providerOauth.getResponseType());
 		
 		authorizationCodeRequestUrl.setResponseTypes(responseTypes);
-				
+		
+		// authorizationUriAddress for LOCALHOST:
 		String authorizationUriAddress = "http://" + httpServletRequest.getHeader("Host") + providerOauth.getRedirectAuthorizationUri();
+		// authorizationUriAddress for others:
+		//String authorizationUriAddress = "http://" + httpServletRequest.getHeader("Host") + "/LmpApi" + providerOauth.getRedirectAuthorizationUri();
+		//String authorizationUriAddress = "http://" + "84.88.79.211" + "/LmpApi" + providerOauth.getRedirectAuthorizationUri();
 
+		logger.info("--------------------------------------------------------------");
+		logger.info("authorization redirect address: " + authorizationUriAddress);
+		logger.info("--------------------------------------------------------------");
+		
 		authorizationCodeRequestUrl.setRedirectUri(authorizationUriAddress);
 		authorizationCodeRequestUrl.setState(providerOauth.getState());
 		
@@ -480,10 +487,16 @@ public class MainController {
 			authorizationCodeTokenRequest.setRequestInitializer(providerOauth.getRequestInitializer());
 			
 			authorizationCodeTokenRequest.setGrantType(providerOauth.getGrantType());
+			
+			// authorizationUriAddress for LOCALHOST:
 			String authorizationUriAddress = "http://" + httpServletRequest.getHeader("Host") + providerOauth.getRedirectAuthorizationUri();
+			// authorizationUriAddress for others:
+			//String authorizationUriAddress = "http://" + httpServletRequest.getHeader("Host") + "/LmpApi" + providerOauth.getRedirectAuthorizationUri();
+			//String authorizationUriAddress = "http://" + "84.88.79.211" + "/LmpApi" + providerOauth.getRedirectAuthorizationUri();
+
+			
 			authorizationCodeTokenRequest.setRedirectUri(authorizationUriAddress);
 			
-			authorizationCodeTokenRequest.getRedirectUri();
 			HttpResponse httpResponse = authorizationCodeTokenRequest.executeUnparsed();
 			
 			InputStream inputStreamResponse = httpResponse.getContent();
