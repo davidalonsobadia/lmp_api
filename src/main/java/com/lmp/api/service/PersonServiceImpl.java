@@ -9,9 +9,11 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 import com.lmp.api.model.Consumer;
+import com.lmp.api.model.PasswordResetToken;
 import com.lmp.api.model.Person;
 import com.lmp.api.model.Provider;
 import com.lmp.api.model.Sphere;
+import com.lmp.api.repositories.PasswordResetTokenRepository;
 import com.lmp.api.repositories.PersonRepository;
 import com.lmp.api.repositories.ProviderRepository;
 import com.lmp.api.service.interfaces.PersonService;
@@ -25,6 +27,9 @@ public class PersonServiceImpl implements PersonService{
 	
 	@Autowired
 	private ProviderRepository providerRepository;
+	
+	@Autowired
+	private PasswordResetTokenRepository passwordResetTokenRepository;
 		
 	@Override
 	public Person findPersonByName(String username) {
@@ -90,5 +95,23 @@ public class PersonServiceImpl implements PersonService{
 	@Override
 	public Person findOne(long id) {
 		return this.personRepository.findOne(id);
+	}
+
+	@Override
+	public void createPasswordResetTokenForPerson(Person person, String token) {
+		PasswordResetToken passwordResetToken = new PasswordResetToken(person, token);
+		passwordResetTokenRepository.save(passwordResetToken);
+	}
+
+	@Override
+	public PasswordResetToken getPasswordResetToken(String token) {
+		return passwordResetTokenRepository.findFirstByToken(token);
+	}
+
+	@Override
+	public void changePassword(final Person person, final String password) {
+		person.setPassword(password);
+		this.personRepository.save(person);
+		
 	}
 }

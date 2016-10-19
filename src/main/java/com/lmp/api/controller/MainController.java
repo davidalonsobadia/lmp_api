@@ -4,13 +4,17 @@ package com.lmp.api.controller;
 import java.io.IOException;
 import java.io.InputStream;
 import java.io.StringReader;
+import java.io.UnsupportedEncodingException;
+import java.net.URLEncoder;
 import java.util.ArrayList;
 import java.util.Arrays;
+import java.util.Calendar;
 import java.util.Collection;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.Set;
+import java.util.UUID;
 
 import javax.json.Json;
 import javax.json.stream.JsonParser;
@@ -23,11 +27,16 @@ import org.json.JSONObject;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.context.annotation.PropertySource;
+import org.springframework.core.env.Environment;
 import org.springframework.http.HttpEntity;
 import org.springframework.http.HttpHeaders;
 import org.springframework.http.HttpMethod;
 import org.springframework.http.ResponseEntity;
+import org.springframework.mail.SimpleMailMessage;
+import org.springframework.mail.javamail.JavaMailSender;
 import org.springframework.web.bind.annotation.PathVariable;
+import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.RequestParam;
@@ -50,8 +59,11 @@ import com.google.api.client.util.store.MemoryDataStoreFactory;
 import com.lmp.api.model.Attribute;
 import com.lmp.api.model.AttributeMap;
 import com.lmp.api.model.Consumer;
+import com.lmp.api.model.GenericResponse;
+import com.lmp.api.model.PasswordResetToken;
 import com.lmp.api.model.Person;
 import com.lmp.api.model.Provider;
+import com.lmp.api.model.SavePasswordBody;
 import com.lmp.api.model.Sphere;
 import com.lmp.api.model.Token;
 import com.lmp.api.model.providers.ProviderOauthFactory;
@@ -59,18 +71,23 @@ import com.lmp.api.model.providers.ProviderOauthObject;
 import com.lmp.api.service.interfaces.AttributeMapService;
 import com.lmp.api.service.interfaces.AttributeService;
 import com.lmp.api.service.interfaces.ConsumerService;
+import com.lmp.api.service.interfaces.PasswordResetTokenService;
 import com.lmp.api.service.interfaces.PersonService;
 import com.lmp.api.service.interfaces.ProviderService;
 import com.lmp.api.service.interfaces.SphereService;
 import com.lmp.api.service.interfaces.TokenService;	
 
 @RestController
+@PropertySource("classpath:email.properties")
 public class MainController {
 	private static final Logger logger = LoggerFactory.getLogger(MainController.class);
 	
 	private AuthorizationCodeFlow authorizationCodeFlow;
 	
 	private static DataStoreFactory DATA_STORE_FACTORY;
+	
+	@Autowired
+	private Environment env;
 	
 	@Autowired
 	private PersonService personService;
@@ -93,12 +110,19 @@ public class MainController {
 	@Autowired
 	private SphereService sphereService;
 	
+	@Autowired
+	private PasswordResetTokenService passwordResetTokenService;
+	
+	//TODO: arreglar todo esto usando clases
 	private Person person;
 	
 	private Provider provider;
 	
 	//TODO: ARREGLAR ESTO POR DIOSSSS
-	private String referer; 
+	private String referer;
+	
+	@Autowired
+	private JavaMailSender mailSender;
 	
 	@Autowired
 	private ProviderOauthFactory providerOauthFactory;
@@ -531,19 +555,118 @@ public class MainController {
 	
 	@RequestMapping("/delete/provider/{providerId}/user/{userId}")
 	public void deleteToken(HttpServletRequest request,
-			HttpServletResponse response,
 			@PathVariable(value="providerId") int providerId,
 			@PathVariable(value="userId") int userId) throws IOException{
 		
 		Person person = personService.findOne(userId);
 		Provider provider = providerService.getProviderById(providerId);
 		Token token = tokenService.getToken(person, provider);
-		
 		personService.updatePersonProviderAssociation(providerId, userId);
 		
 		if(token != null) {
 			tokenService.deleteToken(token);
 		}
 	}
+
+	@RequestMapping(value = "/person/resetPassword", method = RequestMethod.GET)
+	public void resetPassword(
+			HttpServletRequest request,
+			@RequestParam("email") String email){
+
+		Person person = personService.findPersonByEmail(email);
+		if(person == null){
+			logger.error("person not found");
+			return;
+		}
+		String token = UUID.randomUUID().toString();
+		personService.createPasswordResetTokenForPerson(person, token);
+		SimpleMailMessage simpleMailMessage = createMailMessage(request, person, token);new SimpleMailMessage();
+		mailSender.send(simpleMailMessage);
+	}
+
+
+/*
+ *  METHOD NOT NEEDE IF WE CHANGE THE PASSWORD WITH AN API CLIENT
+ */
+//	@RequestMapping(value = "/person/changePassword", method = RequestMethod.GET)
+//	public GenericResponse changePassword(
+//			HttpServletRequest request,
+//			HttpServletResponse response,
+//			@RequestParam("email") String email,
+//			@RequestParam("token") String token) {
+//		
+//		String validatedToken = validatePasswordResetToken(email, token);
+//		GenericResponse genericResponse;
+//		
+//		if(validatedToken.equals("valid")){
+//			//success
+//			genericResponse = new GenericResponse("OK");
+//			response.setStatus(200);
+//		} else {
+//			logger.error("AN error happened when we try to change password");
+//			genericResponse = new GenericResponse(validatedToken, "401");
+//			response.setStatus(401);
+//		}
+//		return genericResponse;		
+//	}
+	
+	@RequestMapping(value="/person/savePassword", method=RequestMethod.POST)
+	public void savePassword(
+			HttpServletRequest request,
+			HttpServletResponse response,
+			@RequestBody SavePasswordBody input) {
+			
+		String validatedToken = validatePasswordResetToken(input.getEmail(), input.getToken());
+		if(validatedToken.equals("valid")){
+			Person person = personService.findPersonByEmail(input.getEmail());
+			personService.changePassword(person, input.getPassword());
+			passwordResetTokenService.deleteByToken(input.getToken());
+			response.setStatus(200);
+		} else {
+			logger.error("An error occurred validating the token...");
+			logger.error("ERROR: " + validatedToken);
+			response.setStatus(400);
+		}
+	}
+	
+	
+	// ------------------- NON API -------------------
+	
+	private SimpleMailMessage createMailMessage(HttpServletRequest request, Person person, String token) {		
+		SimpleMailMessage mailMessage = new SimpleMailMessage();
+//		String appUrl = "http://" + request.getServerName() +
+//				 ":" + request.getServerPort() +
+//				 request.getContextPath() +
+//				 "/person/changePassword";
+		String appUrl = env.getRequiredProperty("mail.reset.password.url");
+		try {
+			String emailText = "Hello " + person.getName() + ",\n\n" +
+		        "To create a new password please click the URL below:\n" +
+		        appUrl + "?" +
+		        "token=" + URLEncoder.encode(token, "UTF-8") +
+		        "&email=" + URLEncoder.encode(person.getEmail(), "UTF-8");	
+			mailMessage.setFrom(env.getRequiredProperty("smtp.username"));
+			mailMessage.setTo(person.getEmail());
+			mailMessage.setSubject("LMP password recovery request");
+			mailMessage.setText(emailText);
+		} catch (UnsupportedEncodingException e) {
+			logger.error("ERROR CREATING MAIL MESSAGE");
+			e.printStackTrace();
+		}
+		return mailMessage;
+	}
+	
+	private String validatePasswordResetToken(String email, String token) {
+        final PasswordResetToken passToken = personService.getPasswordResetToken(token);
+        final Person passPerson = personService.findPersonByEmail(email);
+        if ((passToken == null) || (passPerson == null) || (passToken.getPerson().getId() != passPerson.getId())) {
+            return "invalidToken";
+        }
+        final Calendar cal = Calendar.getInstance();
+        if ((passToken.getExiprationDate().getTime() - cal.getTime().getTime()) <= 0) {
+            return "token expired";
+        }
+        return "valid";
+    }
 }
 

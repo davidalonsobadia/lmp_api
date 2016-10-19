@@ -2,6 +2,7 @@ package com.lmp.api.service.interfaces;
 
 import java.util.Set;
 
+import com.lmp.api.model.PasswordResetToken;
 import com.lmp.api.model.Person;
 import com.lmp.api.model.Provider;
 import com.lmp.api.model.Sphere;
@@ -25,5 +26,11 @@ public interface PersonService {
 	void delete(Person person);
 
 	Person findOne(long id);
+
+	void createPasswordResetTokenForPerson(Person person, String token);
+
+	PasswordResetToken getPasswordResetToken(String token);
+
+	void changePassword(Person person, String password);
 
 }
