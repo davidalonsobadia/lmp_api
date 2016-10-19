@@ -1,15 +1,18 @@
 package com.lmp.api.model;
 
+import java.util.List;
+
 import javax.persistence.Entity;
 import javax.persistence.GeneratedValue;
 import javax.persistence.GenerationType;
 import javax.persistence.Id;
 import javax.persistence.ManyToOne;
+import javax.persistence.OneToMany;
 import javax.persistence.Table;
 
 @Entity
 @Table(name="person_and_entity_association")
-public class PersonOrganizationRelationship {
+public class PersonEntityRelationship {
 	
 	// State: ADMINISTRATOR, ASSOCIATED, REQUESTED_FROM_USER, REQUESTED_FROM_ENTITY
 	
@@ -22,6 +25,9 @@ public class PersonOrganizationRelationship {
 	
 	@ManyToOne
 	private Organization organization;
+	
+	@OneToMany(mappedBy = "personEntityRelationship")
+	private List<PersonEntityRelationshipAttribute> personEntityAttribute; 
 	
 	private String state;
 

@@ -58,7 +58,7 @@ public class Organization {
 		joinColumns={@JoinColumn(name="entity_id")},
 		inverseJoinColumns={@JoinColumn(name="associations_id")}
 	)
-	private List<PersonOrganizationRelationship> associations;
+	private List<PersonEntityRelationship> associations;
 	
 	
 	public long getId() {
@@ -125,11 +125,11 @@ public class Organization {
 		this.spheres = spheres;
 	}
 
-	public List<PersonOrganizationRelationship> getAssociations() {
+	public List<PersonEntityRelationship> getAssociations() {
 		return associations;
 	}
 
-	public void setAssociations(List<PersonOrganizationRelationship> associations) {
+	public void setAssociations(List<PersonEntityRelationship> associations) {
 		this.associations = associations;
 	}
 }

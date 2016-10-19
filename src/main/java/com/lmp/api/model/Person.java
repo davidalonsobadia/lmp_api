@@ -53,6 +53,19 @@ public class Person {
 	
 	private String description;
 	
+	private String company;
+	
+	private String jobPosition;
+	
+	@Column(name="is_legal", columnDefinition="boolean default false", nullable=false)
+	private boolean legal = false;
+	
+	@Column(name="is_client_role", columnDefinition="boolean default true", nullable=true)
+	private boolean clientRole = true;
+	
+	@Column(name="is_provider_role", columnDefinition="boolean default false", nullable=false)
+	private boolean providerRole = false;
+	
 	@ManyToMany
 	@JoinTable(name="person_has_consumers", 
 		joinColumns={@JoinColumn(name="person_id")},
@@ -80,7 +93,7 @@ public class Person {
 		joinColumns={@JoinColumn(name="person_id")},
 		inverseJoinColumns={@JoinColumn(name="association_id")}
 	)
-	private List<PersonOrganizationRelationship> associations;
+	private List<PersonEntityRelationship> associations;
 			
 	public Person(){}
 	
@@ -175,11 +188,11 @@ public class Person {
 		this.spheres = spheres;
 	}
 
-	public List<PersonOrganizationRelationship> getAssociations() {
+	public List<PersonEntityRelationship> getAssociations() {
 		return associations;
 	}
 
-	public void setAssociations(List<PersonOrganizationRelationship> associations) {
+	public void setAssociations(List<PersonEntityRelationship> associations) {
 		this.associations = associations;
 	}
 
@@ -221,5 +234,45 @@ public class Person {
 
 	public void setDescription(String description) {
 		this.description = description;
+	}
+
+	public String getCompany() {
+		return company;
+	}
+
+	public void setCompany(String company) {
+		this.company = company;
+	}
+
+	public String getJobPosition() {
+		return jobPosition;
+	}
+
+	public void setJobPosition(String jobPosition) {
+		this.jobPosition = jobPosition;
+	}
+
+	public boolean isLegal() {
+		return legal;
+	}
+
+	public void setLegal(boolean legal) {
+		this.legal = legal;
+	}
+
+	public boolean isClientRole() {
+		return clientRole;
+	}
+
+	public void setClientRole(boolean clientRole) {
+		this.clientRole = clientRole;
+	}
+
+	public boolean isProviderRole() {
+		return providerRole;
+	}
+
+	public void setProviderRole(boolean providerRole) {
+		this.providerRole = providerRole;
 	}
 }

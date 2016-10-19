@@ -16,13 +16,13 @@ public interface OrganizationRepository extends JpaRepository<Organization, Long
 	
 	Organization findFirstByEmail(@Param("email") String email);
 	
-	@Query("Select u.organization from PersonOrganizationRelationship u"
+	@Query("Select u.organization from PersonEntityRelationship u"
 			+ " JOIN u.person p"
 			+ " WHERE p.email LIKE :email"
 			+ " AND u.state LIKE :state")
 	List<Organization> findEntitiesByPersonEmailAndState(@Param("email") String email, @Param("state") String state);
 	
-	@Query("Select o from PersonOrganizationRelationship u"
+	@Query("Select o from PersonEntityRelationship u"
 			+ " JOIN u.organization o"
 			+ " JOIN u.person p"
 			+ " WHERE p.email LIKE :email")

@@ -18,13 +18,13 @@ public interface PersonRepository extends PagingAndSortingRepository<Person, Lon
 	
 	public Person findFirstByName(@Param("name") String name);
 			
-	@Query("Select u.person from PersonOrganizationRelationship u"
+	@Query("Select u.person from PersonEntityRelationship u"
 			+ " JOIN u.organization o"
 			+ " WHERE o.email LIKE :email"
 			+ " AND u.state LIKE :state")	
 	List<Person> findPeopleByEntityEmailAndState(@Param("email") String email, @Param("state") String state);
 	
-	@Query("Select p from PersonOrganizationRelationship u"
+	@Query("Select p from PersonEntityRelationship u"
 			+ " JOIN u.organization o"
 			+ " JOIN u.person p"
 			+ " WHERE o.email LIKE :email")
