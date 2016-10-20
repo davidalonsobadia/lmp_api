@@ -26,12 +26,12 @@ public class LoginController {
 	
 	@RequestMapping(value="/loginWithPasswordWSO2", method=RequestMethod.GET)
 	public ResponseEntity<?> loginWithPasswordWSO2(
-			@RequestParam String user,
+			@RequestParam String email,
 			@RequestParam String password){		
 		ResponseEntity<?> responseEntity;
 		try{
 			remoteUMClient.createRemoteUserStoreManager();
-			boolean isAuthenticated = remoteUMClient.remoteUserStoreManager.authenticate(user, password);
+			boolean isAuthenticated = remoteUMClient.remoteUserStoreManager.authenticate(email, password);
 			if (isAuthenticated)
 				responseEntity = new ResponseEntity<>(HttpStatus.OK);
 			else 

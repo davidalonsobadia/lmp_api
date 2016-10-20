@@ -17,6 +17,7 @@ import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.PropertySource;
 import org.springframework.core.env.Environment;
 import org.springframework.mail.javamail.JavaMailSenderImpl;
+import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.stereotype.Component;
 
 @Component
@@ -77,4 +78,9 @@ public class InitialConfigurations implements ApplicationRunner {
         mailSenderImpl.setJavaMailProperties(javaMailProps);
         return mailSenderImpl;
     }
+   
+   @Bean
+   public BCryptPasswordEncoder passwordEncoder(){
+	   return new BCryptPasswordEncoder();
+   }
 }

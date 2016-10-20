@@ -5,6 +5,8 @@ import java.util.List;
 import java.util.Set;
 
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
+import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -30,6 +32,9 @@ public class PersonServiceImpl implements PersonService{
 	
 	@Autowired
 	private PasswordResetTokenRepository passwordResetTokenRepository;
+	
+	@Autowired
+	private BCryptPasswordEncoder passwordEncoder;
 		
 	@Override
 	public Person findPersonByName(String username) {
@@ -118,7 +123,7 @@ public class PersonServiceImpl implements PersonService{
 	@Override
 	public boolean authenticate(String email, String password) {
 		Person person = personRepository.findFirstByEmail(email);
-		if((person != null) && (person.getPassword().equals(password)) ){
+		if((person != null) && (passwordEncoder.matches(password, person.getPassword())) ){
 			return true;
 		}
 		return false;
