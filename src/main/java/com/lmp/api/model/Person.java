@@ -16,8 +16,10 @@ import javax.persistence.ManyToMany;
 import javax.persistence.OneToMany;
 import javax.persistence.Table;
 
+import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.fasterxml.jackson.databind.annotation.JsonDeserialize;
 import com.lmp.api.utils.BCryptPasswordDeserializer;
+
 
 @Entity
 @Table(name="person")

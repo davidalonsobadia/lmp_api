@@ -10,8 +10,8 @@ import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 
-import com.lmp.api.service.interfaces.PersonService;
 import com.lmp.api.utils.RemoteUMClient;
+import com.lmp.api.service.interfaces.PersonService;
 
 @RestController
 public class LoginController {
@@ -26,12 +26,12 @@ public class LoginController {
 	
 	@RequestMapping(value="/loginWithPasswordWSO2", method=RequestMethod.GET)
 	public ResponseEntity<?> loginWithPasswordWSO2(
-			@RequestParam String email,
+			@RequestParam String user,
 			@RequestParam String password){		
 		ResponseEntity<?> responseEntity;
 		try{
 			remoteUMClient.createRemoteUserStoreManager();
-			boolean isAuthenticated = remoteUMClient.remoteUserStoreManager.authenticate(email, password);
+			boolean isAuthenticated = remoteUMClient.remoteUserStoreManager.authenticate(user, password);
 			if (isAuthenticated)
 				responseEntity = new ResponseEntity<>(HttpStatus.OK);
 			else 
