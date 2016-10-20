@@ -16,6 +16,14 @@ import javax.persistence.ManyToMany;
 import javax.persistence.OneToMany;
 import javax.persistence.Table;
 
+<<<<<<< HEAD
+=======
+import com.fasterxml.jackson.annotation.JsonIgnore;
+import com.fasterxml.jackson.databind.annotation.JsonDeserialize;
+import com.lmp.api.utils.BCryptPasswordDeserializer;
+
+
+>>>>>>> 72ef19a... Added encrypted password
 @Entity
 @Table(name="person")
 public class Person {
@@ -34,6 +42,7 @@ public class Person {
 	@Column(unique=true, nullable=false)
 	private String email;
 	
+	@JsonDeserialize(using = BCryptPasswordDeserializer.class )
 	private String password;
 	
 	@Column(unique=true, nullable=false)

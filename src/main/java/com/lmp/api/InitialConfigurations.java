@@ -17,6 +17,8 @@ import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.PropertySource;
 import org.springframework.core.env.Environment;
 import org.springframework.mail.javamail.JavaMailSenderImpl;
+import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
+import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Component;
 
 @Component
@@ -73,9 +75,13 @@ public class InitialConfigurations implements ApplicationRunner {
         javaMailProps.put("mail.smtp.auth", env.getRequiredProperty("mail.smtp.auth"));
         javaMailProps.put("mail.smtp.starttls.enable", env.getRequiredProperty("mail.smtp.starttls.enable"));
         // To see what is going on behind the scene
-        javaMailProps.put("mail.debug", env.getProperty("mail.debug"));
-                        
+        javaMailProps.put("mail.debug", env.getProperty("mail.debug"));          
         mailSenderImpl.setJavaMailProperties(javaMailProps);
         return mailSenderImpl;
     }
+   
+   @Bean
+   public BCryptPasswordEncoder passwordEncoder() {
+       return new BCryptPasswordEncoder();
+   }
 }

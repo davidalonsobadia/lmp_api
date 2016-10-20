@@ -114,4 +114,13 @@ public class PersonServiceImpl implements PersonService{
 		this.personRepository.save(person);
 		
 	}
+
+	@Override
+	public boolean authenticate(String email, String password) {
+		Person person = personRepository.findFirstByEmail(email);
+		if((person != null) && (person.getPassword().equals(password)) ){
+			return true;
+		}
+		return false;
+	}
 }

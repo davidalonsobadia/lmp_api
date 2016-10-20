@@ -33,4 +33,6 @@ public interface PersonService {
 
 	void changePassword(Person person, String password);
 
+	boolean authenticate(String user, String password);
+
 }
