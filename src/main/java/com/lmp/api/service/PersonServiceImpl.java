@@ -123,7 +123,7 @@ public class PersonServiceImpl implements PersonService{
 	@Override
 	public boolean authenticate(String email, String password) {
 		Person person = personRepository.findFirstByEmail(email);
-		if((person != null) && (person.getPassword().equals(password)) ){
+		if((person != null) && (passwordEncoder.matches(password, person.getPassword())) ){
 			return true;
 		}
 		return false;
