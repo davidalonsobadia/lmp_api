@@ -1,4 +1,4 @@
-package com.lmp.api;
+package com.lmp.api.utils;
 
 import org.apache.axis2.context.ConfigurationContext;
 import org.apache.axis2.context.ConfigurationContextFactory;

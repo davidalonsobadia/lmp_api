@@ -10,8 +10,8 @@ import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 
-import com.lmp.api.RemoteUMClient;
 import com.lmp.api.service.interfaces.PersonService;
+import com.lmp.api.utils.RemoteUMClient;
 
 @RestController
 public class LoginController {
