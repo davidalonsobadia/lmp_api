@@ -534,7 +534,7 @@ public class MainController {
 		}
 		String token = UUID.randomUUID().toString();
 		personService.createPasswordResetTokenForPerson(person, token);
-		SimpleMailMessage simpleMailMessage = createMailMessage(request, person, token, recoverUrl);
+		SimpleMailMessage simpleMailMessage = createMailMessage(request, person, token);
 		mailSender.send(simpleMailMessage);
 	}
 
