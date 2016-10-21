@@ -1,11 +1,15 @@
 package com.lmp.api.model;
 
+import com.fasterxml.jackson.databind.annotation.JsonDeserialize;
+import com.lmp.api.utils.BCryptPasswordDeserializer;
+
 public class SavePasswordBody {
 
 	private String email;
 	
 	private String token;
 	
+	@JsonDeserialize(using = BCryptPasswordDeserializer.class )
 	private String password;
 	
 	public SavePasswordBody(){	
