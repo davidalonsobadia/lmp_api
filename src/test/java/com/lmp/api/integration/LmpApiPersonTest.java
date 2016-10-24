@@ -3,6 +3,7 @@ package com.lmp.api.integration;
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertNotNull;
 import static org.junit.Assert.assertNull;
+import static org.junit.Assert.assertTrue;
 
 import java.util.Collections;
 import java.util.HashMap;
@@ -20,6 +21,7 @@ import org.springframework.http.HttpHeaders;
 import org.springframework.http.HttpMethod;
 import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.test.context.junit4.SpringJUnit4ClassRunner;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
@@ -42,6 +44,9 @@ public class LmpApiPersonTest {
 		
 	@Autowired
 	private PersonRepository personRepository;
+	
+	@Autowired
+	private BCryptPasswordEncoder passwordEncoder;
 	
 	@Test
 	public void CRUDPerson() throws Exception{
@@ -73,18 +78,19 @@ public class LmpApiPersonTest {
 	    assertNotNull(apiPostResponse);
 	    assertEquals(requestBodyJson.get("name"), apiPostResponse.get("name"));
 	    assertEquals(requestBodyJson.get("surname"), apiPostResponse.get("surname"));
-	    assertEquals(requestBodyJson.get("email"), apiPostResponse.get("email"));
+	    assertEquals(requestBodyJson.get("email"), apiPostResponse.get("email")); 
+	    assertTrue(passwordEncoder.matches(requestBodyJson.get("password").toString(), apiPostResponse.get("password").toString()));
 	    assertEquals(requestBodyJson.get("phone"), apiPostResponse.get("phone"));
-	    assertEquals(requestBodyJson.get("password"), apiPostResponse.get("password"));
 	    assertEquals(requestBodyJson.get("identifier"), apiPostResponse.get("identifier"));
 	    
 	    
-	    Person person = personRepository.findFirstByEmail(apiPostResponse.get("email").toString());
-	    long personId = person.getId();
+	    
 	    
 	    /**
 	     * TESTING METHOD GET
 	     */
+	    Person person = personRepository.findFirstByEmail(apiPostResponse.get("email").toString());
+	    long personId = person.getId();
 	    
 	    Person apiGetResponse = 
 		        restTemplate.getForObject(PERSON_URL+personId, Person.class);
@@ -94,15 +100,15 @@ public class LmpApiPersonTest {
 	    assertEquals(requestBodyJson.get("surname"), apiGetResponse.getSurname());
 	    assertEquals(requestBodyJson.get("email"), apiGetResponse.getEmail());
 	    assertEquals(requestBodyJson.get("phone"), apiGetResponse.getPhone());
-	    assertEquals(requestBodyJson.get("password"), apiGetResponse.getPassword());
 	    assertEquals(requestBodyJson.get("identifier"), apiGetResponse.getIdentifier());
 	    
-		requestBodyJson.put("password", "patata");
-		httpEntity = new HttpEntity<String>(OBJECT_MAPPER.writeValueAsString(requestBodyJson), requestHeaders);
+
 		
 	    /**
 	     * TESTING METHOD PUT (UPDATE)
 	     */
+		requestBodyJson.put("password", "boniato");
+		httpEntity = new HttpEntity<String>(OBJECT_MAPPER.writeValueAsString(requestBodyJson), requestHeaders);
 		
 	    Map<String, Object> apiUpdateResponse =
 	    		(Map)restTemplate.exchange(PERSON_URL + personId, 
@@ -113,7 +119,6 @@ public class LmpApiPersonTest {
 	    assertEquals(requestBodyJson.get("surname"), apiUpdateResponse.get("surname"));
 	    assertEquals(requestBodyJson.get("email"), apiUpdateResponse.get("email"));
 	    assertEquals(requestBodyJson.get("phone"), apiUpdateResponse.get("phone"));
-	    assertEquals(requestBodyJson.get("password"), apiUpdateResponse.get("password"));
 	    assertEquals(requestBodyJson.get("identifier"), apiUpdateResponse.get("identifier"));
 	    
 	    
@@ -131,28 +136,28 @@ public class LmpApiPersonTest {
 	@Test
 	public void loginPerson(){
 		
-		String loginUrl = API_URL + "loginWithPassword?user={user}&password={password}";
+		String loginUrl = API_URL + "loginWithPassword?email={email}&password={password}";
 		
 		// OK -- AUTHORIZED
-		String user2 = "david.alonsobadia@gmail.com";
-		String password2 = "123456";
+		String email = "david.alonso@eurecat.org";
+		String password = "123456";
 		Map<String, String> urlVariables2 = new HashMap<String, String>();
-		urlVariables2.put("user", user2);
-		urlVariables2.put("password", password2);
-		ResponseEntity response2 = restTemplate.getForEntity(loginUrl, Object.class, urlVariables2);
-		assertNotNull(response2);
-		assertEquals(200, response2.getStatusCodeValue());
+		urlVariables2.put("email", email);
+		urlVariables2.put("password", password);
+		ResponseEntity<Object> response = restTemplate.getForEntity(loginUrl, Object.class, urlVariables2);
+		assertNotNull(response);
+		assertEquals(200, response.getStatusCodeValue());
 				
 		
 		// NOT OK --- UNAUTHORIZED
-		String user = "david.alonsobadia@gmail.com";
-		String password = "1234567";
+		String email2 = "david.alonso@eurecat.org";
+		String password2 = "1234567";
 		Map<String, String> urlVariables = new HashMap<String, String>();
-		urlVariables.put("user", user);
-		urlVariables.put("password", password);
-		ResponseEntity response = restTemplate.getForEntity(loginUrl, Object.class, urlVariables);
-		assertNotNull(response);
-		assertEquals(401, response.getStatusCodeValue());
+		urlVariables.put("email", email2);
+		urlVariables.put("password", password2);
+		ResponseEntity<Object> response2 = restTemplate.getForEntity(loginUrl, Object.class, urlVariables);
+		assertNotNull(response2);
+		assertEquals(401, response2.getStatusCodeValue());
 
 	}
 		
