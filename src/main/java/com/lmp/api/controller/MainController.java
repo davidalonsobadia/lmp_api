@@ -571,7 +571,8 @@ public class MainController {
 	@RequestMapping(value = "/person/resetPassword", method = RequestMethod.GET)
 	public void resetPassword(
 			HttpServletRequest request,
-			@RequestParam("email") String email){
+			@RequestParam("email") String email,
+			@RequestParam("recoverUrl") String recoverUrl){
 
 		Person person = personService.findPersonByEmail(email);
 		if(person == null){
@@ -580,7 +581,7 @@ public class MainController {
 		}
 		String token = UUID.randomUUID().toString();
 		personService.createPasswordResetTokenForPerson(person, token);
-		SimpleMailMessage simpleMailMessage = createMailMessage(request, person, token);
+		SimpleMailMessage simpleMailMessage = createMailMessage(request, person, token, recoverUrl);
 		mailSender.send(simpleMailMessage);
 	}
 
@@ -632,17 +633,18 @@ public class MainController {
 	
 	// ------------------- NON API -------------------
 	
-	private SimpleMailMessage createMailMessage(HttpServletRequest request, Person person, String token) {		
+	private SimpleMailMessage createMailMessage(HttpServletRequest request, 
+			Person person, String token, String recoverUrl) {		
 		SimpleMailMessage mailMessage = new SimpleMailMessage();
 //		String appUrl = "http://" + request.getServerName() +
 //				 ":" + request.getServerPort() +
 //				 request.getContextPath() +
 //				 "/person/changePassword";
-		String appUrl = env.getRequiredProperty("mail.reset.password.url");
+		//tring appUrl = env.getRequiredProperty("mail.reset.password.url");
 		try {
 			String emailText = "Hello " + person.getName() + ",\n\n" +
 		        "To create a new password please click the URL below:\n" +
-		        appUrl + "?" +
+		        recoverUrl + "?" +
 		        "token=" + URLEncoder.encode(token, "UTF-8") +
 		        "&email=" + URLEncoder.encode(person.getEmail(), "UTF-8");	
 			mailMessage.setFrom(env.getRequiredProperty("smtp.username"));
