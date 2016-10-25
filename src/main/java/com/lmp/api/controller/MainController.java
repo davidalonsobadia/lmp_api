@@ -534,7 +534,7 @@ public class MainController {
 		}
 		String token = UUID.randomUUID().toString();
 		personService.createPasswordResetTokenForPerson(person, token);
-		SimpleMailMessage simpleMailMessage = createMailMessage(request, person, token);
+		SimpleMailMessage simpleMailMessage = createMailMessage(request, person, token, recoverUrl);
 		mailSender.send(simpleMailMessage);
 	}
 
@@ -563,7 +563,11 @@ public class MainController {
 	private SimpleMailMessage createMailMessage(HttpServletRequest request, 
 			Person person, String token, String recoverUrl) {		
 		SimpleMailMessage mailMessage = new SimpleMailMessage();
-
+//		String appUrl = "http://" + request.getServerName() +
+//				 ":" + request.getServerPort() +
+//				 request.getContextPath() +
+//				 "/person/changePassword";
+		//tring appUrl = env.getRequiredProperty("mail.reset.password.url");
 		try {
 			String emailText = "Hello " + person.getName() + ",\n\n" +
 		        "To create a new password please click the URL below:\n" +
