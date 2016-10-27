@@ -1,5 +1,7 @@
 package com.lmp.api.repositories;
 
+import java.util.List;
+
 import org.springframework.data.jpa.repository.Query;
 import org.springframework.data.repository.PagingAndSortingRepository;
 import org.springframework.data.repository.query.Param;
@@ -10,16 +12,16 @@ import com.lmp.api.model.Token;
 
 public interface TokenRepository extends PagingAndSortingRepository<Token, Long> {
 
-	@Query("SELECT token "
-			  +" FROM Token token "
-			  +" JOIN token.person per"
-			  +" JOIN token.provider pro "
-			  +" WHERE pro.name LIKE :providerName AND per.email LIKE :email "
+	@Query("SELECT tok "
+			  +" FROM Token tok "
+			  +" JOIN tok.person per"
+			  +" JOIN tok.provider pro "
+			  +" WHERE pro.name LIKE :provider AND per.email LIKE :email "
 			)
-	Token findTokenByProviderNameAndUserEmail(
+	List<Token> findTokensByProviderNameAndUserEmail(
 			@Param("provider") String providerName,
 			@Param("email") String userEmail);
 
 	
-	Token findTokenByPersonAndProvider(Person person, Provider provider);
+	List<Token> findTokensByPersonAndProvider(Person person, Provider provider);
 }

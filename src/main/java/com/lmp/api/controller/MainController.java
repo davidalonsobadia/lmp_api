@@ -59,7 +59,6 @@ import com.google.api.client.util.store.MemoryDataStoreFactory;
 import com.lmp.api.model.Attribute;
 import com.lmp.api.model.AttributeMap;
 import com.lmp.api.model.Consumer;
-import com.lmp.api.model.GenericResponse;
 import com.lmp.api.model.PasswordResetToken;
 import com.lmp.api.model.Person;
 import com.lmp.api.model.Provider;
@@ -84,7 +83,7 @@ public class MainController {
 	
 	private AuthorizationCodeFlow authorizationCodeFlow;
 	
-	private static DataStoreFactory DATA_STORE_FACTORY;
+	//private static DataStoreFactory DATA_STORE_FACTORY;
 	
 	@Autowired
 	private Environment env;
@@ -114,12 +113,12 @@ public class MainController {
 	private PasswordResetTokenService passwordResetTokenService;
 	
 	//TODO: arreglar todo esto usando clases
-	private Person person;
+	//private Person person;
 	
-	private Provider provider;
+	//private Provider provider;
 	
 	//TODO: ARREGLAR ESTO POR DIOSSSS
-	private String referer;
+	//private String referer;
 	
 	@Autowired
 	private JavaMailSender mailSender;
@@ -127,7 +126,7 @@ public class MainController {
 	@Autowired
 	private ProviderOauthFactory providerOauthFactory;
 	
-	private ProviderOauthObject providerOauth;
+	//private ProviderOauthObject providerOauth;
 	
 	@RequestMapping("/getAttribute")
 	public Map<String, String> getAttribute(
@@ -312,7 +311,7 @@ public class MainController {
 //    	//1.1 Get the provider
 //    	Provider provider = providerService.getProviderDao(providerName);
     	
-    	providerOauth = providerOauthFactory.getProviderOauthObject(provider.getName());
+    	ProviderOauthObject providerOauth = providerOauthFactory.getProviderOauthObject(provider.getName());
     	
     	// 2. Check whether the user has an access token.
     	Token token = tokenService.getToken(person, provider);
@@ -426,101 +425,100 @@ public class MainController {
     	}
     }
     
-	@RequestMapping(value = "/createNewToken", method = RequestMethod.GET)
+	@RequestMapping(value = "/authorizationUrl", method = RequestMethod.GET)
 	@ResponseBody
-    public void createNewToken(
+    public Map<String,String> authorizationUrl(
     		@RequestParam(value="provider", required=true) String providerName,
     		@RequestParam(value="email", required=true) String userEmail,
+    		@RequestParam(value="redirectUrl", required=true) String redirectUrl,
     		HttpServletRequest httpServletRequest,
     		HttpServletResponse httpServletResponse) throws IOException{
-				
 		logger.info("creating new token for provider: " + providerName);
 		
-		referer = httpServletRequest.getHeader("Referer");
-		
-    	person = personService.findPersonByEmail(userEmail);
-    	    	
-    	provider = providerService.getProviderByName(providerName);
 
-		providerOauth = providerOauthFactory.getProviderOauthObject(providerName);
+		ProviderOauthObject providerOauth = providerOauthFactory.getProviderOauthObject(providerName);
 				
-		DATA_STORE_FACTORY = new MemoryDataStoreFactory();
+		authorizationCodeFlow = createAuthorizationCodeFlow(providerOauth);
+		
+		//we supose it arrives not encoded
+		//logger.warn("redirectUrl: " + redirectUrl);		
 				
-		authorizationCodeFlow = new AuthorizationCodeFlow.Builder(
-				BearerToken.authorizationHeaderAccessMethod(),
-				new NetHttpTransport(),
-				new JacksonFactory(),
-				new GenericUrl(providerOauth.getAccessTokenUrl()),
-				new ClientParametersAuthentication(
-						providerOauth.getClientId(),
-						providerOauth.getSecretId()),
-				providerOauth.getClientId(),
-				providerOauth.getAuthorizationUrl()
-			)
-			.setScopes(Arrays.asList(providerOauth.getScope()))
-			.setDataStoreFactory(DATA_STORE_FACTORY)
-			.build();
+		AuthorizationCodeRequestUrl authorizationCodeRequestUrl = createAuthorizationCodeRequestUrl(authorizationCodeFlow, 
+				providerOauth, redirectUrl);
+				
+		String authorizationUrl = authorizationCodeRequestUrl.build();
 		
-		AuthorizationCodeRequestUrl authorizationCodeRequestUrl =  authorizationCodeFlow.newAuthorizationUrl();
-		
-		Collection<String> responseTypes = new ArrayList<String>();
-		responseTypes.add(providerOauth.getResponseType());
-		
-		authorizationCodeRequestUrl.setResponseTypes(responseTypes);
-		
-		// authorizationUriAddress for LOCALHOST:
-		String authorizationUriAddress = "http://" + httpServletRequest.getHeader("Host") + providerOauth.getRedirectAuthorizationUri();
-		// authorizationUriAddress for others:
-		//String authorizationUriAddress = "http://" + httpServletRequest.getHeader("Host") + "/LmpApi" + providerOauth.getRedirectAuthorizationUri();
-		//String authorizationUriAddress = "http://" + "84.88.79.211" + "/LmpApi" + providerOauth.getRedirectAuthorizationUri();
-
-		logger.info("--------------------------------------------------------------");
-		logger.info("authorization redirect address: " + authorizationUriAddress);
-		logger.info("--------------------------------------------------------------");
-		
-		authorizationCodeRequestUrl.setRedirectUri(authorizationUriAddress);
-		authorizationCodeRequestUrl.setState(providerOauth.getState());
-		
-		String url = authorizationCodeRequestUrl.build();
+		logger.info("authorization code request Url: " + authorizationUrl);
 					
-		// Redirection to authorization page
-		httpServletResponse.setStatus(302);
-		httpServletResponse.setHeader("Location", url);
-		httpServletResponse.setHeader("referer", httpServletRequest.getHeader("referer"));
+		Map<String, String> responseMap = new HashMap<>();
+		
+		responseMap.put("authorizationUrl", authorizationUrl);
+		responseMap.put("provider", providerName);
+		responseMap.put("email", userEmail);
+		
+		return responseMap;
+		
 
 	}
 	
+	private AuthorizationCodeRequestUrl createAuthorizationCodeRequestUrl(AuthorizationCodeFlow authorizationCodeFlow,
+			ProviderOauthObject providerOauth,
+			String redirectUrl) {
+		
+		AuthorizationCodeRequestUrl authorizationCodeRequestUrl = authorizationCodeFlow.newAuthorizationUrl();
+		
+		Collection<String> responseTypes = new ArrayList<String>();
+		responseTypes.add(providerOauth.getResponseType());
+	
+		authorizationCodeRequestUrl.setResponseTypes(responseTypes);
+		authorizationCodeRequestUrl.setRedirectUri(redirectUrl);
+		authorizationCodeRequestUrl.setState(providerOauth.getState());
+		
+		return authorizationCodeRequestUrl;
+	}
+
+	private AuthorizationCodeFlow createAuthorizationCodeFlow(ProviderOauthObject providerOauthObj) throws IOException {
+		return new AuthorizationCodeFlow.Builder(
+				BearerToken.authorizationHeaderAccessMethod(),
+				new NetHttpTransport(),
+				new JacksonFactory(),
+				new GenericUrl(providerOauthObj.getAccessTokenUrl()),
+				new ClientParametersAuthentication(
+						providerOauthObj.getClientId(),
+						providerOauthObj.getSecretId()),
+				providerOauthObj.getClientId(),
+				providerOauthObj.getAuthorizationUrl()
+			)
+			.setScopes(Arrays.asList(providerOauthObj.getScope()))
+			.setDataStoreFactory(new MemoryDataStoreFactory())
+			.build();
+	}
+
+
 	@SuppressWarnings("unchecked")
-	@RequestMapping("/authorization")
-	public void authorize(HttpServletRequest httpServletRequest,
-			HttpServletResponse httpServletResponse) throws IOException {
+	@RequestMapping("/newToken")
+	public String newToken(HttpServletRequest httpServletRequest,
+			HttpServletResponse httpServletResponse,
+			@RequestParam(value="provider") String providerName,
+			@RequestParam(value="email") String userEmail,
+			@RequestParam(value="redirectUrl") String redirectUrl,
+			@RequestParam(value="code") String authorizationCode) throws IOException {
 		logger.info("in authorize");
 		//error in authorization code response
 		String error = httpServletRequest.getParameter("error");
 		if(error != null){
 			logger.error(error);
 			logger.error(httpServletRequest.getParameter("error_description"));
+			
+			return null;
 		
 		} else {
 			
-				
-			String authorizationCode = httpServletRequest.getParameter(providerOauth.getAuthorizationCodeParameter());
+			ProviderOauthObject providerOauthObj = providerOauthFactory.getProviderOauthObject(providerName);			
 			
-			AuthorizationCodeTokenRequest authorizationCodeTokenRequest = authorizationCodeFlow.newTokenRequest(authorizationCode);
-			
-			authorizationCodeTokenRequest.setRequestInitializer(providerOauth.getRequestInitializer());
-			
-			authorizationCodeTokenRequest.setGrantType(providerOauth.getGrantType());
-			
-			// authorizationUriAddress for LOCALHOST:
-			String authorizationUriAddress = "http://" + httpServletRequest.getHeader("Host") + providerOauth.getRedirectAuthorizationUri();
-			// authorizationUriAddress for others:
-			//String authorizationUriAddress = "http://" + httpServletRequest.getHeader("Host") + "/LmpApi" + providerOauth.getRedirectAuthorizationUri();
-			//String authorizationUriAddress = "http://" + "84.88.79.211" + "/LmpApi" + providerOauth.getRedirectAuthorizationUri();
-
-			
-			authorizationCodeTokenRequest.setRedirectUri(authorizationUriAddress);
-			
+			AuthorizationCodeTokenRequest authorizationCodeTokenRequest = createAuthorizationCodeTokenRequest(authorizationCode, 
+					providerOauthObj, redirectUrl);
+						
 			HttpResponse httpResponse = authorizationCodeTokenRequest.executeUnparsed();
 			
 			InputStream inputStreamResponse = httpResponse.getContent();
@@ -528,31 +526,56 @@ public class MainController {
 			ObjectMapper mapper = new ObjectMapper();
 			Map<String, Object> jsonMap = mapper.readValue(stringResponse, Map.class);
 			
-			String accessToken = jsonMap.get(providerOauth.getAccessTokenParameter()).toString(); 
-			
-			Token oldToken = tokenService.getToken(person, provider);
-			
-			// habia un token viejo...
+			String accessToken = jsonMap.get(providerOauthObj.getAccessTokenParameter()).toString(); 
+						
+			Token oldToken = tokenService.getToken(
+					personService.findPersonByEmail(userEmail),
+					providerService.getProviderByName(providerName));
+			// There was an old token inside.. delete it
 			if (oldToken != null){
 				tokenService.deleteToken(oldToken);
 			}
 			
-			Token token = new Token();
-			token.setToken(accessToken);
-			token.setPerson(person);
-			token.setProvider(provider);
-			
-			tokenService.addPersonProviderToken(token);
+			Token token = createToken(userEmail, providerName, accessToken);
 						
-			personService.addProvider(person, provider);
+			return token.getToken();
 	
 		}
 		
-		httpServletResponse.setStatus(302); 
-		httpServletResponse.setHeader("location", referer);
-		
 	}
+
 	
+	private Token createToken(String userEmail, String providerName, String accessToken) {
+		Person person = personService.findPersonByEmail(userEmail);
+		Provider provider = providerService.getProviderByName(providerName);
+		
+		Token token = new Token();
+		token.setToken(accessToken);
+		token.setPerson(person);
+		token.setProvider(provider);
+		
+		tokenService.addPersonProviderToken(token);
+		personService.addProvider(person, provider);
+		
+		return token;
+	}
+
+	private AuthorizationCodeTokenRequest createAuthorizationCodeTokenRequest(
+			String authorizationCode, 
+			ProviderOauthObject providerOauthObj,
+			String redirectUrl) {
+		
+		AuthorizationCodeTokenRequest authorizationCodeTokenRequest = authorizationCodeFlow.newTokenRequest(authorizationCode);
+			authorizationCodeTokenRequest.setRequestInitializer(providerOauthObj.getRequestInitializer());
+			authorizationCodeTokenRequest.setGrantType(providerOauthObj.getGrantType());
+			authorizationCodeTokenRequest.setRedirectUri(redirectUrl);
+		
+		logger.info(authorizationCodeTokenRequest.getRedirectUri());
+		logger.info(authorizationCodeTokenRequest.getGrantType());
+		
+		return authorizationCodeTokenRequest;
+	}
+
 	@RequestMapping("/delete/provider/{providerId}/user/{userId}")
 	public void deleteToken(HttpServletRequest request,
 			@PathVariable(value="providerId") int providerId,

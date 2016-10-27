@@ -1,5 +1,7 @@
 package com.lmp.api.service;
 
+import java.util.List;
+
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
@@ -19,7 +21,12 @@ public class TokenServiceImpl implements TokenService{
 	
 	@Override
 	public Token getToken(Person person, Provider provider){
-		return tokenRepository.findTokenByPersonAndProvider(person, provider);
+		List<Token> tokenList = tokenRepository.findTokensByPersonAndProvider(person, provider);
+		if (tokenList != null && tokenList.size() > 0 )
+			return tokenList.get(0);
+		else
+			return null;
+			
 	}
 	
 	@Override
