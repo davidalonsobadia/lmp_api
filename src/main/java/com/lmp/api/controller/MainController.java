@@ -439,10 +439,7 @@ public class MainController {
 		ProviderOauthObject providerOauth = providerOauthFactory.getProviderOauthObject(providerName);
 				
 		authorizationCodeFlow = createAuthorizationCodeFlow(providerOauth);
-		
-		//we supose it arrives not encoded
-		//logger.warn("redirectUrl: " + redirectUrl);		
-				
+						
 		AuthorizationCodeRequestUrl authorizationCodeRequestUrl = createAuthorizationCodeRequestUrl(authorizationCodeFlow, 
 				providerOauth, redirectUrl);
 				
@@ -457,43 +454,8 @@ public class MainController {
 		responseMap.put("email", userEmail);
 		
 		return responseMap;
-		
-
 	}
 	
-	private AuthorizationCodeRequestUrl createAuthorizationCodeRequestUrl(AuthorizationCodeFlow authorizationCodeFlow,
-			ProviderOauthObject providerOauth,
-			String redirectUrl) {
-		
-		AuthorizationCodeRequestUrl authorizationCodeRequestUrl = authorizationCodeFlow.newAuthorizationUrl();
-		
-		Collection<String> responseTypes = new ArrayList<String>();
-		responseTypes.add(providerOauth.getResponseType());
-	
-		authorizationCodeRequestUrl.setResponseTypes(responseTypes);
-		authorizationCodeRequestUrl.setRedirectUri(redirectUrl);
-		authorizationCodeRequestUrl.setState(providerOauth.getState());
-		
-		return authorizationCodeRequestUrl;
-	}
-
-	private AuthorizationCodeFlow createAuthorizationCodeFlow(ProviderOauthObject providerOauthObj) throws IOException {
-		return new AuthorizationCodeFlow.Builder(
-				BearerToken.authorizationHeaderAccessMethod(),
-				new NetHttpTransport(),
-				new JacksonFactory(),
-				new GenericUrl(providerOauthObj.getAccessTokenUrl()),
-				new ClientParametersAuthentication(
-						providerOauthObj.getClientId(),
-						providerOauthObj.getSecretId()),
-				providerOauthObj.getClientId(),
-				providerOauthObj.getAuthorizationUrl()
-			)
-			.setScopes(Arrays.asList(providerOauthObj.getScope()))
-			.setDataStoreFactory(new MemoryDataStoreFactory())
-			.build();
-	}
-
 
 	@SuppressWarnings("unchecked")
 	@RequestMapping("/newToken")
@@ -544,38 +506,6 @@ public class MainController {
 		
 	}
 
-	
-	private Token createToken(String userEmail, String providerName, String accessToken) {
-		Person person = personService.findPersonByEmail(userEmail);
-		Provider provider = providerService.getProviderByName(providerName);
-		
-		Token token = new Token();
-		token.setToken(accessToken);
-		token.setPerson(person);
-		token.setProvider(provider);
-		
-		tokenService.addPersonProviderToken(token);
-		personService.addProvider(person, provider);
-		
-		return token;
-	}
-
-	private AuthorizationCodeTokenRequest createAuthorizationCodeTokenRequest(
-			String authorizationCode, 
-			ProviderOauthObject providerOauthObj,
-			String redirectUrl) {
-		
-		AuthorizationCodeTokenRequest authorizationCodeTokenRequest = authorizationCodeFlow.newTokenRequest(authorizationCode);
-			authorizationCodeTokenRequest.setRequestInitializer(providerOauthObj.getRequestInitializer());
-			authorizationCodeTokenRequest.setGrantType(providerOauthObj.getGrantType());
-			authorizationCodeTokenRequest.setRedirectUri(redirectUrl);
-		
-		logger.info(authorizationCodeTokenRequest.getRedirectUri());
-		logger.info(authorizationCodeTokenRequest.getGrantType());
-		
-		return authorizationCodeTokenRequest;
-	}
-
 	@RequestMapping("/delete/provider/{providerId}/user/{userId}")
 	public void deleteToken(HttpServletRequest request,
 			@PathVariable(value="providerId") int providerId,
@@ -608,32 +538,6 @@ public class MainController {
 		mailSender.send(simpleMailMessage);
 	}
 
-
-/*
- *  METHOD NOT NEEDE IF WE CHANGE THE PASSWORD WITH AN API CLIENT
- */
-//	@RequestMapping(value = "/person/changePassword", method = RequestMethod.GET)
-//	public GenericResponse changePassword(
-//			HttpServletRequest request,
-//			HttpServletResponse response,
-//			@RequestParam("email") String email,
-//			@RequestParam("token") String token) {
-//		
-//		String validatedToken = validatePasswordResetToken(email, token);
-//		GenericResponse genericResponse;
-//		
-//		if(validatedToken.equals("valid")){
-//			//success
-//			genericResponse = new GenericResponse("OK");
-//			response.setStatus(200);
-//		} else {
-//			logger.error("AN error happened when we try to change password");
-//			genericResponse = new GenericResponse(validatedToken, "401");
-//			response.setStatus(401);
-//		}
-//		return genericResponse;		
-//	}
-	
 	@RequestMapping(value="/person/savePassword", method=RequestMethod.POST)
 	public void savePassword(
 			HttpServletRequest request,
@@ -659,11 +563,7 @@ public class MainController {
 	private SimpleMailMessage createMailMessage(HttpServletRequest request, 
 			Person person, String token, String recoverUrl) {		
 		SimpleMailMessage mailMessage = new SimpleMailMessage();
-//		String appUrl = "http://" + request.getServerName() +
-//				 ":" + request.getServerPort() +
-//				 request.getContextPath() +
-//				 "/person/changePassword";
-		//tring appUrl = env.getRequiredProperty("mail.reset.password.url");
+
 		try {
 			String emailText = "Hello " + person.getName() + ",\n\n" +
 		        "To create a new password please click the URL below:\n" +
@@ -693,5 +593,70 @@ public class MainController {
         }
         return "valid";
     }
+	
+	private Token createToken(String userEmail, String providerName, String accessToken) {
+		Person person = personService.findPersonByEmail(userEmail);
+		Provider provider = providerService.getProviderByName(providerName);
+		
+		Token token = new Token();
+		token.setToken(accessToken);
+		token.setPerson(person);
+		token.setProvider(provider);
+		
+		tokenService.addPersonProviderToken(token);
+		personService.addProvider(person, provider);
+		
+		return token;
+	}
+
+	private AuthorizationCodeTokenRequest createAuthorizationCodeTokenRequest(
+			String authorizationCode, 
+			ProviderOauthObject providerOauthObj,
+			String redirectUrl) {
+		
+		AuthorizationCodeTokenRequest authorizationCodeTokenRequest = authorizationCodeFlow.newTokenRequest(authorizationCode);
+			authorizationCodeTokenRequest.setRequestInitializer(providerOauthObj.getRequestInitializer());
+			authorizationCodeTokenRequest.setGrantType(providerOauthObj.getGrantType());
+			authorizationCodeTokenRequest.setRedirectUri(redirectUrl);
+		
+		logger.info(authorizationCodeTokenRequest.getRedirectUri());
+		logger.info(authorizationCodeTokenRequest.getGrantType());
+		
+		return authorizationCodeTokenRequest;
+	}
+	
+	private AuthorizationCodeRequestUrl createAuthorizationCodeRequestUrl(AuthorizationCodeFlow authorizationCodeFlow,
+			ProviderOauthObject providerOauth,
+			String redirectUrl) {
+		
+		AuthorizationCodeRequestUrl authorizationCodeRequestUrl = authorizationCodeFlow.newAuthorizationUrl();
+		
+		Collection<String> responseTypes = new ArrayList<String>();
+		responseTypes.add(providerOauth.getResponseType());
+	
+		authorizationCodeRequestUrl.setResponseTypes(responseTypes);
+		authorizationCodeRequestUrl.setRedirectUri(redirectUrl);
+		authorizationCodeRequestUrl.setState(providerOauth.getState());
+		
+		return authorizationCodeRequestUrl;
+	}
+
+	private AuthorizationCodeFlow createAuthorizationCodeFlow(ProviderOauthObject providerOauthObj) throws IOException {
+		return new AuthorizationCodeFlow.Builder(
+				BearerToken.authorizationHeaderAccessMethod(),
+				new NetHttpTransport(),
+				new JacksonFactory(),
+				new GenericUrl(providerOauthObj.getAccessTokenUrl()),
+				new ClientParametersAuthentication(
+						providerOauthObj.getClientId(),
+						providerOauthObj.getSecretId()),
+				providerOauthObj.getClientId(),
+				providerOauthObj.getAuthorizationUrl()
+			)
+			.setScopes(Arrays.asList(providerOauthObj.getScope()))
+			.setDataStoreFactory(new MemoryDataStoreFactory())
+			.build();
+	}
+
 }
 
