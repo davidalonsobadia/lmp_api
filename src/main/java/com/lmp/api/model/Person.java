@@ -68,6 +68,10 @@ public class Person {
 	@Column(name="is_provider_role", columnDefinition="boolean default false", nullable=false)
 	private boolean providerRole = false;
 	
+	@Column(name="is_activated", columnDefinition="boolean default false", nullable=false)
+	private boolean activated = false;
+	
+	@JsonIgnore
 	@ManyToMany
 	@JoinTable(name="person_has_consumers", 
 		joinColumns={@JoinColumn(name="person_id")},
@@ -277,4 +281,13 @@ public class Person {
 	public void setProviderRole(boolean providerRole) {
 		this.providerRole = providerRole;
 	}
+
+	public boolean isActivated() {
+		return activated;
+	}
+
+	public void setActivated(boolean activated) {
+		this.activated = activated;
+	}
+	
 }
