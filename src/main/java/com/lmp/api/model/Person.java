@@ -40,7 +40,6 @@ public class Person {
 	private String email;
 	
 	@JsonDeserialize(using = BCryptPasswordDeserializer.class )
-	//@JsonIgnore
 	private String password;
 	
 	@Column(unique=true, nullable=false)
@@ -155,6 +154,7 @@ public class Person {
 		this.phone = phone;
 	}
 
+	@JsonIgnore
 	public String getPassword() {
 		return password;
 	}
