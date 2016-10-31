@@ -40,6 +40,7 @@ public class Person {
 	private String email;
 	
 	@JsonDeserialize(using = BCryptPasswordDeserializer.class )
+	//@JsonIgnore
 	private String password;
 	
 	@Column(unique=true, nullable=false)
@@ -94,11 +95,11 @@ public class Person {
 	private Set<Sphere> spheres;
 	
 	//uniones
-	@OneToMany
-	@JoinTable(name="person_has_entity_associations", 
-		joinColumns={@JoinColumn(name="person_id")},
-		inverseJoinColumns={@JoinColumn(name="association_id")}
-	)
+	@OneToMany(mappedBy="person", cascade=CascadeType.REMOVE)
+//	@JoinTable(name="person_has_entity_associations", 
+//		joinColumns={@JoinColumn(name="person_id")},
+//		inverseJoinColumns={@JoinColumn(name="association_id")}
+//	)
 	private List<PersonEntityRelationship> associations;
 			
 	public Person(){}
@@ -109,7 +110,7 @@ public class Person {
 		this.surname = surname;
 		this.phone = phone;
 		this.email = email;
-		this.password = password;
+		this.setPassword(password);
 		this.identifier = identifier;
 	}
 	

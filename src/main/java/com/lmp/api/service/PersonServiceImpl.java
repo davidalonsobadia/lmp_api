@@ -6,7 +6,6 @@ import java.util.Set;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
-import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -45,7 +44,7 @@ public class PersonServiceImpl implements PersonService{
 	public Person findPersonByEmail(String email) {
 		return personRepository.findFirstByEmail(email);
 	}
-			
+
 	@Override
 	public void updatePersonProviderAssociation(long providerId, long personId) {
 		Person person = this.personRepository.findOne(personId);
@@ -59,7 +58,6 @@ public class PersonServiceImpl implements PersonService{
 				break;
 			}
 		}
-		
 		this.personRepository.save(person); 
 	}
 
@@ -88,8 +86,8 @@ public class PersonServiceImpl implements PersonService{
 
 	@Override
 	public void save(Person person) {
+		person.setPassword(passwordEncoder.encode(person.getPassword()));
 		this.personRepository.save(person);
-		
 	}
 	
 	@Override

@@ -9,9 +9,10 @@ import java.util.Collections;
 import java.util.HashMap;
 import java.util.Map;
 
-import org.junit.Ignore;
 import org.junit.Test;
 import org.junit.runner.RunWith;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.boot.test.context.SpringBootTest.WebEnvironment;
@@ -25,12 +26,14 @@ import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.test.context.junit4.SpringJUnit4ClassRunner;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
+import com.lmp.api.controller.LoginController;
 import com.lmp.api.model.Person;
-import com.lmp.api.repositories.PersonRepository;
+import com.lmp.api.service.interfaces.PersonService;
 
 @RunWith(SpringJUnit4ClassRunner.class)
 @SpringBootTest(webEnvironment=WebEnvironment.DEFINED_PORT)
 public class LmpApiPersonTest {
+	private static final Logger logger = LoggerFactory.getLogger(LoginController.class);
 	
 	private static final String API_URL = "http://localhost:8080/";
 	private static final String PERSON_URL = "http://localhost:8080/people/";
@@ -43,7 +46,7 @@ public class LmpApiPersonTest {
 	private TestRestTemplate restTemplate;
 		
 	@Autowired
-	private PersonRepository personRepository;
+	private PersonService personService;
 	
 	@Autowired
 	private BCryptPasswordEncoder passwordEncoder;
@@ -84,7 +87,8 @@ public class LmpApiPersonTest {
 	    assertEquals(requestBodyJson.get("identifier"), apiPostResponse.get("identifier"));
 	    
 	    
-	    
+	    Person person = personService.findPersonByEmail(apiPostResponse.get("email").toString());
+	    long personId = person.getId();
 	    
 	    /**
 	     * TESTING METHOD GET
@@ -102,7 +106,6 @@ public class LmpApiPersonTest {
 	    assertEquals(requestBodyJson.get("phone"), apiGetResponse.getPhone());
 	    assertEquals(requestBodyJson.get("identifier"), apiGetResponse.getIdentifier());
 	    
-
 		
 	    /**
 	     * TESTING METHOD PUT (UPDATE)
@@ -110,11 +113,13 @@ public class LmpApiPersonTest {
 		requestBodyJson.put("password", "boniato");
 		httpEntity = new HttpEntity<String>(OBJECT_MAPPER.writeValueAsString(requestBodyJson), requestHeaders);
 		
+		requestBodyJson.put("name", "Victor Jose");
+		httpEntity = new HttpEntity<String>(OBJECT_MAPPER.writeValueAsString(requestBodyJson), requestHeaders);
+		
 	    Map<String, Object> apiUpdateResponse =
 	    		(Map)restTemplate.exchange(PERSON_URL + personId, 
 	    		        HttpMethod.PUT, httpEntity, Map.class, Collections.EMPTY_MAP).getBody();
     
-	    
 	    assertEquals(requestBodyJson.get("name"), apiUpdateResponse.get("name"));
 	    assertEquals(requestBodyJson.get("surname"), apiUpdateResponse.get("surname"));
 	    assertEquals(requestBodyJson.get("email"), apiUpdateResponse.get("email"));
@@ -125,11 +130,8 @@ public class LmpApiPersonTest {
 	    /**
 	     * TESTING METHOD DELETE
 	     */
-	    
 	    restTemplate.delete(PERSON_URL+personId);
-	    
-	    Person personDeleted = personRepository.findFirstByEmail(apiUpdateResponse.get("email").toString());
-	    
+	    Person personDeleted = personService.findPersonByEmail(apiUpdateResponse.get("email").toString());
 	    assertNull(personDeleted);
 	}
 	
@@ -138,27 +140,41 @@ public class LmpApiPersonTest {
 		
 		String loginUrl = API_URL + "loginWithPassword?email={email}&password={password}";
 		
-		// OK -- AUTHORIZED
-		String email = "david.alonso@eurecat.org";
+	    //Building the Request body data
+		
+		String name = "David";
+		String surname = "Alonso";
+		String email = "test.login.davidalonso@gmail.com";
+		String phone = "652232323";
 		String password = "123456";
+		String identifier = "45858585L";
+		Person person = new Person(name, surname, phone, email, password, identifier);	
+		personService.save(person);
+		
+		// OK -- AUTHORIZED
+		String userTest = "test.login.davidalonso@gmail.com";
+		String passwordTest = "123456";
 		Map<String, String> urlVariables2 = new HashMap<String, String>();
-		urlVariables2.put("email", email);
-		urlVariables2.put("password", password);
-		ResponseEntity<Object> response = restTemplate.getForEntity(loginUrl, Object.class, urlVariables2);
-		assertNotNull(response);
-		assertEquals(200, response.getStatusCodeValue());
+		urlVariables2.put("email", userTest);
+		urlVariables2.put("password", passwordTest);
+		ResponseEntity<Object> response2 = restTemplate.getForEntity(loginUrl, Object.class, urlVariables2);
+		assertNotNull(response2);
+		logger.info("statusCodeValue " + response2.getStatusCodeValue() );
+		assertEquals(200, response2.getStatusCodeValue());
 				
 		
 		// NOT OK --- UNAUTHORIZED
-		String email2 = "david.alonso@eurecat.org";
-		String password2 = "1234567";
+		String userTest2 = "test.login.davidalonso@gmail.com";
+		String passwordTest2 = "1234567";
 		Map<String, String> urlVariables = new HashMap<String, String>();
-		urlVariables.put("email", email2);
-		urlVariables.put("password", password2);
-		ResponseEntity<Object> response2 = restTemplate.getForEntity(loginUrl, Object.class, urlVariables);
-		assertNotNull(response2);
-		assertEquals(401, response2.getStatusCodeValue());
-
-	}
+		urlVariables.put("email", userTest2);
+		urlVariables.put("password", passwordTest2);
+		ResponseEntity<Object> response = restTemplate.getForEntity(loginUrl, Object.class, urlVariables);
+		assertNotNull(response);
+		assertEquals(401, response.getStatusCodeValue());
 		
+		personService.delete(personService.findPersonByEmail("test.login.davidalonso@gmail.com"));
+		assertNull(personService.findPersonByEmail("test.login.davidalonso@gmail.com"));
+	}
+			
 }
