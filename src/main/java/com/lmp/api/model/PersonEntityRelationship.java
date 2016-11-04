@@ -27,9 +27,6 @@ public class PersonEntityRelationship {
 	@ManyToOne
 	private Organization organization;
 	
-	@OneToMany(mappedBy = "personEntityRelationship", cascade=CascadeType.REMOVE)
-	private List<PersonEntityRelationshipAttribute> personEntityAttribute; 
-	
 	private String state;
 
 	public long getId() {

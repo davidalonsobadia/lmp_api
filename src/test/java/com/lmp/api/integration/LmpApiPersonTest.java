@@ -82,7 +82,6 @@ public class LmpApiPersonTest {
 	    assertEquals(requestBodyJson.get("name"), apiPostResponse.get("name"));
 	    assertEquals(requestBodyJson.get("surname"), apiPostResponse.get("surname"));
 	    assertEquals(requestBodyJson.get("email"), apiPostResponse.get("email")); 
-	    assertTrue(passwordEncoder.matches(requestBodyJson.get("password").toString(), apiPostResponse.get("password").toString()));
 	    assertEquals(requestBodyJson.get("phone"), apiPostResponse.get("phone"));
 	    assertEquals(requestBodyJson.get("identifier"), apiPostResponse.get("identifier"));
 	    
@@ -93,8 +92,7 @@ public class LmpApiPersonTest {
 	    /**
 	     * TESTING METHOD GET
 	     */
-	    Person person = personRepository.findFirstByEmail(apiPostResponse.get("email").toString());
-	    long personId = person.getId();
+
 	    
 	    Person apiGetResponse = 
 		        restTemplate.getForObject(PERSON_URL+personId, Person.class);
