@@ -1,5 +1,6 @@
 package com.lmp.api.service.interfaces;
 
+import java.util.List;
 import java.util.Set;
 
 import com.lmp.api.model.PasswordResetToken;

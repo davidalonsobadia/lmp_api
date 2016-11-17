@@ -22,6 +22,8 @@ public class AttributeMap {
 	
 	@Column(name="lmp_attribute_name")
 	private String lmpAttributeName;
+	
+	private String attributeNameInResponse;
 			
 	@ManyToOne  
 	private Provider provider;
@@ -63,6 +65,14 @@ public class AttributeMap {
 	
 	public String getProviderAttributeName() {
 		return providerAttributeName;
+	}
+	
+	public String getAttributeNameInResponse() {
+		return attributeNameInResponse;
+	}
+
+	public void setAttributeNameInResponse(String attributeNameInResponse) {
+		this.attributeNameInResponse = attributeNameInResponse;
 	}
 
 	public void setProviderAttributeName(String providerAttributeName) {

@@ -1,11 +1,13 @@
 package com.lmp.api.model.providers;
 
 import org.springframework.beans.factory.annotation.Value;
+import org.springframework.context.annotation.PropertySource;
 import org.springframework.stereotype.Component;
 
 import com.google.api.client.http.HttpRequestInitializer;
 
 @Component
+@PropertySource("classpath:providers.properties")
 public class StravaOAuth implements ProviderOauthObject {
 	
 	// STRAVA DATA:
@@ -54,10 +56,6 @@ public class StravaOAuth implements ProviderOauthObject {
 	public String getResponseType() {
 		return RESPONSE_TYPE;
 	}
-
-//	public String getRedirectUri() {
-//		return REDIRECT_URI;
-//	}
 	
 	public String getRedirectAuthorizationUri() {
 		return REDIRECT_AUTHORIZATION_URL;

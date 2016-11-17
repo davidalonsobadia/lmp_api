@@ -1,5 +1,6 @@
 package com.lmp.api.service;
 
+import java.util.HashSet;
 import java.util.Iterator;
 import java.util.List;
 import java.util.Set;
@@ -45,6 +46,7 @@ public class PersonServiceImpl implements PersonService{
 		return personRepository.findFirstByEmail(email);
 	}
 
+	@SuppressWarnings("unchecked")
 	@Override
 	public void updatePersonProviderAssociation(long providerId, long personId) {
 		Person person = this.personRepository.findOne(personId);
@@ -62,9 +64,9 @@ public class PersonServiceImpl implements PersonService{
 	}
 
 	@Override
-	public boolean isConsumerInList(String userName, String consumerName) {
-		Person person = this.personRepository.findFirstByName(userName);
-		List<Consumer> consumers = person.getConsumers();
+	public boolean isConsumerInList(String personEmail, String consumerName) {
+		Person person = this.personRepository.findFirstByEmail(personEmail);
+		Set<Consumer> consumers = person.getConsumers();
 		for(Consumer consumer : consumers){
 			if(consumer.getName().equals(consumerName)){
 				return true;

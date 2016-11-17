@@ -37,6 +37,7 @@ SET @Rastreator = 'Rastreator';
 SET @Twitter = 'Twitter';
 SET @BuscadorMedico = 'Buscador Medico';
 SET @LaNeveraRoja = 'La Nevera Roja';
+SET @HealthInsurance = 'Health Insurance';
 
 -- Attribute names
 SET @AllergicConditions = 'Allergic Conditions';
@@ -71,7 +72,13 @@ SET @Gender = 'Gender';
 SET @City = 'City';
 SET @Height = 'Height';
 SET @Weight = 'Weight';
-
+SET @RelationshipStatus = 'Relationship status';
+SET @Picture = 'Picture';
+SET @Locale = 'locale';
+SET @Positions = 'Positions';
+SET @Summary = 'Summary';
+SET @LastName = 'Last Name';
+SET @Activities = 'Activities';
 
 -- user Mails
 SET @user1Mail = 'david@hotmail.com';
@@ -102,6 +109,8 @@ INSERT INTO consumer (identifier, name, description, is_enabled, is_deleted)
 	VALUES ('BUSCADORMEDICOS.COM', @BuscadorMedico, 'El mejor Buscador de medicos online', true, false);
 INSERT INTO consumer (identifier, name, description, is_enabled, is_deleted) 
 	VALUES ('LANEVERAROJA.COM', @LaNeveraRoja, 'Comida a domicilio', true, false);
+INSERT INTO consumer (identifier, name, description, is_enabled, is_deleted) 
+	VALUES ('HEALTHINSURANCE.COM', @HealthInsurance, 'Health Insurance Consumer Demo', true, false);
 	
 -- PERSON
 INSERT INTO person (identifier, name, surname, phone, email, password)
@@ -513,7 +522,7 @@ INSERT INTO attribute_has_attribute_maps(attribute_id, attribute_map_id)
 
 ----ATTRIBUTE FirstName WITH OTHER PROVIDER -----
 INSERT INTO attribute_map(provider_attribute_name, lmp_attribute_name, provider_id, attribute_id)
-	SELECT 'name', @FirstName, @provider_id:= p.id, @attribute_id:= a.id
+	SELECT 'first_name', @FirstName, @provider_id:= p.id, @attribute_id:= a.id
 	FROM provider p
 	JOIN attribute a
 		ON a.name LIKE @FirstName
@@ -522,7 +531,24 @@ INSERT INTO provider_has_attribute_maps(provider_id, attribute_map_id)
 	VALUES (@provider_id, @attribute_map_id:= LAST_INSERT_ID() );
 INSERT INTO attribute_has_attribute_maps(attribute_id, attribute_map_id)
 	VALUES (@attribute_id, @attribute_map_id);
-----------------------------------------------------------------------------------------------------------------	
+----------------------------------------------------------------------------------------------------------------
+
+----ATTRIBUTE Last Name -----
+INSERT INTO attribute(name, subcategory_id, description, reputation, is_enabled, is_deleted, is_updateable)
+	SELECT @LastName, s.id, @LastName, 8, true, false, true
+	FROM subcategory s 
+	WHERE s.name LIKE @PersonalData;
+INSERT INTO attribute_map(provider_attribute_name, lmp_attribute_name, provider_id, attribute_id)
+	SELECT 'last_name', @LastName, @provider_id:= p.id, @attribute_id:= a.id
+	FROM provider p
+	JOIN attribute a
+		ON a.name LIKE @LastName
+	WHERE p.name LIKE @Facebook;
+INSERT INTO provider_has_attribute_maps(provider_id, attribute_map_id)
+	VALUES (@provider_id, @attribute_map_id:= LAST_INSERT_ID() );
+INSERT INTO attribute_has_attribute_maps(attribute_id, attribute_map_id)
+	VALUES (@attribute_id, @attribute_map_id);
+----------------------------------------------------------------------------------------------------------------
 
 ----ATTRIBUTE Birthday -----
 INSERT INTO attribute(name, subcategory_id, description, reputation, is_enabled, is_deleted, is_updateable)
@@ -580,8 +606,8 @@ INSERT INTO attribute(name, subcategory_id, description, reputation, is_enabled,
 	SELECT @Languages, s.id, @Languages, 8, true, false, true
 	FROM subcategory s 
 	WHERE s.name LIKE @PersonalData;
-INSERT INTO attribute_map(provider_attribute_name, lmp_attribute_name, provider_id, attribute_id)
-	SELECT 'languages', @Languages, @provider_id:= p.id, @attribute_id:= a.id
+INSERT INTO attribute_map(provider_attribute_name, attribute_name_in_response, lmp_attribute_name, provider_id, attribute_id)
+	SELECT 'languages', '$..name', @Languages, @provider_id:= p.id, @attribute_id:= a.id
 	FROM provider p
 	JOIN attribute a
 		ON a.name LIKE @Languages
@@ -597,12 +623,46 @@ INSERT INTO attribute(name, subcategory_id, description, reputation, is_enabled,
 	SELECT @City, s.id, @City, 8, true, false, true
 	FROM subcategory s 
 	WHERE s.name LIKE @PersonalData;
-INSERT INTO attribute_map(provider_attribute_name, lmp_attribute_name, provider_id, attribute_id)
-	SELECT 'city', @City, @provider_id:= p.id, @attribute_id:= a.id
+INSERT INTO attribute_map(provider_attribute_name, attribute_name_in_response, lmp_attribute_name, provider_id, attribute_id)
+	SELECT 'athlete', '$.city', @City, @provider_id:= p.id, @attribute_id:= a.id
 	FROM provider p
 	JOIN attribute a
 		ON a.name LIKE @City
 	WHERE p.name LIKE @Strava;
+INSERT INTO provider_has_attribute_maps(provider_id, attribute_map_id)
+	VALUES (@provider_id, @attribute_map_id:= LAST_INSERT_ID() );
+INSERT INTO attribute_has_attribute_maps(attribute_id, attribute_map_id)
+	VALUES (@attribute_id, @attribute_map_id);
+----------------------------------------------------------------------------------------------------------------
+
+----ATTRIBUTE Activities -----
+INSERT INTO attribute(name, subcategory_id, description, reputation, is_enabled, is_deleted, is_updateable)
+	SELECT @Activities, s.id, @Activities, 8, true, false, true
+	FROM subcategory s 
+	WHERE s.name LIKE @PersonalData;
+INSERT INTO attribute_map(provider_attribute_name, attribute_name_in_response, lmp_attribute_name, provider_id, attribute_id)
+	SELECT 'activities', '$.[''id'', ''name'', ''distance'', ''start_date_local'', ''type'', ''moving_time'', ''average_speed'']',  @Activities, @provider_id:= p.id, @attribute_id:= a.id
+	FROM provider p
+	JOIN attribute a
+		ON a.name LIKE @Activities
+	WHERE p.name LIKE @Strava;
+INSERT INTO provider_has_attribute_maps(provider_id, attribute_map_id)
+	VALUES (@provider_id, @attribute_map_id:= LAST_INSERT_ID() );
+INSERT INTO attribute_has_attribute_maps(attribute_id, attribute_map_id)
+	VALUES (@attribute_id, @attribute_map_id);
+----------------------------------------------------------------------------------------------------------------
+
+----ATTRIBUTE Locale -----
+INSERT INTO attribute(name, subcategory_id, description, reputation, is_enabled, is_deleted, is_updateable)
+	SELECT @Locale, s.id, @Locale, 8, true, false, true
+	FROM subcategory s 
+	WHERE s.name LIKE @PersonalData;
+INSERT INTO attribute_map(provider_attribute_name, lmp_attribute_name, provider_id, attribute_id)
+	SELECT 'locale', @Locale, @provider_id:= p.id, @attribute_id:= a.id
+	FROM provider p
+	JOIN attribute a
+		ON a.name LIKE @Locale
+	WHERE p.name LIKE @Facebook;
 INSERT INTO provider_has_attribute_maps(provider_id, attribute_map_id)
 	VALUES (@provider_id, @attribute_map_id:= LAST_INSERT_ID() );
 INSERT INTO attribute_has_attribute_maps(attribute_id, attribute_map_id)
@@ -637,6 +697,88 @@ INSERT INTO attribute_map(provider_attribute_name, lmp_attribute_name, provider_
 	JOIN attribute a
 		ON a.name LIKE @Weight
 	WHERE p.name LIKE @Fitbit;
+INSERT INTO provider_has_attribute_maps(provider_id, attribute_map_id)
+	VALUES (@provider_id, @attribute_map_id:= LAST_INSERT_ID() );
+INSERT INTO attribute_has_attribute_maps(attribute_id, attribute_map_id)
+	VALUES (@attribute_id, @attribute_map_id);
+----------------------------------------------------------------------------------------------------------------
+
+----ATTRIBUTE Positions -----
+INSERT INTO attribute(name, subcategory_id, description, reputation, is_enabled, is_deleted, is_updateable)
+	SELECT @Positions, s.id, @Positions, 8, true, false, true
+	FROM subcategory s 
+	WHERE s.name LIKE @CurrentJobPosition;
+INSERT INTO attribute_map(provider_attribute_name, attribute_name_in_response, lmp_attribute_name, provider_id, attribute_id)
+	SELECT 'positions', '$.positions.values', @Positions, @provider_id:= p.id, @attribute_id:= a.id
+	FROM provider p
+	JOIN attribute a
+		ON a.name LIKE @Positions
+	WHERE p.name LIKE @Linkedin;
+INSERT INTO provider_has_attribute_maps(provider_id, attribute_map_id)
+	VALUES (@provider_id, @attribute_map_id:= LAST_INSERT_ID() );
+INSERT INTO attribute_has_attribute_maps(attribute_id, attribute_map_id)
+	VALUES (@attribute_id, @attribute_map_id);
+----------------------------------------------------------------------------------------------------------------
+
+----ATTRIBUTE Summary -----
+INSERT INTO attribute(name, subcategory_id, description, reputation, is_enabled, is_deleted, is_updateable)
+	SELECT @Summary, s.id, @Summary, 8, true, false, true
+	FROM subcategory s 
+	WHERE s.name LIKE @CurrentJobPosition;
+INSERT INTO attribute_map(provider_attribute_name, lmp_attribute_name, provider_id, attribute_id)
+	SELECT 'summary', @Summary, @provider_id:= p.id, @attribute_id:= a.id
+	FROM provider p
+	JOIN attribute a
+		ON a.name LIKE @Summary
+	WHERE p.name LIKE @Linkedin;
+INSERT INTO provider_has_attribute_maps(provider_id, attribute_map_id)
+	VALUES (@provider_id, @attribute_map_id:= LAST_INSERT_ID() );
+INSERT INTO attribute_has_attribute_maps(attribute_id, attribute_map_id)
+	VALUES (@attribute_id, @attribute_map_id);
+----------------------------------------------------------------------------------------------------------------
+
+	
+----ATTRIBUTE Relationship status -----
+INSERT INTO attribute(name, subcategory_id, description, reputation, is_enabled, is_deleted, is_updateable)
+	SELECT @RelationshipStatus, s.id, @RelationshipStatus, 8, true, false, true
+	FROM subcategory s 
+	WHERE s.name LIKE @PersonalData;
+INSERT INTO attribute_map(provider_attribute_name, lmp_attribute_name, provider_id, attribute_id)
+	SELECT 'relationship_status', @RelationshipStatus, @provider_id:= p.id, @attribute_id:= a.id
+	FROM provider p
+	JOIN attribute a
+		ON a.name LIKE @RelationshipStatus
+	WHERE p.name LIKE @Facebook;
+INSERT INTO provider_has_attribute_maps(provider_id, attribute_map_id)
+	VALUES (@provider_id, @attribute_map_id:= LAST_INSERT_ID() );
+INSERT INTO attribute_has_attribute_maps(attribute_id, attribute_map_id)
+	VALUES (@attribute_id, @attribute_map_id);
+----------------------------------------------------------------------------------------------------------------
+
+----ATTRIBUTE Picture -----
+INSERT INTO attribute(name, subcategory_id, description, reputation, is_enabled, is_deleted, is_updateable)
+	SELECT @Picture, s.id, @Picture, 8, true, false, true
+	FROM subcategory s 
+	WHERE s.name LIKE @PersonalData;
+INSERT INTO attribute_map(provider_attribute_name, attribute_name_in_response, lmp_attribute_name, provider_id, attribute_id)
+	SELECT 'picture.width(720).height(720)', '$.picture.data.url', @Picture, @provider_id:= p.id, @attribute_id:= a.id
+	FROM provider p
+	JOIN attribute a
+		ON a.name LIKE @Picture
+	WHERE p.name LIKE @Facebook;
+INSERT INTO provider_has_attribute_maps(provider_id, attribute_map_id)
+	VALUES (@provider_id, @attribute_map_id:= LAST_INSERT_ID() );
+INSERT INTO attribute_has_attribute_maps(attribute_id, attribute_map_id)
+	VALUES (@attribute_id, @attribute_map_id);
+----------------------------------------------------------------------------------------------------------------
+
+-------- ATTRBIUTE Picture WITH OTHER PROVIDER
+INSERT INTO attribute_map(provider_attribute_name, attribute_name_in_response,lmp_attribute_name, provider_id, attribute_id)
+	SELECT 'picture-urls::(original)', '$.pictureUrls.values[0]', @Picture, @provider_id:= p.id, @attribute_id:= a.id
+	FROM provider p
+	JOIN attribute a
+		ON a.name LIKE @Picture
+	WHERE p.name LIKE @LinkedIn;
 INSERT INTO provider_has_attribute_maps(provider_id, attribute_map_id)
 	VALUES (@provider_id, @attribute_map_id:= LAST_INSERT_ID() );
 INSERT INTO attribute_has_attribute_maps(attribute_id, attribute_map_id)

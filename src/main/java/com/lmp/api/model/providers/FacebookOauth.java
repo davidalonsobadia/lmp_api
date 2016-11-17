@@ -1,11 +1,13 @@
 package com.lmp.api.model.providers;
 
 import org.springframework.beans.factory.annotation.Value;
+import org.springframework.context.annotation.PropertySource;
 import org.springframework.stereotype.Component;
 
 import com.google.api.client.http.HttpRequestInitializer;
 
 @Component
+@PropertySource("classpath:providers.properties")
 public class FacebookOauth implements ProviderOauthObject {
 		
 	// FACEBOOK DATA

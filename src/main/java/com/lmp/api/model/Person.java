@@ -77,7 +77,7 @@ public class Person {
 		joinColumns={@JoinColumn(name="person_id")},
 		inverseJoinColumns={@JoinColumn(name="consumer_id")}
 	)
-	private List<Consumer> consumers;
+	private Set<Consumer> consumers;
 	
 	@ManyToMany(fetch = FetchType.EAGER)
 	@JoinTable(name="person_has_providers", 
@@ -171,11 +171,11 @@ public class Person {
 		this.identifier = identifier;
 	}
 	
-	public List<Consumer> getConsumers() {
+	public Set<Consumer> getConsumers() {
 		return consumers;
 	}
 
-	public void setConsumers(List<Consumer> consumers) {
+	public void setConsumers(Set<Consumer> consumers) {
 		this.consumers = consumers;
 	}
 

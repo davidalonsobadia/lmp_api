@@ -3,6 +3,7 @@ package com.lmp.api.model.providers;
 import java.io.IOException;
 
 import org.springframework.beans.factory.annotation.Value;
+import org.springframework.context.annotation.PropertySource;
 import org.springframework.security.crypto.codec.Base64;
 import org.springframework.stereotype.Component;
 
@@ -10,6 +11,7 @@ import com.google.api.client.http.HttpRequest;
 import com.google.api.client.http.HttpRequestInitializer;
 
 @Component
+@PropertySource("classpath:providers.properties")
 public class FitbitOauth implements ProviderOauthObject {
 	
 	// Parameters for building the authorization code request
