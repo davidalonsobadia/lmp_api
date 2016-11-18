@@ -4,6 +4,7 @@ import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+import java.util.Set;
 
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
@@ -15,6 +16,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpEntity;
 import org.springframework.http.HttpHeaders;
 import org.springframework.http.HttpMethod;
+import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.http.converter.json.Jackson2ObjectMapperBuilder;
 import org.springframework.http.converter.json.MappingJackson2HttpMessageConverter;
@@ -27,7 +29,6 @@ import org.springframework.web.client.RestTemplate;
 
 import com.fasterxml.jackson.databind.DeserializationFeature;
 import com.fasterxml.jackson.databind.ObjectMapper;
-import com.fasterxml.jackson.databind.SerializationFeature;
 import com.jayway.jsonpath.Configuration;
 import com.jayway.jsonpath.JsonPath;
 import com.lmp.api.model.Attribute;
@@ -226,7 +227,7 @@ public class ConsumersController {
 
 	@RequestMapping("/allAttributes")
 	@ResponseBody
-	public List<AttributeView> getAllAttributes(
+	public ResponseEntity<List<AttributeView>> getAllAttributes(
 			@RequestParam("consumer") String consumerName,
 			@RequestParam("email") String personEmail){
 		
@@ -234,10 +235,20 @@ public class ConsumersController {
 		Person person = personService.findPersonByEmail(personEmail);
 	
 		//TODO: RESOLVER EXCEPCIONES MAS ADELANTE
-		if(person== null)
-			return null;
-		if(consumer==null)
-			return null;
+		if(person== null){
+			ResponseEntity<List<AttributeView>> response = new ResponseEntity<>(HttpStatus.NOT_FOUND);
+			return response;
+		}
+		if(consumer==null){
+			ResponseEntity<List<AttributeView>> response = new ResponseEntity<>(HttpStatus.NOT_FOUND);
+			return response;
+		}		
+
+		Set<Consumer> personConsumers = person.getConsumers();
+		if(!personConsumers.contains(consumer)){
+			ResponseEntity<List<AttributeView>> response = new ResponseEntity<>(HttpStatus.NOT_FOUND);
+			return response;
+		}
 		
 		List<Sphere> sphereList = sphereService.findByConsumerAndPerson(consumer, person);
 		List<Attribute> attributeList = new ArrayList<>();
@@ -251,10 +262,14 @@ public class ConsumersController {
 					attribute.getSubcategory().getName(),
 					attribute.getName());
 			Provider provider = providerService.findProviderByAttributeAndPerson(attribute, person);
-			attributeView.setValue(getAttributeValue(provider, attribute, person));
-			attributesViewList.add(attributeView);			
+			if (provider != null){
+				attributeView.setValue(getAttributeValue(provider, attribute, person));
+				attributesViewList.add(attributeView);
+			}
 		}
-		return attributesViewList;
+		
+		ResponseEntity<List<AttributeView>> response = new	 ResponseEntity<>(attributesViewList, HttpStatus.OK);
+		return response;
 	}
 	
 	

@@ -5,6 +5,7 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 import com.lmp.api.model.Consumer;
+import com.lmp.api.model.Person;
 import com.lmp.api.repositories.ConsumerRepository;
 import com.lmp.api.service.interfaces.ConsumerService;
 

@@ -7,6 +7,7 @@ import org.springframework.data.repository.PagingAndSortingRepository;
 import org.springframework.data.repository.query.Param;
 
 import com.lmp.api.model.Consumer;
+import com.lmp.api.model.Person;
 
 public interface ConsumerRepository extends PagingAndSortingRepository<Consumer, Long>{
 
@@ -16,4 +17,5 @@ public interface ConsumerRepository extends PagingAndSortingRepository<Consumer,
 	public List<Consumer> findConsumersByUser(@Param("username") String username);
 	
 	public Consumer findConsumerByName(String name);
+
 }
