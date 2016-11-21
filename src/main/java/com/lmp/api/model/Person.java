@@ -154,7 +154,7 @@ public class Person {
 		this.phone = phone;
 	}
 
-	@JsonIgnore
+	//@JsonIgnore
 	public String getPassword() {
 		return password;
 	}
